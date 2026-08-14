@@ -1,0 +1,85 @@
+src/features/auth/server/session.ts
+  s_5720fd1c2a8c2a::t_56de1db40e9a86 1-7,15-30
+  s_1f7fbc93d8b9d4::t_7d696b05bba618 8-14
+src/features/auth/components/sign-in-page.tsx
+  s_1f7fbc93d8b9d4::t_57745328382a0e 57-60
+  s_5720fd1c2a8c2a::t_2bceb946359562 1,3,7-28,30-32,34-44,50,55,62-63,66-79,81-82,89-141
+  s_5720fd1c2a8c2a::t_253e0f7435a742 45-49,51-54,56,61
+  s_5720fd1c2a8c2a::t_5f1a6834fb8f5d 83-86,88
+src/routes/login.tsx
+  s_5720fd1c2a8c2a::t_7eafe11b641509 1,4,6,9-10,12-17,22-26,28-29
+  s_5720fd1c2a8c2a::t_9b6c3718d4e99f 5,11,27
+src/components/page-shell.tsx
+  s_5720fd1c2a8c2a::t_65a6e3e1d0a5d4 24
+src/features/auth/utils/auth-error.ts
+  s_1f7fbc93d8b9d4::t_17fbd987d502b5 4-5,15-55,66,68-99,101,104-114,117-118,121
+  s_5720fd1c2a8c2a::t_f519bcd6a41123 12
+  s_1f7fbc93d8b9d4::t_b306b11e3bdcb8 56-65,67
+  s_5720fd1c2a8c2a::t_9d5d2174d3aee2 1-3,6-11,13-14,100,102-103,115-116,119-120,122-134
+src/features/auth/components/sign-up-page.tsx
+  s_5720fd1c2a8c2a::t_a95b88be017511 1-46,53,58,65-85,92-175
+  s_5720fd1c2a8c2a::t_e5d2565a90e701 86-91
+  s_1f7fbc93d8b9d4::t_9180a73786ee13 60-63
+  s_5720fd1c2a8c2a::t_2b3b490320759f 47-52,54-57,59,64
+src/integrations/better-auth/header-user.tsx
+  s_5720fd1c2a8c2a::t_e464e8265b7cf4 1-2,4-20,25-28,33-34,36-54,56-75,79-92,94-95
+src/features/auth/schemas/credentials.ts
+  s_5720fd1c2a8c2a::t_eaa827db2d0378 1-34
+src/lib/auth.ts
+  s_5720fd1c2a8c2a::t_b9548aae4ce41b 7-9,21-39
+src/features/auth/components/auth-layout.tsx
+  s_5720fd1c2a8c2a::t_c59ad458517a55 1-54
+src/features/auth/components/auth-field.tsx
+  s_5720fd1c2a8c2a::t_fff51d1334b23b 1-89
+src/routes/register.tsx
+  s_5720fd1c2a8c2a::t_dbc5bea21e2a84 5,11,27
+  s_5720fd1c2a8c2a::t_521b68cbe585af 1-4,6-10,12-26,28-29
+src/features/landing/components/landing-page.tsx
+  s_5720fd1c2a8c2a::t_0a0125c69dfa06 96
+  s_5720fd1c2a8c2a::t_0b129ef14fe191 63
+  s_5720fd1c2a8c2a::t_8f4952e1c157ca 224
+  s_5720fd1c2a8c2a::t_a7c440f8227dfb 10
+src/features/auth/utils/safe-redirect.ts
+  s_5720fd1c2a8c2a::t_cf8abfecd3c34c 1-13
+src/features/auth/components/google-sign-in-button.tsx
+  s_5720fd1c2a8c2a::t_f9b50182835207 33,38,51
+  s_5720fd1c2a8c2a::t_4dda390ddc205b 56-58
+  s_5720fd1c2a8c2a::t_1f9669a2f507a9 1-32,34-37,39-50,52-55,59-89
+src/routeTree.gen.ts
+  s_5720fd1c2a8c2a::t_1140ee8f2760dc 14,27-31,41,47,54,59,61-62,68,88-94,108
+package.json
+  s_1f7fbc93d8b9d4::t_5555a4b6d106c4 30
+src/db/index.ts
+  s_1f7fbc93d8b9d4::t_587736156c0491 1,5-6
+pnpm-lock.yaml
+  s_1f7fbc93d8b9d4::t_343f8c5404fc3c 13,29-31,67,79,1359-1362,5439,5444,5446,5451,6155-6156,7882,7885,7904,8129,8131
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "883afa76e6e45c39ba5cc869a603a7f0903e01cd",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_1f7fbc93d8b9d4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "02c20cbd-1389-494a-8fb7-0ef1dd593d53",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_5720fd1c2a8c2a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4b0a0191-61ed-466d-9f57-4760378a1903",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

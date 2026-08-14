@@ -1,3 +1,716 @@
+# AGENTS.md
+
+# Purpose
+
+This project is built to be maintainable for years, not just to ship quickly.
+
+The agent should optimize for:
+
+* clarity
+* maintainability
+* consistency
+* scalability
+* end-to-end type safety
+
+Prefer architecture over shortcuts.
+
+---
+
+# Core Principles
+
+## 1. Business First
+
+Always think in business domains before technical layers.
+
+Bad:
+
+```text
+components/
+queries/
+hooks/
+utils/
+```
+
+Good:
+
+```text
+features/
+
+    auth/
+
+    users/
+
+    billing/
+
+    dashboard/
+
+    workspace/
+```
+
+Organize code around business capabilities.
+
+---
+
+## 2. Feature First
+
+Every feature owns its own:
+
+* UI
+* queries
+* server logic
+* validation
+* types
+* tests
+
+Avoid scattering one feature across many folders.
+
+---
+
+## 3. Thin Routes
+
+Routes orchestrate.
+
+Routes do NOT implement business logic.
+
+Routes should only contain:
+
+* route definition
+* beforeLoad
+* loader
+* metadata
+* component binding
+
+Business logic belongs inside the feature.
+
+---
+
+## 4. Components Render
+
+React components should primarily render UI.
+
+Avoid putting inside components:
+
+* authorization
+* database access
+* business rules
+* validation
+* data transformation
+
+---
+
+## 5. Server Owns Business Logic
+
+Business rules belong on the server.
+
+Never trust values coming from the client.
+
+Client sends intent.
+
+Server makes decisions.
+
+---
+
+## 6. Database is Source of Truth
+
+Never duplicate server state.
+
+Use:
+
+* TanStack Query
+* Route Loaders
+
+Avoid copying server state into local state.
+
+---
+
+# Technology
+
+## Framework
+
+* TanStack Start
+
+## Router
+
+* TanStack Router
+
+## Data
+
+* TanStack Query
+
+## Forms
+
+* TanStack Form
+
+## Validation
+
+* Zod
+
+## Authentication
+
+* Better Auth
+
+## ORM
+
+* Drizzle
+
+## UI
+
+* Tailwind CSS
+* shadcn/ui
+
+---
+
+# Folder Structure
+
+```text
+src/
+
+    features/
+
+    routes/
+
+    server/
+
+    components/
+
+    lib/
+
+    hooks/
+
+    utils/
+
+    styles/
+```
+
+---
+
+# Feature Structure
+
+```text
+feature/
+
+    components/
+
+    server/
+
+    queries/
+
+    schemas/
+
+    hooks/
+
+    types/
+
+    utils/
+
+    tests/
+```
+
+Everything for one business capability stays together.
+
+---
+
+# Dependency Rules
+
+Dependencies should always flow inward.
+
+```text
+Routes
+    ↓
+
+Features
+    ↓
+
+Server
+    ↓
+
+Database
+```
+
+Avoid feature-to-feature imports.
+
+If multiple features need something, move it to:
+
+* components/
+* lib/
+* server/
+* utils/
+
+Never create circular dependencies.
+
+---
+
+# Shared Code Rule
+
+Do not move code into shared folders until it is actually shared.
+
+Rule:
+
+Used once
+
+↓
+
+Keep local.
+
+Used twice
+
+↓
+
+Consider extraction.
+
+Used by multiple unrelated features
+
+↓
+
+Move to shared.
+
+Prefer duplication over premature abstraction.
+
+---
+
+# Architecture Rules
+
+Always ask:
+
+Does this belong to a feature?
+
+before putting it into:
+
+* lib
+* utils
+* shared
+* services
+
+Shared folders should grow slowly.
+
+Features should grow naturally.
+
+---
+
+# Business Logic
+
+Business logic belongs inside:
+
+```text
+features/*/server
+```
+
+Examples:
+
+Good
+
+```text
+createWorkspace()
+
+archiveProject()
+
+inviteMember()
+```
+
+Avoid generic names:
+
+```text
+process()
+
+execute()
+
+submit()
+```
+
+Names should describe business intent.
+
+---
+
+# Route Loading
+
+Initial data belongs in Route Loaders.
+
+Preferred flow:
+
+Route
+
+↓
+
+Loader
+
+↓
+
+Query Cache
+
+↓
+
+Component
+
+Avoid:
+
+useEffect → fetch
+
+---
+
+# TanStack Query
+
+TanStack Query owns server state.
+
+Use it for:
+
+* caching
+* invalidation
+* background refresh
+* optimistic updates
+
+Do not duplicate Query state in React state.
+
+---
+
+# Forms
+
+Use:
+
+TanStack Form
+
+*
+
+Zod
+
+*
+
+Server Functions
+
+Validation should come from a shared Zod schema.
+
+Never duplicate validation rules.
+
+---
+
+# Authentication
+
+Authentication belongs in:
+
+* context
+* beforeLoad
+* Server Functions
+
+Never read user identity from request payload.
+
+Always derive user identity from Better Auth session.
+
+---
+
+# Authorization
+
+Authentication:
+
+Who is the user?
+
+Authorization:
+
+What is this user allowed to do?
+
+Keep them separated.
+
+---
+
+# Performance Philosophy
+
+Never optimize prematurely.
+
+Optimization order:
+
+1. User Experience
+2. Network
+3. Database
+4. Data Fetching
+5. Rendering
+
+React rendering is rarely the first bottleneck.
+
+---
+
+# Performance Guidelines
+
+Prefer:
+
+* Route Loaders
+* Query caching
+* Suspense
+* Streaming
+* Route-level code splitting
+* Lazy loading
+* Prefetching
+
+Avoid excessive use of:
+
+* useMemo
+* useCallback
+* memo
+
+unless profiling proves they help.
+
+---
+
+# Suspense Philosophy
+
+Suspense is not a loading spinner.
+
+Suspense allows progressive rendering.
+
+Render what is ready first.
+
+Never block an entire page because one section is slow.
+
+---
+
+# Streaming
+
+If part of a page is significantly slower than the rest:
+
+Render the fast parts first.
+
+Stream slower sections later.
+
+Users care about perceived speed.
+
+---
+
+# Query Strategy
+
+Choose staleTime intentionally.
+
+Examples:
+
+Static content
+
+→ Infinity
+
+Semi-static
+
+→ minutes
+
+Realtime
+
+→ seconds or subscriptions
+
+Never use the same staleTime everywhere.
+
+---
+
+# Prefetch Strategy
+
+Prefetch important navigation.
+
+Examples:
+
+* sidebar destinations
+* next wizard step
+* pagination
+* frequently opened detail pages
+
+The goal is instant navigation.
+
+---
+
+# Third-party Integrations
+
+Every external SDK belongs inside:
+
+```text
+server/integrations
+```
+
+Examples:
+
+* OpenAI
+* Stripe
+* Resend
+* S3
+* Discord
+* Slack
+
+Features should never initialize SDKs directly.
+
+---
+
+# Error Handling
+
+Throw meaningful errors.
+
+Do not return:
+
+```ts
+success: false
+```
+
+unless required by an external API.
+
+Handle errors close to the UI.
+
+---
+
+# Comments
+
+Explain WHY.
+
+Do not explain WHAT.
+
+Prefer self-documenting code.
+
+---
+
+# TypeScript
+
+Never use:
+
+```ts
+any
+```
+
+Prefer:
+
+* unknown
+* generics
+* inferred types
+
+Strict mode should remain enabled.
+
+---
+
+# Testing
+
+Prioritize testing:
+
+* business logic
+* server functions
+* utilities
+
+Avoid snapshot-heavy tests.
+
+Test behavior, not implementation.
+
+---
+
+# Git
+
+Small commits.
+
+One logical change per commit.
+
+Write meaningful commit messages.
+
+---
+
+# Agent Workflow
+
+Before implementing any feature:
+
+## Step 1
+
+Understand the business goal.
+
+Never start coding immediately.
+
+---
+
+## Step 2
+
+Search the existing codebase.
+
+Reuse existing patterns before introducing new ones.
+
+---
+
+## Step 3
+
+Identify the owning feature.
+
+Never create a new folder without checking if the feature already exists.
+
+---
+
+## Step 4
+
+Implement using existing architecture.
+
+Avoid introducing new abstractions unless clearly justified.
+
+---
+
+## Step 5
+
+Review.
+
+Ask:
+
+* Does this duplicate existing code?
+* Is this the simplest solution?
+* Is this consistent with the project?
+
+---
+
+# Decision Rules
+
+When unsure:
+
+Prefer:
+
+Simple
+
+↓
+
+Explicit
+
+↓
+
+Consistent
+
+Avoid:
+
+Generic
+
+↓
+
+Abstract
+
+↓
+
+Magic
+
+---
+
+# Definition of Done
+
+A feature is complete when:
+
+* Types are correct
+* Validation exists
+* Authentication respected
+* Authorization respected
+* Loading state handled
+* Error state handled
+* Empty state handled
+* Queries invalidated correctly
+* No duplicated business logic
+* No unnecessary abstractions
+* Feature boundaries respected
+* Existing architecture preserved
+
+---
+
+# Golden Rules
+
+Routes orchestrate.
+
+Components render.
+
+Features own business logic.
+
+Server owns truth.
+
+Database owns data.
+
+Types flow end-to-end.
+
+Optimize for the next engineer, not the current sprint.
+
 <!-- intent-skills:start -->
 # TanStack Intent - before editing files, run the matching guidance command.
 tanstackIntent:

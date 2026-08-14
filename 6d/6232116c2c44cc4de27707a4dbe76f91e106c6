@@ -1,0 +1,30 @@
+src/lib/auth.ts
+  h_c8a1da106d576c 2,4-5,8-15,19-22
+  h_c8a1da106d576c 23
+src/db/schema.ts
+  h_c8a1da106d576c 1-2,4-61,63-93
+  h_c8a1da106d576c 62
+AGENTS.md
+  h_c8a1da106d576c 1-713
+drizzle/0000_perfect_captain_flint.sql
+  h_c8a1da106d576c 1-53
+drizzle/meta/0000_snapshot.json
+  h_c8a1da106d576c 1-374
+drizzle/meta/_journal.json
+  h_c8a1da106d576c 1-13
+package.json
+  h_c8a1da106d576c 24
+pnpm-lock.yaml
+  h_c8a1da106d576c 11-13,5408,5410-5422,5427,5429-5436,5441,5443,5446,5448,5451,5453,5456,5458,7860-7865
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6d6232116c2c44cc4de27707a4dbe76f91e106c6",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

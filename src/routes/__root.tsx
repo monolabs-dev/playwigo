@@ -6,7 +6,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
-import { ModeToggle } from '#/components/mode-toggle.tsx'
 import { ThemeProvider } from '#/components/theme-provider.tsx'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
@@ -29,7 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Playwigo',
       },
     ],
     links: [
@@ -50,9 +49,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
-          <header className="fixed top-4 right-4 z-50">
-            <ModeToggle />
-          </header>
           {children}
           <TanStackDevtools
             config={{

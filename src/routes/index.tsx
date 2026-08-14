@@ -1,14 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: Home })
+import { LandingPage } from '#/features/landing/components/landing-page.tsx'
 
-function Home() {
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
-    </div>
-  )
-}
+export const Route = createFileRoute('/')({
+  component: LandingPage,
+  head: () => ({
+    meta: [
+      { title: 'Playwigo — Playwright on the go' },
+      {
+        name: 'description',
+        content:
+          'Create, manage, and run Playwright test cases with ease. Organize your projects, track features, and automate your testing workflow.',
+      },
+    ],
+  }),
+})

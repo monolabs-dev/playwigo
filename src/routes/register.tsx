@@ -1,11 +1,11 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { SignInPage } from '#/features/auth/components/sign-in-page.tsx'
+import { SignUpPage } from '#/features/auth/components/sign-up-page.tsx'
 import { authSearchSchema } from '#/features/auth/schemas/credentials.ts'
 import { getSession } from '#/features/auth/server/session.ts'
 import { getSafeRedirect } from '#/features/auth/utils/safe-redirect.ts'
 
-export const Route = createFileRoute('/login')({
+export const Route = createFileRoute('/register')({
   validateSearch: authSearchSchema,
   beforeLoad: async ({ search }) => {
     const session = await getSession()
@@ -14,16 +14,16 @@ export const Route = createFileRoute('/login')({
       throw redirect({ href: getSafeRedirect(search.redirect) })
     }
   },
-  component: LoginRoute,
+  component: RegisterRoute,
   head: () => ({
-    meta: [{ title: 'Sign in — Playwigo' }],
+    meta: [{ title: 'Create account — Playwigo' }],
   }),
 })
 
-function LoginRoute() {
+function RegisterRoute() {
   const { redirect: redirectTo, error } = Route.useSearch()
 
   return (
-    <SignInPage redirectTo={getSafeRedirect(redirectTo)} oauthError={error} />
+    <SignUpPage redirectTo={getSafeRedirect(redirectTo)} oauthError={error} />
   )
 }

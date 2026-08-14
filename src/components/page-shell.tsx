@@ -21,7 +21,7 @@ export function PageAtmosphere() {
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="relative isolate min-h-svh overflow-x-hidden bg-background text-foreground">
+    <div className="relative isolate flex min-h-svh flex-col overflow-x-hidden bg-background text-foreground">
       <PageAtmosphere />
       {children}
     </div>

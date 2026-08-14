@@ -7,6 +7,7 @@ import { cn } from '#/lib/utils.ts'
 import { features, steps } from '#/features/landing/content.ts'
 import { TestRunnerPreview } from '#/features/landing/components/test-runner-preview.tsx'
 import { PageShell } from '#/components/page-shell.tsx'
+import { AuthHeaderActions } from '#/integrations/better-auth/header-user.tsx'
 
 const ctaClass =
   'h-11 rounded-full px-5 text-[15px] transition-[transform,background-color,box-shadow,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:translate-y-0 active:scale-[0.97]'
@@ -59,16 +60,7 @@ function Header() {
 
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <Button
-            variant="ghost"
-            className={cn(ctaClass, 'hidden h-9 px-3 sm:inline-flex')}
-            asChild
-          >
-            <Link to="/login">Sign In</Link>
-          </Button>
-          <Button className={cn(ctaClass, 'h-9 px-4')} asChild>
-            <Link to="/login">Get Started</Link>
-          </Button>
+          <AuthHeaderActions />
         </div>
       </div>
     </header>
@@ -101,7 +93,7 @@ function Hero() {
 
         <div className="animate-lp-enter mt-8 flex w-full flex-col items-center gap-3 delay-150 sm:w-auto sm:flex-row">
           <Button size="lg" className={ctaClass} asChild>
-            <Link to="/login">
+            <Link to="/register">
               Get Started
               <ArrowRight className="size-4" />
             </Link>
@@ -229,7 +221,7 @@ function CallToAction() {
             Join Playwigo today and start automating your tests in minutes.
           </p>
           <Button size="lg" className={cn(ctaClass, 'mt-8')} asChild>
-            <Link to="/login">
+            <Link to="/register">
               Start Testing Now
               <ArrowRight className="size-4" />
             </Link>

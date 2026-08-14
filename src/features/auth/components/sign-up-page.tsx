@@ -13,13 +13,13 @@ import {
   AuthDivider,
   GoogleSignInButton,
 } from '#/features/auth/components/google-sign-in-button.tsx'
-import { signInSchema } from '#/features/auth/schemas/credentials.ts'
+import { signUpSchema } from '#/features/auth/schemas/credentials.ts'
 import {
   getAuthErrorMessage,
   getOAuthErrorMessage,
 } from '#/features/auth/utils/auth-error.ts'
 
-export function SignInPage({
+export function SignUpPage({
   redirectTo,
   oauthError,
 }: {
@@ -33,17 +33,20 @@ export function SignInPage({
 
   const form = useForm({
     defaultValues: {
+      name: '',
       email: '',
       password: '',
+      confirmPassword: '',
     },
     validators: {
-      onSubmit: signInSchema,
+      onSubmit: signUpSchema,
     },
     onSubmit: async ({ value }) => {
       setError(null)
 
       try {
-        const result = await authClient.signIn.email({
+        const result = await authClient.signUp.email({
+          name: value.name,
           email: value.email,
           password: value.password,
         })
@@ -65,24 +68,24 @@ export function SignInPage({
   return (
     <AuthLayout
       kicker="Playwright on the go"
-      title="Welcome back"
-      description="Sign in to organize projects, features, and test runs."
+      title="Create your account"
+      description="Start automating your tests in minutes."
       footer={
         <p className="text-center text-sm text-muted-foreground">
-          New here?{' '}
+          Already have an account?{' '}
           <Link
-            to="/register"
+            to="/login"
             search={{ redirect: redirectTo === '/' ? undefined : redirectTo }}
             className="font-medium text-foreground underline-offset-4 hover:underline"
           >
-            Create an account
+            Sign in
           </Link>
         </p>
       }
     >
       <GoogleSignInButton
         callbackURL={redirectTo}
-        errorCallbackURL="/login"
+        errorCallbackURL="/register"
         onError={(message) => setError(message || null)}
       />
       <AuthDivider />
@@ -95,6 +98,20 @@ export function SignInPage({
           void form.handleSubmit()
         }}
       >
+        <form.Field name="name">
+          {(field) => (
+            <AuthField
+              label="Name"
+              name={field.name}
+              type="text"
+              autoComplete="name"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={field.handleChange}
+              errors={field.state.meta.errors}
+            />
+          )}
+        </form.Field>
         <form.Field name="email">
           {(field) => (
             <AuthField
@@ -115,7 +132,22 @@ export function SignInPage({
               label="Password"
               name={field.name}
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={field.handleChange}
+              errors={field.state.meta.errors}
+              hint="At least 8 characters."
+            />
+          )}
+        </form.Field>
+        <form.Field name="confirmPassword">
+          {(field) => (
+            <AuthField
+              label="Confirm password"
+              name={field.name}
+              type="password"
+              autoComplete="new-password"
               value={field.state.value}
               onBlur={field.handleBlur}
               onChange={field.handleChange}
@@ -133,7 +165,7 @@ export function SignInPage({
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
             <Button type="submit" className={authCtaClass} disabled={isSubmitting}>
-              {isSubmitting ? 'Signing in…' : 'Sign In'}
+              {isSubmitting ? 'Creating account…' : 'Get Started'}
             </Button>
           )}
         </form.Subscribe>

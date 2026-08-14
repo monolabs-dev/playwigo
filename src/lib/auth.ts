@@ -4,6 +4,9 @@ import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { db } from '#/db'
 import * as schema from '#/db/schema'
 
+const googleClientId = process.env.GOOGLE_CLIENT_ID
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
@@ -15,6 +18,25 @@ export const auth = betterAuth({
   experimental: { joins: true },
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8,
+    autoSignIn: true,
+  },
+  socialProviders: {
+    ...(googleClientId && googleClientSecret
+      ? {
+          google: {
+            clientId: googleClientId,
+            clientSecret: googleClientSecret,
+            prompt: 'select_account',
+          },
+        }
+      : {}),
+  },
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['google'],
+    },
   },
   advanced: {
     database: {

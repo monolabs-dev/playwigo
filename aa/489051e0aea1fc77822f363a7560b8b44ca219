@@ -1,0 +1,72 @@
+src/routes/login.tsx
+  s_99aa45d2b6b6c6::t_6c27e28bd12be3 1-10
+src/styles.css
+  s_99aa45d2b6b6c6::t_8b6bfb5eb3b827 4-7,9-10,15-46,50-80,84-85,87-130,136,139,144
+  s_99aa45d2b6b6c6::t_2958a8f9c85c1a 86
+  s_99aa45d2b6b6c6::t_95d04aa3014c24 8
+  s_99aa45d2b6b6c6::t_63d86b11abfb8f 142-143,145-172,174-185
+src/routeTree.gen.ts
+  s_99aa45d2b6b6c6::t_8b6bfb5eb3b827 13,21-25,34,39,45,50,52-53,58,71-77,90
+src/features/landing/content.ts
+  s_99aa45d2b6b6c6::t_c937bb20291482 1-43
+src/features/auth/components/sign-in-page.tsx
+  s_99aa45d2b6b6c6::t_85d1e2fb6b8032 47
+  s_99aa45d2b6b6c6::t_086bcaf71e23d4 65
+  s_99aa45d2b6b6c6::t_94fa89aca5c51b 1-8,10-46,48-64,66-77,79-134,136-163
+  s_99aa45d2b6b6c6::t_d559cb6fdb7476 135
+  s_99aa45d2b6b6c6::t_8b6bfb5eb3b827 78
+  s_99aa45d2b6b6c6::t_2101c15233b92e 9
+src/features/landing/components/test-runner-preview.tsx
+  s_99aa45d2b6b6c6::t_8b6bfb5eb3b827 106-108
+  s_99aa45d2b6b6c6::t_6187fbdfad9e6d 1-105,109-157
+src/components/page-shell.tsx
+  s_99aa45d2b6b6c6::t_92e8b3772824e5 1-29
+src/features/landing/components/landing-page.tsx
+  s_99aa45d2b6b6c6::t_62cbcf4aa7b7a0 196
+  s_99aa45d2b6b6c6::t_394ff4544b7519 2-8,10-15,17-26,28-34,39-45,50-51,56-61,68-69,71-79,84-89,91,95-103,105-106,108-123,128-131,133-146,148-149,151-172,177-181,183-195,197-214,219-224,226-231,233-234,236-255
+  s_99aa45d2b6b6c6::t_f3be504c3bb279 9
+  s_99aa45d2b6b6c6::t_9d042ee37f652d 225
+  s_99aa45d2b6b6c6::t_b420ed1fb83543 27
+  s_99aa45d2b6b6c6::t_54145151e34986 90
+  s_99aa45d2b6b6c6::t_00622077ef55b7 150
+  s_99aa45d2b6b6c6::t_19e1565e547138 232,235
+  s_99aa45d2b6b6c6::t_bd69b7d0275630 132
+  s_99aa45d2b6b6c6::t_8b6bfb5eb3b827 35-38,46-49,52-55,62-66,80-83,124-127,173-176,215-218
+  s_99aa45d2b6b6c6::t_103d68c6260703 92-94
+  s_99aa45d2b6b6c6::t_ebb5a02de81ff6 104,107
+  s_99aa45d2b6b6c6::t_4712a43cd3cea4 16
+  s_99aa45d2b6b6c6::t_db98415e859e00 67,70
+  s_99aa45d2b6b6c6::t_9b4fbc15f3d576 182
+  s_99aa45d2b6b6c6::t_5f31fd2f55fa00 1
+  s_99aa45d2b6b6c6::t_36b232601f388d 147
+package.json
+  s_99aa45d2b6b6c6::t_218a713b56a613 26
+  s_99aa45d2b6b6c6::t_3e98d8ced06701 29
+src/routes/index.tsx
+  s_99aa45d2b6b6c6::t_de5118febce727 3,5-17
+src/routes/__root.tsx
+  s_99aa45d2b6b6c6::t_f9cb753aa5f965 31
+pnpm-lock.yaml
+  s_99aa45d2b6b6c6::t_398fcfce8069d7 17-19,26-28,1127-1129,1136-1138,5947-5948,5953-5954
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "aa489051e0aea1fc77822f363a7560b8b44ca219",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_99aa45d2b6b6c6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8b136bbf-859c-4420-ab8d-270195d9a187",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

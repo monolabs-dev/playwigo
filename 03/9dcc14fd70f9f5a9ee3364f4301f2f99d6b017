@@ -1,0 +1,29 @@
+AGENTS.md
+  s_8404cb0bdf10ff::t_1d7ab3da2fce4c 1-196
+src/components/ui/dropdown-menu.tsx
+  s_04ad77425805db::t_4ea3dbd4f18b79 1-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "039dcc14fd70f9f5a9ee3364f4301f2f99d6b017",
+  "prompts": {},
+  "sessions": {
+    "s_04ad77425805db": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c8380b37-b974-428b-8037-e74babccf3f6",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_8404cb0bdf10ff": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fa943f2f-0f75-4acb-b001-93793c94e83a",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+src/features/test-accounts/components/test-account-field.tsx
+  s_0267e0ea9d91fb::t_34764387a1823b 1
+  s_0267e0ea9d91fb::t_d69f79dd8d3bab 2-127
+src/features/test-accounts/components/test-account-card.tsx
+  s_0267e0ea9d91fb::t_19053d999f7ced 1-112
+src/features/projects/server/projects.server.ts
+  s_0267e0ea9d91fb::t_bfeb9c5ec0ec02 23-40
+  s_0267e0ea9d91fb::t_7a5eb7c8a3fd24 1
+src/features/dashboard/components/app-sidebar.tsx
+  s_0267e0ea9d91fb::t_badea46b2738c0 34
+  s_0267e0ea9d91fb::t_41af294494a685 1
+  s_0267e0ea9d91fb::t_33562149089489 65-69
+  s_0267e0ea9d91fb::t_413901717a888a 43-44
+src/features/test-accounts/components/test-accounts-page.tsx
+  h_c8a1da106d576c 72
+  s_0267e0ea9d91fb::t_a0f67c3c6a3842 1-71,73-96,98-100,110,112-137,139-172
+  s_0267e0ea9d91fb::t_d15eac8eb4a07e 97,101-109
+  s_0267e0ea9d91fb::t_c4f2d84e33d052 138
+  s_0267e0ea9d91fb::t_2f904edd14e8cf 111
+src/routeTree.gen.ts
+  s_0267e0ea9d91fb::t_17d7d971953da4 19,55-59,72,81,93,99-105,107-114,124,187-193,206,211
+src/features/test-accounts/schemas/test-account.ts
+  s_0267e0ea9d91fb::t_2dbd4c8cace506 59
+  s_0267e0ea9d91fb::t_796fab31421453 1-44,60-81
+  s_0267e0ea9d91fb::t_5d37c72b358fd5 45-58
+src/features/test-accounts/types/test-account.ts
+  s_0267e0ea9d91fb::t_2555f42824d038 1-13
+src/features/test-accounts/components/delete-test-account-dialog.tsx
+  s_0267e0ea9d91fb::t_24378a321ff80a 1-94
+src/features/test-accounts/server/test-accounts.server.ts
+  s_0267e0ea9d91fb::t_f2f888eb76ce92 2-36,38-94,96-120
+  s_0267e0ea9d91fb::t_f3ab49d4f9a6ce 1
+  s_0267e0ea9d91fb::t_67a90d0259bd8e 37
+  s_0267e0ea9d91fb::t_f696f15cdfa679 95
+src/features/test-accounts/server/test-accounts.ts
+  s_0267e0ea9d91fb::t_4281b869a9b403 1-38
+src/features/test-accounts/components/test-account-form.tsx
+  s_0267e0ea9d91fb::t_3fe8adfe741ee9 28-31,37
+  h_c8a1da106d576c 1-2
+  s_0267e0ea9d91fb::t_5263c87f33b17d 14,16
+  s_0267e0ea9d91fb::t_43056ca9ff68e4 88
+  s_0267e0ea9d91fb::t_0336d28cc4be1a 78-87,89-93
+  s_0267e0ea9d91fb::t_4fa6130fedfa94 15
+  s_0267e0ea9d91fb::t_bf752440e70a11 56
+  s_0267e0ea9d91fb::t_54292efe0d28d9 3-13,17-27,32-36,38-44,46-55,57-69,71,73-77,94-233
+  s_0267e0ea9d91fb::t_278e505b4e7cd7 45
+  s_0267e0ea9d91fb::t_2e588ae8fa29a4 70
+  s_0267e0ea9d91fb::t_bc1d985d5dc858 72
+src/features/test-accounts/components/test-account-dialog.tsx
+  s_0267e0ea9d91fb::t_c4e9a691c686a2 1-18,20-26,28-45,80,85-88
+  s_0267e0ea9d91fb::t_9c1bb1448f8206 19,27
+  s_0267e0ea9d91fb::t_4d1f1d9d8b9bfe 46-79,81-84
+src/routes/_app/_shell/test-accounts.tsx
+  s_0267e0ea9d91fb::t_8d4d7bf7a70882 1-10
+src/features/dashboard/components/dashboard-page.tsx
+  s_0267e0ea9d91fb::t_8e61ed460ed3b5 121,127-128,130-155,158
+  s_0267e0ea9d91fb::t_7986f1a7a014da 71
+  s_0267e0ea9d91fb::t_b89d7e94159400 1
+src/features/dashboard/components/app-shell.tsx
+  s_0267e0ea9d91fb::t_8bb8b2707e4099 31-35
+  s_0267e0ea9d91fb::t_08c2bb47fc512a 3
+  s_0267e0ea9d91fb::t_586891d74b27a1 78-79
+  s_0267e0ea9d91fb::t_39aaf7cf94b87b 102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "93c6a29a9362be20342a32def72ffdac8031a6ae",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_0267e0ea9d91fb": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e9349317-6a0f-459a-ae71-95374adf4cb5",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

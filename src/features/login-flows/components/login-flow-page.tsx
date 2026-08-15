@@ -52,20 +52,7 @@ export function LoginFlowPage() {
   }, [loadPage])
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            Login flow
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Define how Playwright signs in before running test cases that use a
-            test account in{' '}
-            <span className="text-foreground">{project.name}</span>.
-          </p>
-        </div>
-      </section>
-
+    <div className="flex flex-1 flex-col gap-6">
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base font-medium">

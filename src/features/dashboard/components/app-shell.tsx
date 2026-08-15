@@ -31,7 +31,8 @@ import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/features': 'Features',
-  '/test-accounts': 'Test accounts',
+  '/authentication/accounts': 'Authentication',
+  '/authentication/login-flow': 'Authentication',
 }
 
 export function AppShell({
@@ -79,7 +80,9 @@ function AppInset({ children }: { children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const pageTitle = pathname.startsWith('/features/')
     ? 'Feature'
-    : PAGE_TITLES[pathname] ?? 'Dashboard'
+    : pathname.startsWith('/authentication')
+      ? 'Authentication'
+      : PAGE_TITLES[pathname] ?? 'Dashboard'
 
   return (
     <SidebarInset>

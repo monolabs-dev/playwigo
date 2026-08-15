@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import type { LinkProps } from '@tanstack/react-router'
 import { CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
 import { useServerFn } from '@tanstack/react-start'
 
@@ -86,7 +87,7 @@ export function DashboardPage() {
           value={0}
           hint="Saved credentials"
           icon={Users}
-          to="/test-accounts"
+          to="/authentication/accounts"
         />
         <StatCard
           label="Pass rate"
@@ -143,7 +144,7 @@ function StatCard({
   hint: string
   icon: typeof FolderKanban
   onClick?: () => void
-  to?: '/features' | '/test-accounts'
+  to?: LinkProps['to']
 }) {
   const content = (
     <Card

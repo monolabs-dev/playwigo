@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Plus, Users } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+import { LogIn, Plus, Users } from 'lucide-react'
 import { useServerFn } from '@tanstack/react-start'
 import { toast } from 'sonner'
 
@@ -66,26 +67,16 @@ export function TestAccountsPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-      <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
-            Test accounts
-          </h1>
-          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            Save login details once and reuse them when writing test cases for{' '}
-            <span className="text-foreground">{project.name}</span>. Pair accounts
-            with the project login flow to sign in automatically before runs.
-          </p>
-        </div>
+    <div className="flex flex-1 flex-col gap-6">
+      <div className="flex justify-start">
         <Button
-          className="self-start transition-transform duration-150 ease-out-strong active:scale-[0.97]"
+          className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
           onClick={openCreateDialog}
         >
           <Plus />
           Add account
         </Button>
-      </section>
+      </div>
 
       {loading ? (
         <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -104,17 +95,32 @@ export function TestAccountsPage() {
                 No test accounts yet
               </CardTitle>
               <CardDescription className="mx-auto max-w-md">
-                Add the credentials Playwright should use for sign-in flows. You
-                can attach an account when creating a test case.
+                Add the credentials Playwright should use for sign-in. Pair them
+                with your{' '}
+                <Link
+                  to="/authentication/login-flow"
+                  className="text-foreground underline-offset-4 hover:underline"
+                >
+                  login flow
+                </Link>{' '}
+                so test cases can sign in automatically before runs.
               </CardDescription>
             </div>
-            <Button
-              className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-              onClick={openCreateDialog}
-            >
-              <Plus />
-              Add your first account
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button variant="outline" asChild>
+                <Link to="/authentication/login-flow">
+                  <LogIn />
+                  Set up login flow
+                </Link>
+              </Button>
+              <Button
+                className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
+                onClick={openCreateDialog}
+              >
+                <Plus />
+                Add your first account
+              </Button>
+            </div>
           </CardContent>
         </Card>
       ) : (

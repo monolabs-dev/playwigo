@@ -52,7 +52,29 @@ This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) an
 
 For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
 
-KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
+KV, D1, R2, Hyperdrive, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
+
+### Hyperdrive (PostgreSQL)
+
+Production database queries go through [Cloudflare Hyperdrive](https://developers.cloudflare.com/hyperdrive/) to reduce latency between Workers and Neon Postgres.
+
+The Worker binding is configured in `wrangler.jsonc`:
+
+```jsonc
+"hyperdrive": [
+  { "binding": "HYPERDRIVE", "id": "<your-hyperdrive-config-id>" }
+]
+```
+
+To create or recreate the config:
+
+```bash
+# Use Neon's direct connection string (not the pooler URL)
+pnpm exec wrangler hyperdrive create playwigo-neon \
+  --connection-string="$DATABASE_URL"
+```
+
+Local development (`pnpm dev`) still uses `DATABASE_URL` from `.env.local` with the Neon HTTP driver when the Hyperdrive binding is unavailable.
 
 
 ## Shadcn
@@ -184,11 +206,11 @@ const getServerTime = createServerFn({
 // Use in a component
 function MyComponent() {
   const [time, setTime] = useState('')
-  
+
   useEffect(() => {
     getServerTime().then(setTime)
   }, [])
-  
+
   return <div>Server time: {time}</div>
 }
 ```

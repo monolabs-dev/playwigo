@@ -13,5 +13,11 @@
       "binding": "SCREENSHOTS",
       "bucket_name": "playwigo"
     }
+  ],
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "59bfa169a036423881a7aca09268c4db"
+    }
   ]
 }

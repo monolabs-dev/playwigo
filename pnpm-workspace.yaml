@@ -1,3 +1,15 @@
+packages:
+  - '.'
+
+# pnpm 10 (Cloudflare Builds) reads onlyBuiltDependencies
+onlyBuiltDependencies:
+  - esbuild
+  - lightningcss
+  - sharp
+  - workerd
+  - better-sqlite3
+
+# pnpm 11+ reads allowBuilds
 allowBuilds:
   esbuild: true
   lightningcss: true

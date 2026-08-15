@@ -1,0 +1,56 @@
+src/features/login-flows/components/login-flow-page.tsx
+  s_54c7c39acf3315::t_cc3665dfbcf936 55
+src/features/test-accounts/components/test-accounts-page.tsx
+  s_54c7c39acf3315::t_09e036a7866147 98-106,109-123
+  h_c8a1da106d576c 71
+  s_54c7c39acf3315::t_fbf113d2b4ad0e 2-3
+  s_54c7c39acf3315::t_48ed3ff6df774c 70,73,79
+src/routeTree.gen.ts
+  s_54c7c39acf3315::t_71bb0b62617f7b 18,24-26,59-64,90-107,131,137-138,140,153-154,156,168,174-175,177,188,194-195,197,210-211,213,224,230-231,233,291-297,333-353,378-395,412,420-421
+src/features/authentication/components/authentication-layout.tsx
+  s_54c7c39acf3315::t_6a2abcbefd3eb9 1-50
+src/features/dashboard/components/app-sidebar.tsx
+  s_54c7c39acf3315::t_0bdaeab35eb05d 32-36
+  s_54c7c39acf3315::t_f4477d7f7eab0b 72-74
+  s_54c7c39acf3315::t_366af96549a346 6
+src/routes/_app/_shell/test-accounts.tsx
+  s_54c7c39acf3315::t_88d75c8b076fa1 1,4-6
+src/features/dashboard/components/dashboard-page.tsx
+  s_54c7c39acf3315::t_0ba605ebbed7cf 3
+  s_54c7c39acf3315::t_924acd025ad861 90
+  s_54c7c39acf3315::t_e7c2a78eb41e47 147
+src/routes/_app/_shell/login-flows.tsx
+  s_54c7c39acf3315::t_7f37d59deeab22 1,4-6
+src/routes/_app/_shell/authentication/route.tsx
+  s_54c7c39acf3315::t_ff43c59a34812b 1-7
+src/routes/_app/_shell/authentication/accounts.tsx
+  s_54c7c39acf3315::t_483b21a4470d45 1-10
+src/routes/_app/_shell/authentication/index.tsx
+  s_54c7c39acf3315::t_0edd5cc993e785 1-7
+src/routes/_app/_shell/authentication/login-flow.tsx
+  s_54c7c39acf3315::t_8dded644b8bc4d 1-12
+src/features/dashboard/components/app-shell.tsx
+  s_54c7c39acf3315::t_a606defc68b8fe 34-35
+  s_54c7c39acf3315::t_dde477339b8292 83-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "95a597b67d62c77e6c769b1a07d6c1995f7cb74e",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_54c7c39acf3315": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bc7ed1f0-b3cf-4a0a-b34f-c75533868908",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

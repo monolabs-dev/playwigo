@@ -1,0 +1,27 @@
+pnpm-workspace.yaml
+  s_45c2ac9f50c1d6::t_6a9c431d762802 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "d8fe650a8deb747bcbc72f2e394cb277966a4c6d",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_45c2ac9f50c1d6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "d94c0796-0d40-4fef-90dc-b202beff0795",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

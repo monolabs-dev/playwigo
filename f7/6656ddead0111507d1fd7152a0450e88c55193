@@ -1,0 +1,76 @@
+src/features/test-cases/schemas/test-run.ts
+  s_a91e51b30b9831::t_062003339ec77b 11-15,18
+src/features/test-cases/components/test-runs-page.tsx
+  s_a91e51b30b9831::t_0eafab89eb3d2b 84-89,91-93,96
+  s_a91e51b30b9831::t_f0de760be37cfe 1-83,90,94-95,97-150
+src/features/test-cases/server/test-runs.server.ts
+  s_a91e51b30b9831::t_aa46c8dc0580c9 1,4-10
+  s_a91e51b30b9831::t_6618bbc77f199b 295-298
+  s_a91e51b30b9831::t_fc807d20084338 325-359
+  s_a91e51b30b9831::t_6b65f0e8ed0802 20-24
+src/features/test-cases/components/test-runs-table.tsx
+  s_a91e51b30b9831::t_e3e2965d2fc1f4 1-12,14-92
+  s_a91e51b30b9831::t_7d43548d462c69 13
+src/features/test-cases/components/test-run-detail-sheet.tsx
+  s_a91e51b30b9831::t_caba9aabd6ccc6 108,115
+  s_a91e51b30b9831::t_33e3559f961a14 1-14,17-20,22-30,32-90,95-107,109-114,116-226
+  s_a91e51b30b9831::t_edd79759e580eb 91-94
+  s_a91e51b30b9831::t_02f80fe33a061e 15
+  s_a91e51b30b9831::t_e5215c4a6fea3f 16
+  s_a91e51b30b9831::t_87dc5cd35785ee 21
+  s_a91e51b30b9831::t_bbd0584129c61c 31
+src/features/test-cases/server/test-cases.ts
+  s_a91e51b30b9831::t_0698d2ef5bc6ad 30
+  s_a91e51b30b9831::t_16c1150bcbcb79 14-18
+  s_a91e51b30b9831::t_0a120e3c4e2a62 87-92
+src/features/test-cases/types/test-case.ts
+  s_a91e51b30b9831::t_372a3869ff03dd 21-35
+src/routes/_app/_shell/test-runs.tsx
+  s_a91e51b30b9831::t_df0cca3ba90f08 1-10
+src/features/test-cases/utils/run-display.ts
+  s_a91e51b30b9831::t_dee29038dc5ef1 1-68
+src/features/dashboard/components/dashboard-page.tsx
+  s_a91e51b30b9831::t_ce68eba1e3e8d1 187,190
+  s_a91e51b30b9831::t_b532c38ab7e127 128-131
+  s_a91e51b30b9831::t_6ebddf6340b821 173,180
+  s_a91e51b30b9831::t_a973e9c421b621 1,23-24,26-33,46-86,94,98,101,104,107-108,112,117,122-127,132-135
+  s_a91e51b30b9831::t_f68622ca0c0a77 17-18
+  s_a91e51b30b9831::t_a4d9719c64c98f 92-93,96-97
+  s_a91e51b30b9831::t_95d215363618e8 202-243
+  s_a91e51b30b9831::t_ecb880a60fe560 25
+  s_a91e51b30b9831::t_e45f1543d84ca7 34-45
+  s_a91e51b30b9831::t_35d90c8d26459f 247,252-313
+  s_a91e51b30b9831::t_c2a4c6fb411527 148,150,153
+  s_a91e51b30b9831::t_ea257097629723 103,105-106,110-111,115-116,119
+src/features/dashboard/components/app-shell.tsx
+  s_a91e51b30b9831::t_b0cdd17afb8822 34
+src/features/test-cases/components/run-status-badge.tsx
+  s_a91e51b30b9831::t_4ca1b0b0e6f078 1-40
+src/features/dashboard/components/app-sidebar.tsx
+  s_a91e51b30b9831::t_8be418bca561ef 37
+  s_a91e51b30b9831::t_a051acbe703c8e 66-77,80-81
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f76656ddead0111507d1fd7152a0450e88c55193",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_a91e51b30b9831": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "33f4e19e-4f30-428f-b624-a781bd9a4f96",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

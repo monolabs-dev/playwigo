@@ -1,12 +1,12 @@
-const FALLBACK = '/'
+export const DEFAULT_POST_AUTH_PATH = '/dashboard'
 
 export function getSafeRedirect(redirect: string | undefined) {
   if (!redirect) {
-    return FALLBACK
+    return DEFAULT_POST_AUTH_PATH
   }
 
   if (!redirect.startsWith('/') || redirect.startsWith('//')) {
-    return FALLBACK
+    return DEFAULT_POST_AUTH_PATH
   }
 
   return redirect

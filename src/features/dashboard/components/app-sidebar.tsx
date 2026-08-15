@@ -1,0 +1,112 @@
+import { Link } from '@tanstack/react-router'
+import {
+  BugPlay,
+  CirclePlay,
+  FolderKanban,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+  Users,
+} from 'lucide-react'
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarRail,
+  SidebarSeparator,
+} from '#/components/ui/sidebar.tsx'
+import { NavUser } from '#/features/dashboard/components/nav-user.tsx'
+import { ProjectSwitcher } from '#/features/dashboard/components/project-switcher.tsx'
+import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
+
+const primaryNav = [
+  { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
+  { title: 'Features', icon: FolderKanban },
+  { title: 'Test cases', icon: ListChecks },
+  { title: 'Test accounts', icon: Users },
+  { title: 'Test runs', icon: CirclePlay },
+] as const
+
+export function AppSidebar({
+  user,
+}: {
+  user: { name: string; email: string; image?: string | null }
+}) {
+  return (
+    <Sidebar variant="inset" collapsible="icon">
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-1.5 group-data-[collapsible=icon]:hidden">
+          <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <BugPlay className="size-3.5" />
+          </span>
+          <span className="text-sm font-semibold tracking-tight">
+            Playwigo
+          </span>
+        </div>
+        <ProjectSwitcher />
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {primaryNav.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  {'href' in item ? (
+                    <SidebarMenuButton asChild isActive tooltip={item.title}>
+                      <Link to={item.href}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  ) : (
+                    <SidebarMenuButton
+                      tooltip={item.title}
+                      onClick={() => comingSoon(item.title)}
+                    >
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  )}
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarSeparator />
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Project</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip="Settings"
+                  onClick={() => comingSoon('Project settings')}
+                >
+                  <Settings />
+                  <span>Settings</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <NavUser user={user} />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  )
+}

@@ -1,0 +1,83 @@
+import { FolderPlus } from 'lucide-react'
+
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from '#/components/ui/command.tsx'
+import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
+import { ProjectMark } from '#/features/dashboard/components/project-mark.tsx'
+import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
+import {
+  healthDotClass,
+  websiteHost,
+} from '#/features/dashboard/utils/project-display.ts'
+
+export function ProjectCommand() {
+  const { projects, project, selectProject, switcherOpen, setSwitcherOpen } =
+    useActiveProject()
+
+  return (
+    <CommandDialog
+      open={switcherOpen}
+      onOpenChange={setSwitcherOpen}
+      title="Switch project"
+      description="Search and switch between projects"
+    >
+      <Command>
+        <CommandInput placeholder="Search projects…" />
+        <CommandList>
+          <CommandEmpty>No project matches that search.</CommandEmpty>
+          <CommandGroup heading="Projects">
+            {projects.map((item, index) => (
+              <CommandItem
+                key={item.id}
+                value={`${item.name} ${item.website}`}
+                data-checked={item.id === project.id}
+                onSelect={() => {
+                  selectProject(item.id)
+                  setSwitcherOpen(false)
+                }}
+              >
+                <ProjectMark id={item.id} name={item.name} />
+                <span className="grid min-w-0 flex-1 leading-tight">
+                  <span className="flex items-center gap-2 truncate">
+                    {item.name}
+                    <span
+                      className={`size-1.5 rounded-full ${healthDotClass(item.health)}`}
+                    />
+                  </span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {websiteHost(item.website)}
+                  </span>
+                </span>
+                {item.id === project.id ? null : (
+                  <CommandShortcut>⌘{index + 1}</CommandShortcut>
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandSeparator />
+          <CommandGroup>
+            <CommandItem
+              value="create new project"
+              onSelect={() => {
+                setSwitcherOpen(false)
+                comingSoon('New project')
+              }}
+            >
+              <FolderPlus />
+              Create project
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </CommandDialog>
+  )
+}

@@ -30,49 +30,54 @@ export function AuthHeaderActions() {
   }
 
   if (session?.user) {
-    const initial = session.user.name?.charAt(0).toUpperCase() || 'U'
+    const initial = session.user.name.charAt(0).toUpperCase() || 'U'
 
     return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            className="h-9 gap-2 rounded-full pl-1 pr-3"
-          >
-            {session.user.image ? (
-              <img
-                src={session.user.image}
-                alt=""
-                className="size-7 rounded-full object-cover"
-              />
-            ) : (
-              <span className="flex size-7 items-center justify-center rounded-full bg-primary/15 font-heading text-xs font-semibold text-primary">
-                {initial}
+      <div className="flex items-center gap-2">
+        <Button variant="outline" className="h-9 rounded-full px-3" asChild>
+          <Link to="/dashboard">Dashboard</Link>
+        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="h-9 gap-2 rounded-full pl-1 pr-3"
+            >
+              {session.user.image ? (
+                <img
+                  src={session.user.image}
+                  alt=""
+                  className="size-7 rounded-full object-cover"
+                />
+              ) : (
+                <span className="flex size-7 items-center justify-center rounded-full bg-primary/15 font-heading text-xs font-semibold text-primary">
+                  {initial}
+                </span>
+              )}
+              <span className="max-w-28 truncate text-sm font-medium">
+                {session.user.name}
               </span>
-            )}
-            <span className="max-w-28 truncate text-sm font-medium">
-              {session.user.name}
-            </span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel className="font-normal">
-            <p className="truncate text-sm font-medium text-foreground">
-              {session.user.name}
-            </p>
-            <p className="truncate text-xs">{session.user.email}</p>
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => {
-              void authClient.signOut().then(() => navigate({ to: '/' }))
-            }}
-          >
-            <LogOut className="size-4" />
-            Sign out
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel className="font-normal">
+              <p className="truncate text-sm font-medium text-foreground">
+                {session.user.name}
+              </p>
+              <p className="truncate text-xs">{session.user.email}</p>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                void authClient.signOut().then(() => navigate({ to: '/' }))
+              }}
+            >
+              <LogOut className="size-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     )
   }
 

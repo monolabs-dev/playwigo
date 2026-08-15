@@ -18,6 +18,7 @@ import {
   getAuthErrorMessage,
   getOAuthErrorMessage,
 } from '#/features/auth/utils/auth-error.ts'
+import { DEFAULT_POST_AUTH_PATH } from '#/features/auth/utils/safe-redirect.ts'
 
 export function SignUpPage({
   redirectTo,
@@ -75,7 +76,10 @@ export function SignUpPage({
           Already have an account?{' '}
           <Link
             to="/login"
-            search={{ redirect: redirectTo === '/' ? undefined : redirectTo }}
+            search={{
+              redirect:
+                redirectTo === DEFAULT_POST_AUTH_PATH ? undefined : redirectTo,
+            }}
             className="font-medium text-foreground underline-offset-4 hover:underline"
           >
             Sign in
@@ -164,7 +168,11 @@ export function SignUpPage({
 
         <form.Subscribe selector={(state) => state.isSubmitting}>
           {(isSubmitting) => (
-            <Button type="submit" className={authCtaClass} disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className={authCtaClass}
+              disabled={isSubmitting}
+            >
               {isSubmitting ? 'Creating account…' : 'Get Started'}
             </Button>
           )}

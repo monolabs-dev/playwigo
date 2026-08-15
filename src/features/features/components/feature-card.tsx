@@ -1,14 +1,15 @@
 import {
   CirclePlay,
   ListChecks,
+  Loader2,
   MoreHorizontal,
   Pencil,
   Trash2,
 } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
-import { toast } from 'sonner'
+import { useServerFn } from '@tanstack/react-start'
+import { useCallback } from 'react'
 
-import { Badge } from '#/components/ui/badge.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import {
   Card,
@@ -27,6 +28,11 @@ import {
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu.tsx'
 import type { FeatureSummary } from '#/features/features/types/feature.ts'
+import { useRunAllTestCases } from '#/features/test-cases/hooks/use-run-all-test-cases.ts'
+import {
+  listTestCases,
+  runTestCase,
+} from '#/features/test-cases/server/test-cases.ts'
 import { cn } from '#/lib/utils.ts'
 
 function passPercent(feature: FeatureSummary) {
@@ -44,23 +50,36 @@ export function FeatureCard({
   index,
   onEdit,
   onDelete,
+  onRunComplete,
 }: {
   feature: FeatureSummary
   index: number
   onEdit: (feature: FeatureSummary) => void
   onDelete: (feature: FeatureSummary) => void
+  onRunComplete?: () => void
 }) {
-  const caseLabel =
-    feature.testCaseCount === 1
-      ? '1 test case'
-      : `${feature.testCaseCount} test cases`
+  const listCasesFn = useServerFn(listTestCases)
+  const runCaseFn = useServerFn(runTestCase)
+
+  const refreshTestCases = useCallback(async () => {
+    return listCasesFn({ data: { featureId: feature.id } })
+  }, [feature.id, listCasesFn])
+
+  const { runningAll, runAll } = useRunAllTestCases({
+    runCaseFn,
+    refreshTestCases,
+  })
+
   const percent = passPercent(feature)
   const hasCases = feature.testCaseCount > 0
+  const canRunAll = feature.runnableTestCaseCount > 0
 
-  function handleRunAll() {
-    toast.info('Run queued', {
-      description: `All test cases in “${feature.name}” will run here soon.`,
-    })
+  async function handleRunAll() {
+    const testCases = await refreshTestCases()
+    const didRun = await runAll(feature.name, testCases)
+    if (didRun) {
+      onRunComplete?.()
+    }
   }
 
   return (
@@ -151,10 +170,10 @@ export function FeatureCard({
           variant="outline"
           size="sm"
           className="w-full transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-          disabled={!hasCases}
-          onClick={handleRunAll}
+          disabled={!canRunAll || runningAll}
+          onClick={() => void handleRunAll()}
         >
-          <CirclePlay />
+          {runningAll ? <Loader2 className="animate-spin" /> : <CirclePlay />}
           Run all
         </Button>
         <Button

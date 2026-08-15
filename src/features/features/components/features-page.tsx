@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { FolderKanban, Plus } from 'lucide-react'
+import { useRouterState } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { toast } from 'sonner'
 
@@ -20,6 +21,7 @@ import type { FeatureSummary } from '#/features/features/types/feature.ts'
 
 export function FeaturesPage() {
   const { project } = useActiveProject()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
   const listFn = useServerFn(listFeatures)
   const [features, setFeatures] = useState<FeatureSummary[]>([])
   const [loading, setLoading] = useState(true)
@@ -47,8 +49,10 @@ export function FeaturesPage() {
   }, [listFn, project.id])
 
   useEffect(() => {
-    void loadFeatures()
-  }, [loadFeatures])
+    if (pathname === '/features' || pathname === '/features/') {
+      void loadFeatures()
+    }
+  }, [loadFeatures, pathname])
 
   function openCreateDialog() {
     setDialogMode('create')
@@ -127,6 +131,7 @@ export function FeaturesPage() {
               index={index}
               onEdit={openEditDialog}
               onDelete={openDeleteDialog}
+              onRunComplete={() => void loadFeatures()}
             />
           ))}
         </section>

@@ -10,4 +10,5 @@ export type Feature = {
 export type FeatureSummary = Feature & {
   testCaseCount: number
   passingTestCaseCount: number
+  runnableTestCaseCount: number
 }

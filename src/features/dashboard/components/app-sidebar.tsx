@@ -34,7 +34,7 @@ const primaryNav = [
     icon: KeyRound,
     href: '/authentication/accounts' as const,
   },
-  { title: 'Test runs', icon: CirclePlay },
+  { title: 'Test runs', icon: CirclePlay, href: '/test-runs' as const },
 ] as const
 
 export function AppSidebar({
@@ -63,32 +63,22 @@ export function AppSidebar({
             <SidebarMenu>
               {primaryNav.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  {'href' in item ? (
-                    <SidebarMenuButton
-                      asChild
-                      isActive={
-                        item.href === '/features'
-                          ? pathname.startsWith('/features')
-                          : item.href === '/authentication/accounts'
-                            ? pathname.startsWith('/authentication')
-                            : pathname === item.href
-                      }
-                      tooltip={item.title}
-                    >
-                      <Link to={item.href}>
-                        <item.icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  ) : (
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      onClick={() => comingSoon(item.title)}
-                    >
+                  <SidebarMenuButton
+                    asChild
+                    isActive={
+                      item.href === '/features'
+                        ? pathname.startsWith('/features')
+                        : item.href === '/authentication/accounts'
+                          ? pathname.startsWith('/authentication')
+                          : pathname === item.href
+                    }
+                    tooltip={item.title}
+                  >
+                    <Link to={item.href}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  )}
+                    </Link>
+                  </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

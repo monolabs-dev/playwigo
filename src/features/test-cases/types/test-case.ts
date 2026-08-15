@@ -18,6 +18,21 @@ export type TestCaseSummary = {
 
 export type TestRunStepStatus = 'pending' | 'running' | 'passed' | 'failed'
 
+export type TestRunSummary = {
+  id: string
+  status: TestRunStatus
+  durationMs: number | null
+  errorMessage: string | null
+  startedAt: Date | null
+  completedAt: Date | null
+  createdAt: Date
+  testCaseId: string
+  testCaseName: string
+  featureId: string
+  featureName: string
+  testAccountName: string | null
+}
+
 export type TestCaseLoginPrelude = {
   stepCount: number
   testAccountName: string | null

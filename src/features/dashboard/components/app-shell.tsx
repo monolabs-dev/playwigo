@@ -31,6 +31,7 @@ import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/features': 'Features',
+  '/test-runs': 'Test runs',
   '/authentication/accounts': 'Authentication',
   '/authentication/login-flow': 'Authentication',
 }

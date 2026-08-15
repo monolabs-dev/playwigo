@@ -1,7 +1,13 @@
-import { and, asc, eq, inArray } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray } from 'drizzle-orm'
 
 import { db } from '#/db/index.ts'
-import { testRunSteps, testRuns } from '#/db/schema.ts'
+import {
+  features,
+  testAccounts,
+  testCases,
+  testRunSteps,
+  testRuns,
+} from '#/db/schema.ts'
 import {
   executeTestCaseSteps,
 } from '#/features/test-cases/server/execute-test-case-steps.ts'
@@ -11,7 +17,11 @@ import {
   listOwnedTestCaseStepDefinitions,
   requireOwnedTestCase,
 } from '#/features/test-cases/server/test-cases.server.ts'
-import type { TestRunStatus } from '#/features/test-cases/types/test-case.ts'
+import type {
+  TestRunStatus,
+  TestRunSummary,
+} from '#/features/test-cases/types/test-case.ts'
+import { requireUserProject } from '#/features/projects/server/projects.server.ts'
 import { resolveLoginPreludeSteps } from '#/features/login-flows/server/login-flows.server.ts'
 import { scheduleBackgroundWork } from '#/server/cloudflare/execution-context.ts'
 
@@ -282,6 +292,10 @@ export async function getOwnedTestRunStatus(testRunId: string) {
     .select({
       testCaseStepId: testRunSteps.testCaseStepId,
       sortOrder: testRunSteps.sortOrder,
+      action: testRunSteps.action,
+      selector: testRunSteps.selector,
+      selectorType: testRunSteps.selectorType,
+      value: testRunSteps.value,
       status: testRunSteps.status,
       durationMs: testRunSteps.durationMs,
       errorMessage: testRunSteps.errorMessage,
@@ -307,4 +321,39 @@ export async function getOwnedTestRunStatus(testRunId: string) {
 
 export async function runOwnedTestCase(testCaseId: string) {
   return startOwnedTestCaseRun(testCaseId)
+}
+
+export async function listProjectTestRuns(
+  projectId: string,
+  limit?: number,
+): Promise<TestRunSummary[]> {
+  await requireUserProject(projectId)
+
+  const query = db
+    .select({
+      id: testRuns.id,
+      status: testRuns.status,
+      durationMs: testRuns.durationMs,
+      errorMessage: testRuns.errorMessage,
+      startedAt: testRuns.startedAt,
+      completedAt: testRuns.completedAt,
+      createdAt: testRuns.createdAt,
+      testCaseId: testCases.id,
+      testCaseName: testCases.name,
+      featureId: features.id,
+      featureName: features.name,
+      testAccountName: testAccounts.name,
+    })
+    .from(testRuns)
+    .innerJoin(testCases, eq(testRuns.testCaseId, testCases.id))
+    .innerJoin(features, eq(testCases.featureId, features.id))
+    .leftJoin(testAccounts, eq(testRuns.testAccountId, testAccounts.id))
+    .where(eq(features.projectId, projectId))
+    .orderBy(desc(testRuns.createdAt))
+
+  if (limit !== undefined) {
+    return query.limit(limit)
+  }
+
+  return query
 }

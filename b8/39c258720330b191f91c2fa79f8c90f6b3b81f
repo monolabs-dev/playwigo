@@ -1,0 +1,95 @@
+src/features/features/components/delete-feature-dialog.tsx
+  s_9e18e7f9c6e367::t_351a4088457ff5 1-100
+src/features/features/schemas/feature.ts
+  s_9e18e7f9c6e367::t_6727148cb8419a 1-51,56-59
+  s_9e18e7f9c6e367::t_25c52c52d2716b 52-55
+src/features/features/components/features-page.tsx
+  s_9e18e7f9c6e367::t_6f3c98e3940533 1-173
+src/routes/_app/_shell/features/$featureId.tsx
+  s_9e18e7f9c6e367::t_35556fa5b034f0 1-10
+src/routes/_app/_shell/features/index.tsx
+  s_9e18e7f9c6e367::t_0e8e19e950f5fa 1-10
+src/features/features/server/features.ts
+  s_9e18e7f9c6e367::t_32a4c3f5d7a792 26-31
+  s_9e18e7f9c6e367::t_cdfc7e51df37b9 1-6,8-12,14-25,32-54
+  s_9e18e7f9c6e367::t_e2c5e05ef63a52 7,13
+src/features/test-cases/types/test-case.ts
+  s_9e18e7f9c6e367::t_e3624794a99475 1-7
+  s_9e18e7f9c6e367::t_3ff12da3b94d04 8-18
+src/features/test-cases/server/test-cases.ts
+  s_9e18e7f9c6e367::t_26f6e91b8bbb78 1-10
+src/features/features/components/feature-dialog.tsx
+  s_9e18e7f9c6e367::t_87b03f9f0473f2 1-86
+src/features/features/types/feature.ts
+  s_9e18e7f9c6e367::t_e044eb01a20fea 1-11,13
+  s_9e18e7f9c6e367::t_ac87842a16194a 12
+src/features/test-cases/server/test-cases.server.ts
+  s_9e18e7f9c6e367::t_f4650f96bb3685 1-51
+src/routes/_app/_shell/features/route.tsx
+  s_9e18e7f9c6e367::t_50788f29bcf391 1-9
+src/features/dashboard/components/app-sidebar.tsx
+  s_9e18e7f9c6e367::t_217838f3ce97d4 31
+  s_9e18e7f9c6e367::t_c64b96248d944a 65-69
+src/features/features/components/feature-form.tsx
+  s_9e18e7f9c6e367::t_b63a40f05ae7bd 1-172
+src/features/features/components/feature-field.tsx
+  s_9e18e7f9c6e367::t_b841e09d2d4dd2 2-99
+  s_9e18e7f9c6e367::t_7673df2982e178 1
+src/features/features/server/features.server.ts
+  s_9e18e7f9c6e367::t_a789f7c97b8239 1,4
+  s_9e18e7f9c6e367::t_8f5279b6a9a5bc 43-59
+  s_9e18e7f9c6e367::t_a14c4d358beaab 2-3,5-42,60-65,101-130,132-151,167-172,174-193
+  s_9e18e7f9c6e367::t_1a11d31038f55a 66-100
+  s_9e18e7f9c6e367::t_7e2272b574d8ce 131
+  s_9e18e7f9c6e367::t_f353ae2592966d 152-166,173
+src/features/features/components/feature-card.tsx
+  h_c8a1da106d576c 6,68,106,137,141,148,151,153-155,157-158,162,164-165,170
+  s_9e18e7f9c6e367::t_601cff045ceb3c 10-17,19-29,31,42-53,59,66-67,69-105,146,173-175
+  s_9e18e7f9c6e367::t_36f05b1b7be6cc 149-150,152,156,159,167-169
+  s_9e18e7f9c6e367::t_4152c60b1d2ac3 1-5,7,9,18,30,32-41,54-58,60-65,107-136,138-140,142-145,147,160-161,163,166,171-172
+  s_9e18e7f9c6e367::t_d18e18681c3a4c 8
+src/features/dashboard/components/app-shell.tsx
+  s_9e18e7f9c6e367::t_74367655591320 33
+  s_9e18e7f9c6e367::t_59f2c0d346ff71 80-82
+src/features/test-cases/schemas/test-case.ts
+  s_9e18e7f9c6e367::t_d3abf03bd75985 1-5
+src/features/dashboard/components/dashboard-page.tsx
+  s_9e18e7f9c6e367::t_b88f9de1043f71 17
+  s_9e18e7f9c6e367::t_e37cf13062d06d 72,75
+  s_9e18e7f9c6e367::t_4568ce956d102c 26-27,30-41
+  s_9e18e7f9c6e367::t_d9a7fdfa6ce568 1,4
+  s_9e18e7f9c6e367::t_3b83351c7301d1 146
+  s_9e18e7f9c6e367::t_13f9f5460e8fc3 82
+  s_9e18e7f9c6e367::t_c9dd13a861bb69 42
+src/features/test-cases/components/test-case-row.tsx
+  s_9e18e7f9c6e367::t_e884fae462ac0e 1,3-94,100-107
+  s_9e18e7f9c6e367::t_6393f09d7d21f9 2
+  s_9e18e7f9c6e367::t_2196ef31c930ee 95-99
+src/routeTree.gen.ts
+  s_9e18e7f9c6e367::t_71e8e6fc46cb02 23,78-81,83,94,105,120,134,145,159,249-254,256,261,263-264,266,268-269
+  s_9e18e7f9c6e367::t_7794e95124edc9 59-62,130,155,222-225
+  s_9e18e7f9c6e367::t_574a5f8c9c74f4 19,22,58,73-77,82,90,95,106,116,121,135,146,160,226-228,243-248,255,260,262,265,267,270-274,276,282
+src/features/features/components/feature-detail-page.tsx
+  s_9e18e7f9c6e367::t_4ac1f478eed198 1-224
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b839c258720330b191f91c2fa79f8c90f6b3b81f",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9e18e7f9c6e367": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ec1e5ac4-c881-4861-9337-3462d0811670",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

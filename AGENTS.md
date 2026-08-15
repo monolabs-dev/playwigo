@@ -911,9 +911,14 @@ tanstackIntent:
 ## Learned User Preferences
 
 - Prefer Bricolage Grotesque for display and headline type; do not use Fraunces.
+- Prefer table layout for test case lists over card layouts.
+- Use shadcn sidebar for the authenticated app shell with strong project-switching UX.
 
 ## Learned Workspace Facts
 
 - Playwigo is a Playwright test-automation product: users organize projects, features, and test cases.
 - Auth is Better Auth with Google OAuth and email/password sign-in and sign-up.
 - Domain model is projects containing features and test accounts, features containing test cases with ordered steps, and test runs recording each execution.
+- Project avatars use the project's website favicon.
+- Test cases are accessed from feature detail pages; there is no separate Test Cases sidebar item.
+- New test account login URL defaults to the project's website URL.

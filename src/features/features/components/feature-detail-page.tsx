@@ -12,51 +12,80 @@ import {
   CardTitle,
 } from '#/components/ui/card.tsx'
 import { Skeleton } from '#/components/ui/skeleton.tsx'
+import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { getFeature } from '#/features/features/server/features.ts'
 import type { FeatureSummary } from '#/features/features/types/feature.ts'
-import { TestCaseRow } from '#/features/test-cases/components/test-case-row.tsx'
+import { DeleteTestCaseDialog } from '#/features/test-cases/components/delete-test-case-dialog.tsx'
+import { TestCaseDialog } from '#/features/test-cases/components/test-case-dialog.tsx'
+import { TestCasesTable } from '#/features/test-cases/components/test-cases-table.tsx'
 import { listTestCases } from '#/features/test-cases/server/test-cases.ts'
 import type { TestCaseSummary } from '#/features/test-cases/types/test-case.ts'
-import { cn } from '#/lib/utils.ts'
-
-function passPercent(feature: FeatureSummary) {
-  if (feature.testCaseCount === 0) {
-    return 0
-  }
-
-  return Math.round(
-    (feature.passingTestCaseCount / feature.testCaseCount) * 100,
-  )
-}
+import { listTestAccounts } from '#/features/test-accounts/server/test-accounts.ts'
+import type { TestAccountSummary } from '#/features/test-accounts/types/test-account.ts'
 
 export function FeatureDetailPage() {
   const { featureId } = useParams({ from: '/_app/_shell/features/$featureId' })
+  const { project } = useActiveProject()
   const getFeatureFn = useServerFn(getFeature)
-  const listFn = useServerFn(listTestCases)
+  const listCasesFn = useServerFn(listTestCases)
+  const listAccountsFn = useServerFn(listTestAccounts)
   const [feature, setFeature] = useState<FeatureSummary | null>(null)
   const [testCases, setTestCases] = useState<TestCaseSummary[]>([])
+  const [testAccounts, setTestAccounts] = useState<TestAccountSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create')
+  const [selectedTestCase, setSelectedTestCase] =
+    useState<TestCaseSummary | null>(null)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [testCaseToDelete, setTestCaseToDelete] =
+    useState<TestCaseSummary | null>(null)
+
+  const refreshFeature = useCallback(async () => {
+    const next = await getFeatureFn({ data: { featureId } })
+    setFeature(next)
+    return next
+  }, [featureId, getFeatureFn])
 
   const loadPage = useCallback(async () => {
     setLoading(true)
 
     try {
-      const [nextFeature, nextCases] = await Promise.all([
+      const [nextFeature, nextCases, nextAccounts] = await Promise.all([
         getFeatureFn({ data: { featureId } }),
-        listFn({ data: { featureId } }),
+        listCasesFn({ data: { featureId } }),
+        listAccountsFn({ data: { projectId: project.id } }),
       ])
       setFeature(nextFeature)
       setTestCases(nextCases)
+      setTestAccounts(nextAccounts)
     } catch {
       toast.error('Unable to load feature')
     } finally {
       setLoading(false)
     }
-  }, [featureId, getFeatureFn, listFn])
+  }, [featureId, getFeatureFn, listAccountsFn, listCasesFn, project.id])
 
   useEffect(() => {
     void loadPage()
   }, [loadPage])
+
+  function openCreateDialog() {
+    setDialogMode('create')
+    setSelectedTestCase(null)
+    setDialogOpen(true)
+  }
+
+  function openEditDialog(testCase: TestCaseSummary) {
+    setDialogMode('edit')
+    setSelectedTestCase(testCase)
+    setDialogOpen(true)
+  }
+
+  function openDeleteDialog(testCase: TestCaseSummary) {
+    setTestCaseToDelete(testCase)
+    setDeleteOpen(true)
+  }
 
   function handleRunAll() {
     if (!feature) {
@@ -68,22 +97,12 @@ export function FeatureDetailPage() {
     })
   }
 
-  function handleAddTestCase() {
-    toast.info('Coming soon', {
-      description: 'Test case creation is on the way.',
-    })
-  }
-
   if (loading) {
     return (
       <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
         <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-24 rounded-xl" />
-        <div className="grid gap-3">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Skeleton key={index} className="h-28 rounded-xl" />
-          ))}
-        </div>
+        <Skeleton className="h-10 w-full max-w-md" />
+        <Skeleton className="h-64 rounded-xl" />
       </div>
     )
   }
@@ -94,7 +113,7 @@ export function FeatureDetailPage() {
         <Button
           variant="ghost"
           size="sm"
-          className="w-fit"
+          className="w-fit transition-transform duration-150 ease-out-strong active:scale-[0.97]"
           asChild
         >
           <Link to="/features">
@@ -107,7 +126,6 @@ export function FeatureDetailPage() {
     )
   }
 
-  const percent = passPercent(feature)
   const hasCases = feature.testCaseCount > 0
 
   return (
@@ -148,44 +166,13 @@ export function FeatureDetailPage() {
             </Button>
             <Button
               className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-              onClick={handleAddTestCase}
+              onClick={openCreateDialog}
             >
               <Plus />
               Add test case
             </Button>
           </div>
         </div>
-
-        <Card size="sm">
-          <CardContent className="space-y-2 pt-4">
-            <div className="flex items-center justify-between gap-2 text-xs">
-              <span className="text-muted-foreground">Pass rate</span>
-              <span className="font-medium tabular-nums">
-                {hasCases ? `${percent}%` : '—'}
-              </span>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-              <div
-                className={cn(
-                  'h-full origin-left rounded-full transition-transform duration-300 ease-out-strong motion-reduce:transition-none',
-                  percent === 100
-                    ? 'bg-emerald-500'
-                    : percent > 0
-                      ? 'bg-primary'
-                      : 'bg-muted-foreground/30',
-                )}
-                style={{
-                  transform: `scaleX(${hasCases ? percent / 100 : 0})`,
-                }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {hasCases
-                ? `${feature.passingTestCaseCount} of ${feature.testCaseCount} test cases passing`
-                : 'No test cases yet.'}
-            </p>
-          </CardContent>
-        </Card>
       </section>
 
       {testCases.length === 0 ? (
@@ -205,7 +192,7 @@ export function FeatureDetailPage() {
             </div>
             <Button
               className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-              onClick={handleAddTestCase}
+              onClick={openCreateDialog}
             >
               <Plus />
               Add your first test case
@@ -213,12 +200,53 @@ export function FeatureDetailPage() {
           </CardContent>
         </Card>
       ) : (
-        <section className="grid gap-3">
-          {testCases.map((testCase, index) => (
-            <TestCaseRow key={testCase.id} testCase={testCase} index={index} />
-          ))}
-        </section>
+        <TestCasesTable
+          testCases={testCases}
+          onRename={openEditDialog}
+          onDelete={openDeleteDialog}
+        />
       )}
+
+      <TestCaseDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        mode={dialogMode}
+        featureId={feature.id}
+        defaultBaseUrl={project.website}
+        testAccounts={testAccounts}
+        testCase={selectedTestCase ?? undefined}
+        onSubmitted={async (saved) => {
+          setTestCases((current) => {
+            const existing = current.find((item) => item.id === saved.id)
+            if (existing) {
+              return current.map((item) =>
+                item.id === saved.id ? saved : item,
+              )
+            }
+            return [saved, ...current]
+          })
+          await refreshFeature()
+          toast.success(
+            dialogMode === 'create' ? 'Test case added' : 'Test case updated',
+            { description: saved.name },
+          )
+        }}
+      />
+
+      <DeleteTestCaseDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        testCase={testCaseToDelete}
+        onDeleted={async (deleted) => {
+          setTestCases((current) =>
+            current.filter((item) => item.id !== deleted.id),
+          )
+          await refreshFeature()
+          toast.success('Test case deleted', {
+            description: deleted.name,
+          })
+        }}
+      />
     </div>
   )
 }

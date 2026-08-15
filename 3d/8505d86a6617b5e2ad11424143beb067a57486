@@ -1,0 +1,51 @@
+src/db/schema.ts
+  s_1ce05b73d66f58::t_03e020a85ec8e4 22,31
+  s_1ce05b73d66f58::t_b28fb6e75be992 260
+  s_1ce05b73d66f58::t_9f62af414601ec 137
+  s_1ce05b73d66f58::t_3f5ff2939fe9e1 14,20
+  s_1ce05b73d66f58::t_16ebd218a0dc86 142-143,158,170,175-219,229-234,238-239,244,246-250,256,263-264
+  s_1ce05b73d66f58::t_414cf75399d8f2 2-13,15-19,21,23-30,32-36
+  s_1ce05b73d66f58::t_5dfc11e1efc230 296,307-308,311,315,324-326,329,332-343,345,347-364
+  s_1ce05b73d66f58::t_3e4daac59402c5 121
+  s_1ce05b73d66f58::t_da2c01c2b55aba 156
+  s_1ce05b73d66f58::t_048887232a9044 110-120,122-136,138-141,144-155,157,159-169,171-174,220-225,227-228,235-237,240-243,245,251-255,257-259,261-262,265-269,273,289-295,297-306,309-310,312-314,316-323,327-328,330-331,344,346
+  s_1ce05b73d66f58::t_00809c06f214d6 226
+AGENTS.md
+  s_1ce05b73d66f58::t_e77aca59171ac7 919
+  s_64363b9ca15ecf::t_6d6e82ab046d2f 910-918
+drizzle/0001_complex_martin_li.sql
+  s_1ce05b73d66f58::t_4856b662d2b7dc 1-106
+drizzle/meta/0001_snapshot.json
+  s_1ce05b73d66f58::t_ded7203a189c47 1-1196
+drizzle/meta/_journal.json
+  s_1ce05b73d66f58::t_e449a01c4faba9 11-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3d8505d86a6617b5e2ad11424143beb067a57486",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_1ce05b73d66f58": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "81a14bf7-69c1-47a5-8508-74ef01c9235a",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_64363b9ca15ecf": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5f7917bb-7d39-4fb7-abe6-d00e655aeba5",
+        "model": "cursor-grok-4.6-high-fast"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

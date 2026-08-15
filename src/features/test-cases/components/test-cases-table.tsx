@@ -12,8 +12,6 @@ import {
   X,
 } from 'lucide-react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { toast } from 'sonner'
-
 import { Badge } from '#/components/ui/badge.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -322,12 +320,14 @@ export function TestCasesTable({
   onRun,
   onRename,
   onViewSteps,
+  onDuplicate,
   onDelete,
 }: {
   testCases: TestCaseSummary[]
   onRun: (testCase: TestCaseSummary) => void
   onRename: (testCase: TestCaseSummary) => void
   onViewSteps: (testCase: TestCaseSummary) => void
+  onDuplicate: (testCase: TestCaseSummary) => void
   onDelete: (testCase: TestCaseSummary) => void
 }) {
   return (
@@ -393,13 +393,7 @@ export function TestCasesTable({
                       <ListTree />
                       View & edit steps
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        toast.info('Coming soon', {
-                          description: 'Duplicate will be available soon.',
-                        })
-                      }
-                    >
+                    <DropdownMenuItem onClick={() => onDuplicate(testCase)}>
                       <Copy />
                       Duplicate
                     </DropdownMenuItem>

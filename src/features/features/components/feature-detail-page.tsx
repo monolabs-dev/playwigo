@@ -19,7 +19,11 @@ import { DeleteTestCaseDialog } from '#/features/test-cases/components/delete-te
 import { TestCaseDialog } from '#/features/test-cases/components/test-case-dialog.tsx'
 import { TestCaseStepsSheet } from '#/features/test-cases/components/test-case-steps-sheet.tsx'
 import { TestCasesTable } from '#/features/test-cases/components/test-cases-table.tsx'
-import { listTestCases, runTestCase } from '#/features/test-cases/server/test-cases.ts'
+import {
+  duplicateTestCase,
+  listTestCases,
+  runTestCase,
+} from '#/features/test-cases/server/test-cases.ts'
 import { useRunAllTestCases } from '#/features/test-cases/hooks/use-run-all-test-cases.ts'
 import type {
   TestCaseSummary,
@@ -38,6 +42,7 @@ export function FeatureDetailPage() {
   const { project } = useActiveProject()
   const getFeatureFn = useServerFn(getFeature)
   const listCasesFn = useServerFn(listTestCases)
+  const duplicateCaseFn = useServerFn(duplicateTestCase)
   const runCaseFn = useServerFn(runTestCase)
   const listAccountsFn = useServerFn(listTestAccounts)
   const [feature, setFeature] = useState<FeatureSummary | null>(null)
@@ -207,6 +212,19 @@ export function FeatureDetailPage() {
     await refreshFeature()
   }
 
+  async function handleDuplicateTestCase(testCase: TestCaseSummary) {
+    try {
+      const duplicated = await duplicateCaseFn({ data: { id: testCase.id } })
+      setTestCases((current) => [duplicated, ...current])
+      await refreshFeature()
+      toast.success('Test case duplicated', {
+        description: duplicated.name,
+      })
+    } catch {
+      toast.error('Unable to duplicate test case')
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
@@ -315,6 +333,7 @@ export function FeatureDetailPage() {
           onRun={(testCase) => void handleRunTestCase(testCase)}
           onRename={openEditDialog}
           onViewSteps={openStepsSheet}
+          onDuplicate={(testCase) => void handleDuplicateTestCase(testCase)}
           onDelete={openDeleteDialog}
         />
       )}

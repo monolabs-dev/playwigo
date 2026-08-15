@@ -200,6 +200,48 @@ export async function updateTestCase(input: UpdateTestCaseValues) {
   return getTestCaseSummary(testCase.id)
 }
 
+const COPY_PREFIX = 'Copy of '
+
+function duplicateTestCaseName(originalName: string) {
+  const next = `${COPY_PREFIX}${originalName}`
+
+  if (next.length <= 120) {
+    return next
+  }
+
+  return `${COPY_PREFIX}${originalName.slice(0, 120 - COPY_PREFIX.length)}`
+}
+
+export async function duplicateOwnedTestCase(id: string) {
+  const owned = await requireOwnedTestCase(id)
+  const steps = await listOwnedTestCaseStepDefinitions(id)
+
+  const [testCase] = await db
+    .insert(testCases)
+    .values({
+      featureId: owned.featureId,
+      name: duplicateTestCaseName(owned.name),
+      baseUrl: owned.baseUrl,
+      testAccountId: owned.testAccountId,
+    })
+    .returning({ id: testCases.id })
+
+  if (steps.length > 0) {
+    await db.insert(testCaseSteps).values(
+      steps.map((step) => ({
+        testCaseId: testCase.id,
+        sortOrder: step.sortOrder,
+        action: step.action,
+        selector: step.selector,
+        selectorType: step.selectorType,
+        value: step.value,
+      })),
+    )
+  }
+
+  return getTestCaseSummary(testCase.id)
+}
+
 export async function removeTestCase(id: string) {
   const owned = await requireOwnedTestCase(id)
 

@@ -3,6 +3,7 @@ import { createServerFn } from '@tanstack/react-start'
 import {
   createTestCaseSchema,
   deleteTestCaseSchema,
+  duplicateTestCaseSchema,
   listFeatureTestCasesSchema,
   updateTestCaseSchema,
 } from '#/features/test-cases/schemas/test-case.ts'
@@ -12,6 +13,7 @@ import {
 } from '#/features/test-cases/schemas/test-case-step.ts'
 import { runTestCaseSchema, getTestRunStatusSchema } from '#/features/test-cases/schemas/test-run.ts'
 import {
+  duplicateOwnedTestCase,
   insertTestCase,
   listFeatureTestCases,
   listOwnedTestCaseSteps,
@@ -46,6 +48,12 @@ export const deleteTestCase = createServerFn({ method: 'POST' })
   .validator(deleteTestCaseSchema)
   .handler(async ({ data }) => {
     return removeTestCase(data.id)
+  })
+
+export const duplicateTestCase = createServerFn({ method: 'POST' })
+  .validator(duplicateTestCaseSchema)
+  .handler(async ({ data }) => {
+    return duplicateOwnedTestCase(data.id)
   })
 
 export const listTestCaseSteps = createServerFn({ method: 'GET' })

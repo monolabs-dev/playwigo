@@ -59,6 +59,10 @@ export const deleteTestCaseSchema = z.object({
   id: z.string().min(1),
 })
 
+export const duplicateTestCaseSchema = z.object({
+  id: z.string().min(1),
+})
+
 export type CreateTestCaseInput = z.input<typeof createTestCaseSchema>
 export type CreateTestCaseValues = z.output<typeof createTestCaseSchema>
 export type UpdateTestCaseInput = z.input<typeof updateTestCaseSchema>

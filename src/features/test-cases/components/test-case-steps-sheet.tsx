@@ -115,7 +115,7 @@ export function TestCaseStepsSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full gap-0 overflow-hidden p-0 sm:max-w-xl">
+      <SheetContent className="gap-0 overflow-hidden p-0 data-[side=right]:w-2/5 data-[side=right]:max-w-none data-[side=right]:sm:max-w-none">
         <SheetHeader className="border-b pr-12">
           <SheetTitle className="font-display text-xl font-semibold tracking-tight">
             {testCase?.name ?? 'Test case steps'}

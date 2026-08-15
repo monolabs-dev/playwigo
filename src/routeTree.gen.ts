@@ -16,8 +16,11 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AppShellRouteRouteImport } from './routes/_app/_shell/route'
 import { Route as AppOnboardRouteImport } from './routes/_app/onboard'
 import { Route as AppShellDashboardRouteImport } from './routes/_app/_shell/dashboard'
+import { Route as AppShellFeaturesRouteRouteImport } from './routes/_app/_shell/features/route'
 import { Route as AppShellTestAccountsRouteImport } from './routes/_app/_shell/test-accounts'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppShellFeaturesIndexRouteImport } from './routes/_app/_shell/features/index'
+import { Route as AppShellFeaturesFeatureIdRouteImport } from './routes/_app/_shell/features/$featureId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +55,11 @@ const AppShellDashboardRoute = AppShellDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppShellRouteRoute,
 } as any)
+const AppShellFeaturesRouteRoute = AppShellFeaturesRouteRouteImport.update({
+  id: '/features',
+  path: '/features',
+  getParentRoute: () => AppShellRouteRoute,
+} as any)
 const AppShellTestAccountsRoute = AppShellTestAccountsRouteImport.update({
   id: '/test-accounts',
   path: '/test-accounts',
@@ -62,15 +70,29 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppShellFeaturesIndexRoute = AppShellFeaturesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppShellFeaturesRouteRoute,
+} as any)
+const AppShellFeaturesFeatureIdRoute =
+  AppShellFeaturesFeatureIdRouteImport.update({
+    id: '/$featureId',
+    path: '/$featureId',
+    getParentRoute: () => AppShellFeaturesRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/onboard': typeof AppOnboardRoute
+  '/features': typeof AppShellFeaturesRouteRouteWithChildren
   '/dashboard': typeof AppShellDashboardRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/features/': typeof AppShellFeaturesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -80,6 +102,8 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppShellDashboardRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/features': typeof AppShellFeaturesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,9 +113,12 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/_app/_shell': typeof AppShellRouteRouteWithChildren
   '/_app/onboard': typeof AppOnboardRoute
+  '/_app/_shell/features': typeof AppShellFeaturesRouteRouteWithChildren
   '/_app/_shell/dashboard': typeof AppShellDashboardRoute
   '/_app/_shell/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/_app/_shell/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/_app/_shell/features/': typeof AppShellFeaturesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,9 +127,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/onboard'
+    | '/features'
     | '/dashboard'
     | '/test-accounts'
     | '/api/auth/$'
+    | '/features/$featureId'
+    | '/features/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -112,6 +142,8 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/test-accounts'
     | '/api/auth/$'
+    | '/features/$featureId'
+    | '/features'
   id:
     | '__root__'
     | '/'
@@ -120,9 +152,12 @@ export interface FileRouteTypes {
     | '/register'
     | '/_app/_shell'
     | '/_app/onboard'
+    | '/_app/_shell/features'
     | '/_app/_shell/dashboard'
     | '/_app/_shell/test-accounts'
     | '/api/auth/$'
+    | '/_app/_shell/features/$featureId'
+    | '/_app/_shell/features/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShellDashboardRouteImport
       parentRoute: typeof AppShellRouteRoute
     }
+    '/_app/_shell/features': {
+      id: '/_app/_shell/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof AppShellFeaturesRouteRouteImport
+      parentRoute: typeof AppShellRouteRoute
+    }
     '/_app/_shell/test-accounts': {
       id: '/_app/_shell/test-accounts'
       path: '/test-accounts'
@@ -198,15 +240,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/_shell/features/': {
+      id: '/_app/_shell/features/'
+      path: '/'
+      fullPath: '/features/'
+      preLoaderRoute: typeof AppShellFeaturesIndexRouteImport
+      parentRoute: typeof AppShellFeaturesRouteRoute
+    }
+    '/_app/_shell/features/$featureId': {
+      id: '/_app/_shell/features/$featureId'
+      path: '/$featureId'
+      fullPath: '/features/$featureId'
+      preLoaderRoute: typeof AppShellFeaturesFeatureIdRouteImport
+      parentRoute: typeof AppShellFeaturesRouteRoute
+    }
   }
 }
 
+interface AppShellFeaturesRouteRouteChildren {
+  AppShellFeaturesFeatureIdRoute: typeof AppShellFeaturesFeatureIdRoute
+  AppShellFeaturesIndexRoute: typeof AppShellFeaturesIndexRoute
+}
+
+const AppShellFeaturesRouteRouteChildren: AppShellFeaturesRouteRouteChildren = {
+  AppShellFeaturesFeatureIdRoute: AppShellFeaturesFeatureIdRoute,
+  AppShellFeaturesIndexRoute: AppShellFeaturesIndexRoute,
+}
+
+const AppShellFeaturesRouteRouteWithChildren =
+  AppShellFeaturesRouteRoute._addFileChildren(
+    AppShellFeaturesRouteRouteChildren,
+  )
+
 interface AppShellRouteRouteChildren {
+  AppShellFeaturesRouteRoute: typeof AppShellFeaturesRouteRouteWithChildren
   AppShellDashboardRoute: typeof AppShellDashboardRoute
   AppShellTestAccountsRoute: typeof AppShellTestAccountsRoute
 }
 
 const AppShellRouteRouteChildren: AppShellRouteRouteChildren = {
+  AppShellFeaturesRouteRoute: AppShellFeaturesRouteRouteWithChildren,
   AppShellDashboardRoute: AppShellDashboardRoute,
   AppShellTestAccountsRoute: AppShellTestAccountsRoute,
 }

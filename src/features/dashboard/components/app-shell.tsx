@@ -30,6 +30,7 @@ import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
+  '/features': 'Features',
   '/test-accounts': 'Test accounts',
 }
 
@@ -76,7 +77,9 @@ function CreateProjectHost() {
 function AppInset({ children }: { children: ReactNode }) {
   const { project, setSwitcherOpen } = useActiveProject()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
-  const pageTitle = PAGE_TITLES[pathname] ?? 'Dashboard'
+  const pageTitle = pathname.startsWith('/features/')
+    ? 'Feature'
+    : PAGE_TITLES[pathname] ?? 'Dashboard'
 
   return (
     <SidebarInset>

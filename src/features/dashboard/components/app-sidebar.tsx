@@ -4,7 +4,6 @@ import {
   CirclePlay,
   FolderKanban,
   LayoutDashboard,
-  ListChecks,
   Settings,
   Users,
 } from 'lucide-react'
@@ -29,8 +28,7 @@ import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 const primaryNav = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
-  { title: 'Features', icon: FolderKanban },
-  { title: 'Test cases', icon: ListChecks },
+  { title: 'Features', icon: FolderKanban, href: '/features' as const },
   { title: 'Test accounts', icon: Users, href: '/test-accounts' as const },
   { title: 'Test runs', icon: CirclePlay },
 ] as const
@@ -64,7 +62,11 @@ export function AppSidebar({
                   {'href' in item ? (
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname === item.href}
+                      isActive={
+                        item.href === '/features'
+                          ? pathname.startsWith('/features')
+                          : pathname === item.href
+                      }
                       tooltip={item.title}
                     >
                       <Link to={item.href}>

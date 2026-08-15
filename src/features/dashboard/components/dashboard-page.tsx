@@ -1,5 +1,7 @@
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
+import { useServerFn } from '@tanstack/react-start'
 
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -12,6 +14,7 @@ import {
 import { authClient } from '#/lib/auth-client.ts'
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
+import { countFeatures } from '#/features/features/server/features.ts'
 import {
   healthDotClass,
   healthLabel,
@@ -20,7 +23,22 @@ import {
 export function DashboardPage() {
   const { project } = useActiveProject()
   const { data: session } = authClient.useSession()
+  const countFn = useServerFn(countFeatures)
+  const [featureCount, setFeatureCount] = useState(0)
   const firstName = session?.user.name.split(' ')[0] ?? 'there'
+
+  const loadFeatureCount = useCallback(async () => {
+    try {
+      const count = await countFn({ data: { projectId: project.id } })
+      setFeatureCount(count)
+    } catch {
+      setFeatureCount(0)
+    }
+  }, [countFn, project.id])
+
+  useEffect(() => {
+    void loadFeatureCount()
+  }, [loadFeatureCount])
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
@@ -51,17 +69,17 @@ export function DashboardPage() {
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Features"
-          value={0}
+          value={featureCount}
           hint="Coverage groups"
           icon={FolderKanban}
-          onClick={() => comingSoon('Features')}
+          to="/features"
         />
         <StatCard
           label="Test cases"
           value={0}
           hint="Ready to run"
           icon={ListChecks}
-          onClick={() => comingSoon('Test cases')}
+          to="/features"
         />
         <StatCard
           label="Accounts"
@@ -125,7 +143,7 @@ function StatCard({
   hint: string
   icon: typeof FolderKanban
   onClick?: () => void
-  to?: '/test-accounts'
+  to?: '/features' | '/test-accounts'
 }) {
   const content = (
     <Card

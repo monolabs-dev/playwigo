@@ -907,3 +907,13 @@ tanstackIntent:
     run: "pnpm dlx @tanstack/intent@latest load dotenv#dotenvx"
     for: "Use dotenvx to run commands with environment variables, manage multiple .env files, expand variables, and encrypt env files for safe commits and CI/CD."
 <!-- intent-skills:end -->
+
+## Learned User Preferences
+
+- Prefer Bricolage Grotesque for display and headline type; do not use Fraunces.
+
+## Learned Workspace Facts
+
+- Playwigo is a Playwright test-automation product: users organize projects, features, and test cases.
+- Auth is Better Auth with Google OAuth and email/password sign-in and sign-up.
+- Domain model is projects containing features and test accounts, features containing test cases with ordered steps, and test runs recording each execution.

@@ -1,5 +1,39 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
+
+const timestamps = () => ({
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
+
+export const testRunStatus = pgEnum("test_run_status", [
+  "pending",
+  "queued",
+  "running",
+  "passed",
+  "failed",
+  "error",
+]);
+
+export const testRunStepStatus = pgEnum("test_run_step_status", [
+  "pending",
+  "running",
+  "passed",
+  "failed",
+]);
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -73,9 +107,170 @@ export const verifications = pgTable(
   (table) => [index("verifications_identifier_idx").on(table.identifier)],
 );
 
+export const projects = pgTable(
+  "projects",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    website: text("website").notNull(),
+    ...timestamps(),
+  },
+  (table) => [index("projects_user_id_idx").on(table.userId)],
+);
+
+export const features = pgTable(
+  "features",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    ...timestamps(),
+  },
+  (table) => [index("features_project_id_idx").on(table.projectId)],
+);
+
+export const testAccounts = pgTable(
+  "test_accounts",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    email: text("email"),
+    password: text("password"),
+    url: text("url"),
+    ...timestamps(),
+  },
+  (table) => [index("test_accounts_project_id_idx").on(table.projectId)],
+);
+
+export const testCases = pgTable(
+  "test_cases",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    featureId: text("feature_id")
+      .notNull()
+      .references(() => features.id, { onDelete: "cascade" }),
+    testAccountId: text("test_account_id").references(() => testAccounts.id, {
+      onDelete: "set null",
+    }),
+    name: text("name").notNull(),
+    baseUrl: text("base_url"),
+    ...timestamps(),
+  },
+  (table) => [
+    index("test_cases_feature_id_idx").on(table.featureId),
+    index("test_cases_test_account_id_idx").on(table.testAccountId),
+  ],
+);
+
+export const testCaseSteps = pgTable(
+  "test_case_steps",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    testCaseId: text("test_case_id")
+      .notNull()
+      .references(() => testCases.id, { onDelete: "cascade" }),
+    sortOrder: integer("sort_order").notNull(),
+    action: text("action").notNull(),
+    selector: text("selector"),
+    selectorType: text("selector_type"),
+    value: text("value"),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("test_case_steps_test_case_id_sort_order_idx").on(
+      table.testCaseId,
+      table.sortOrder,
+    ),
+  ],
+);
+
+export const testRuns = pgTable(
+  "test_runs",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    testCaseId: text("test_case_id")
+      .notNull()
+      .references(() => testCases.id, { onDelete: "cascade" }),
+    testAccountId: text("test_account_id").references(() => testAccounts.id, {
+      onDelete: "set null",
+    }),
+    status: testRunStatus("status").default("pending").notNull(),
+    queuedAt: timestamp("queued_at"),
+    startedAt: timestamp("started_at"),
+    completedAt: timestamp("completed_at"),
+    durationMs: integer("duration_ms"),
+    errorMessage: text("error_message"),
+    consoleLogs: jsonb("console_logs"),
+    ...timestamps(),
+  },
+  (table) => [
+    index("test_runs_test_account_id_idx").on(table.testAccountId),
+    index("test_runs_status_idx").on(table.status),
+    index("test_runs_test_case_id_created_at_idx").on(
+      table.testCaseId,
+      table.createdAt,
+    ),
+  ],
+);
+
+export const testRunSteps = pgTable(
+  "test_run_steps",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    testRunId: text("test_run_id")
+      .notNull()
+      .references(() => testRuns.id, { onDelete: "cascade" }),
+    testCaseStepId: text("test_case_step_id").references(
+      () => testCaseSteps.id,
+      { onDelete: "set null" },
+    ),
+    sortOrder: integer("sort_order").notNull(),
+    action: text("action").notNull(),
+    selector: text("selector"),
+    selectorType: text("selector_type"),
+    value: text("value"),
+    status: testRunStepStatus("status").default("pending").notNull(),
+    durationMs: integer("duration_ms"),
+    errorMessage: text("error_message"),
+    screenshotUrl: text("screenshot_url"),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("test_run_steps_test_run_id_sort_order_idx").on(
+      table.testRunId,
+      table.sortOrder,
+    ),
+  ],
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
+  projects: many(projects),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -89,5 +284,81 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   users: one(users, {
     fields: [accounts.userId],
     references: [users.id],
+  }),
+}));
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  user: one(users, {
+    fields: [projects.userId],
+    references: [users.id],
+  }),
+  features: many(features),
+  testAccounts: many(testAccounts),
+}));
+
+export const featuresRelations = relations(features, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [features.projectId],
+    references: [projects.id],
+  }),
+  testCases: many(testCases),
+}));
+
+export const testAccountsRelations = relations(
+  testAccounts,
+  ({ one, many }) => ({
+    project: one(projects, {
+      fields: [testAccounts.projectId],
+      references: [projects.id],
+    }),
+    testCases: many(testCases),
+    testRuns: many(testRuns),
+  }),
+);
+
+export const testCasesRelations = relations(testCases, ({ one, many }) => ({
+  feature: one(features, {
+    fields: [testCases.featureId],
+    references: [features.id],
+  }),
+  testAccount: one(testAccounts, {
+    fields: [testCases.testAccountId],
+    references: [testAccounts.id],
+  }),
+  steps: many(testCaseSteps),
+  runs: many(testRuns),
+}));
+
+export const testCaseStepsRelations = relations(
+  testCaseSteps,
+  ({ one, many }) => ({
+    testCase: one(testCases, {
+      fields: [testCaseSteps.testCaseId],
+      references: [testCases.id],
+    }),
+    runSteps: many(testRunSteps),
+  }),
+);
+
+export const testRunsRelations = relations(testRuns, ({ one, many }) => ({
+  testCase: one(testCases, {
+    fields: [testRuns.testCaseId],
+    references: [testCases.id],
+  }),
+  testAccount: one(testAccounts, {
+    fields: [testRuns.testAccountId],
+    references: [testAccounts.id],
+  }),
+  steps: many(testRunSteps),
+}));
+
+export const testRunStepsRelations = relations(testRunSteps, ({ one }) => ({
+  testRun: one(testRuns, {
+    fields: [testRunSteps.testRunId],
+    references: [testRuns.id],
+  }),
+  testCaseStep: one(testCaseSteps, {
+    fields: [testRunSteps.testCaseStepId],
+    references: [testCaseSteps.id],
   }),
 }));

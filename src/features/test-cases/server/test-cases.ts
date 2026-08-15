@@ -10,6 +10,7 @@ import {
   listTestCaseStepsSchema,
   replaceTestCaseStepsSchema,
 } from '#/features/test-cases/schemas/test-case-step.ts'
+import { runTestCaseSchema, getTestRunStatusSchema } from '#/features/test-cases/schemas/test-run.ts'
 import {
   insertTestCase,
   listFeatureTestCases,
@@ -18,6 +19,10 @@ import {
   replaceOwnedTestCaseSteps,
   updateTestCase,
 } from '#/features/test-cases/server/test-cases.server.ts'
+import {
+  getOwnedTestRunStatus,
+  runOwnedTestCase,
+} from '#/features/test-cases/server/test-runs.server.ts'
 
 export const listTestCases = createServerFn({ method: 'GET' })
   .validator(listFeatureTestCasesSchema)
@@ -53,4 +58,16 @@ export const replaceTestCaseSteps = createServerFn({ method: 'POST' })
   .validator(replaceTestCaseStepsSchema)
   .handler(async ({ data }) => {
     return replaceOwnedTestCaseSteps(data)
+  })
+
+export const runTestCase = createServerFn({ method: 'POST' })
+  .validator(runTestCaseSchema)
+  .handler(async ({ data }) => {
+    return runOwnedTestCase(data.testCaseId)
+  })
+
+export const getTestRunStatus = createServerFn({ method: 'GET' })
+  .validator(getTestRunStatusSchema)
+  .handler(async ({ data }) => {
+    return getOwnedTestRunStatus(data.testRunId)
   })

@@ -5,6 +5,7 @@ import {
   CirclePlay,
   Copy,
   ListTree,
+  Loader2,
   MoreHorizontal,
   Pencil,
   Trash2,
@@ -34,6 +35,7 @@ import type {
   TestCaseSummary,
   TestRunStatus,
 } from '#/features/test-cases/types/test-case.ts'
+import { isActiveTestRunStatus } from '#/features/test-cases/utils/run-status.ts'
 import { cn } from '#/lib/utils.ts'
 
 const easeOutStrong = [0.23, 1, 0.32, 1] as const
@@ -82,8 +84,18 @@ function formatDuration(durationMs: number | null) {
   return `${seconds.toLocaleString(undefined, { maximumFractionDigits: 1 })} s`
 }
 
-function formatLastRun(date: Date | null) {
-  if (!date) {
+function toDate(value: Date | string | null | undefined) {
+  if (!value) {
+    return null
+  }
+
+  const parsed = value instanceof Date ? value : new Date(value)
+  return Number.isNaN(parsed.getTime()) ? null : parsed
+}
+
+function formatLastRun(date: Date | string | null) {
+  const parsed = toDate(date)
+  if (!parsed) {
     return '—'
   }
 
@@ -92,7 +104,7 @@ function formatLastRun(date: Date | null) {
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
-  }).format(date)
+  }).format(parsed)
 }
 
 function useFinePointerHover() {
@@ -165,20 +177,30 @@ function StatusBadge({ status }: { status: TestRunStatus | null }) {
   )
 }
 
-function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
+function TestCaseNameCell({
+  testCase,
+  running,
+  onRun,
+}: {
+  testCase: TestCaseSummary
+  running: boolean
+  onRun: (testCase: TestCaseSummary) => void
+}) {
   const reduceMotion = useReducedMotion()
   const canHover = useFinePointerHover()
   const [hovered, setHovered] = useState(false)
-  const showRun = canHover && hovered
+  const showRun = canHover && hovered && !running
 
   const transition = reduceMotion
     ? { duration: 0 }
     : { duration: 0.15, ease: easeOutStrong }
 
   function handleRun() {
-    toast.info('Run queued', {
-      description: `“${testCase.name}” will run here soon.`,
-    })
+    if (running) {
+      return
+    }
+
+    onRun(testCase)
   }
 
   return (
@@ -186,15 +208,23 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
       type="button"
       className={cn(
         'flex min-w-0 items-center gap-2.5 text-left',
-        canHover && 'cursor-pointer',
+        canHover && !running && 'cursor-pointer',
+        running && 'cursor-wait',
       )}
-      onMouseEnter={() => canHover && setHovered(true)}
+      disabled={running}
+      onMouseEnter={() => canHover && !running && setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={handleRun}
     >
       <span className="relative flex size-4 shrink-0 items-center justify-center">
-        <AnimatePresence mode="popLayout" initial={false}>
-          {showRun ? (
+        {running ? (
+          <Loader2
+            className="size-4 shrink-0 animate-spin text-primary"
+            aria-hidden
+          />
+        ) : (
+          <AnimatePresence mode="popLayout" initial={false}>
+            {showRun ? (
             <motion.span
               key="play"
               className="absolute inset-0 flex items-center justify-center"
@@ -230,11 +260,17 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
             </motion.span>
           )}
         </AnimatePresence>
+        )}
       </span>
 
       <span className="relative min-w-0 flex-1 truncate">
-        <AnimatePresence mode="popLayout" initial={false}>
-          {showRun ? (
+        {running ? (
+          <span className="block truncate text-muted-foreground">
+            Running {testCase.name}…
+          </span>
+        ) : (
+          <AnimatePresence mode="popLayout" initial={false}>
+            {showRun ? (
             <motion.span
               key="run-label"
               className="block truncate"
@@ -275,6 +311,7 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
             </motion.span>
           )}
         </AnimatePresence>
+        )}
       </span>
     </button>
   )
@@ -282,11 +319,13 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
 
 export function TestCasesTable({
   testCases,
+  onRun,
   onRename,
   onViewSteps,
   onDelete,
 }: {
   testCases: TestCaseSummary[]
+  onRun: (testCase: TestCaseSummary) => void
   onRename: (testCase: TestCaseSummary) => void
   onViewSteps: (testCase: TestCaseSummary) => void
   onDelete: (testCase: TestCaseSummary) => void
@@ -307,16 +346,25 @@ export function TestCasesTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {testCases.map((testCase) => (
+          {testCases.map((testCase) => {
+            const running = isActiveTestRunStatus(testCase.latestRunStatus)
+
+            return (
             <TableRow key={testCase.id}>
               <TableCell className="max-w-0 pl-4 font-medium">
-                <TestCaseNameCell testCase={testCase} />
+                <TestCaseNameCell
+                  testCase={testCase}
+                  running={running}
+                  onRun={onRun}
+                />
               </TableCell>
               <TableCell className="tabular-nums text-muted-foreground">
                 {testCase.stepCount}
               </TableCell>
               <TableCell>
-                <StatusBadge status={testCase.latestRunStatus} />
+                <StatusBadge
+                  status={running ? 'running' : testCase.latestRunStatus}
+                />
               </TableCell>
               <TableCell className="tabular-nums text-muted-foreground">
                 {formatDuration(testCase.latestRunDurationMs)}
@@ -367,7 +415,8 @@ export function TestCasesTable({
                 </DropdownMenu>
               </TableCell>
             </TableRow>
-          ))}
+            )
+          })}
         </TableBody>
       </Table>
     </div>

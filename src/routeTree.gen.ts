@@ -21,6 +21,7 @@ import { Route as AppShellTestAccountsRouteImport } from './routes/_app/_shell/t
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppShellFeaturesIndexRouteImport } from './routes/_app/_shell/features/index'
 import { Route as AppShellFeaturesFeatureIdRouteImport } from './routes/_app/_shell/features/$featureId'
+import { Route as ApiScreenshotsTestRunsTestRunIdStepIdRouteImport } from './routes/api/screenshots/test-runs/$testRunId/$stepId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -81,6 +82,12 @@ const AppShellFeaturesFeatureIdRoute =
     path: '/$featureId',
     getParentRoute: () => AppShellFeaturesRouteRoute,
   } as any)
+const ApiScreenshotsTestRunsTestRunIdStepIdRoute =
+  ApiScreenshotsTestRunsTestRunIdStepIdRouteImport.update({
+    id: '/api/screenshots/test-runs/$testRunId/$stepId',
+    path: '/api/screenshots/test-runs/$testRunId/$stepId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/features/': typeof AppShellFeaturesIndexRoute
+  '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -104,6 +112,7 @@ export interface FileRoutesByTo {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/features': typeof AppShellFeaturesIndexRoute
+  '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,6 +128,7 @@ export interface FileRoutesById {
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/_shell/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/_app/_shell/features/': typeof AppShellFeaturesIndexRoute
+  '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/features/$featureId'
     | '/features/'
+    | '/api/screenshots/test-runs/$testRunId/$stepId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/features/$featureId'
     | '/features'
+    | '/api/screenshots/test-runs/$testRunId/$stepId'
   id:
     | '__root__'
     | '/'
@@ -158,6 +170,7 @@ export interface FileRouteTypes {
     | '/api/auth/$'
     | '/_app/_shell/features/$featureId'
     | '/_app/_shell/features/'
+    | '/api/screenshots/test-runs/$testRunId/$stepId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,6 +179,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiScreenshotsTestRunsTestRunIdStepIdRoute: typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -254,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShellFeaturesFeatureIdRouteImport
       parentRoute: typeof AppShellFeaturesRouteRoute
     }
+    '/api/screenshots/test-runs/$testRunId/$stepId': {
+      id: '/api/screenshots/test-runs/$testRunId/$stepId'
+      path: '/api/screenshots/test-runs/$testRunId/$stepId'
+      fullPath: '/api/screenshots/test-runs/$testRunId/$stepId'
+      preLoaderRoute: typeof ApiScreenshotsTestRunsTestRunIdStepIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -308,6 +329,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiScreenshotsTestRunsTestRunIdStepIdRoute:
+    ApiScreenshotsTestRunsTestRunIdStepIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

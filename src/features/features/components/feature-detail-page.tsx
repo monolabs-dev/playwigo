@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useParams } from '@tanstack/react-router'
-import { ArrowLeft, CirclePlay, ListChecks, Plus } from 'lucide-react'
+import { ArrowLeft, CirclePlay, ListChecks, Loader2, Plus } from 'lucide-react'
 import { useServerFn } from '@tanstack/react-start'
 import { toast } from 'sonner'
 
@@ -19,20 +19,37 @@ import { DeleteTestCaseDialog } from '#/features/test-cases/components/delete-te
 import { TestCaseDialog } from '#/features/test-cases/components/test-case-dialog.tsx'
 import { TestCaseStepsSheet } from '#/features/test-cases/components/test-case-steps-sheet.tsx'
 import { TestCasesTable } from '#/features/test-cases/components/test-cases-table.tsx'
-import { listTestCases } from '#/features/test-cases/server/test-cases.ts'
-import type { TestCaseSummary } from '#/features/test-cases/types/test-case.ts'
+import { listTestCases, runTestCase } from '#/features/test-cases/server/test-cases.ts'
+import type {
+  TestCaseSummary,
+  TestRunStatus,
+} from '#/features/test-cases/types/test-case.ts'
+import {
+  isActiveTestRunStatus,
+  isTerminalTestRunStatus,
+} from '#/features/test-cases/utils/run-status.ts'
 import { listTestAccounts } from '#/features/test-accounts/server/test-accounts.ts'
 import type { TestAccountSummary } from '#/features/test-accounts/types/test-account.ts'
+
+const POLL_INTERVAL_MS = 1500
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
 
 export function FeatureDetailPage() {
   const { featureId } = useParams({ from: '/_app/_shell/features/$featureId' })
   const { project } = useActiveProject()
   const getFeatureFn = useServerFn(getFeature)
   const listCasesFn = useServerFn(listTestCases)
+  const runCaseFn = useServerFn(runTestCase)
   const listAccountsFn = useServerFn(listTestAccounts)
   const [feature, setFeature] = useState<FeatureSummary | null>(null)
   const [testCases, setTestCases] = useState<TestCaseSummary[]>([])
   const [testAccounts, setTestAccounts] = useState<TestAccountSummary[]>([])
+  const [runningAll, setRunningAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dialogMode, setDialogMode] = useState<'create' | 'edit'>('create')
@@ -45,6 +62,25 @@ export function FeatureDetailPage() {
   const [stepsTestCase, setStepsTestCase] = useState<TestCaseSummary | null>(
     null,
   )
+  const prevStatusesRef = useRef<Map<string, TestRunStatus | null>>(new Map())
+  const statusesInitializedRef = useRef(false)
+
+  const hasActiveRuns = testCases.some((testCase) =>
+    isActiveTestRunStatus(testCase.latestRunStatus),
+  )
+
+  const refreshTestCases = useCallback(async () => {
+    const nextCases = await listCasesFn({ data: { featureId } })
+    setTestCases(nextCases)
+    setStepsTestCase((current) => {
+      if (!current) {
+        return current
+      }
+
+      return nextCases.find((item) => item.id === current.id) ?? current
+    })
+    return nextCases
+  }, [featureId, listCasesFn])
 
   const refreshFeature = useCallback(async () => {
     const next = await getFeatureFn({ data: { featureId } })
@@ -75,6 +111,55 @@ export function FeatureDetailPage() {
     void loadPage()
   }, [loadPage])
 
+  useEffect(() => {
+    if (!hasActiveRuns) {
+      return
+    }
+
+    const interval = window.setInterval(() => {
+      void refreshTestCases().catch(() => {})
+    }, POLL_INTERVAL_MS)
+
+    return () => window.clearInterval(interval)
+  }, [hasActiveRuns, refreshTestCases])
+
+  useEffect(() => {
+    if (!statusesInitializedRef.current) {
+      for (const testCase of testCases) {
+        prevStatusesRef.current.set(testCase.id, testCase.latestRunStatus)
+      }
+
+      if (testCases.length > 0 || !loading) {
+        statusesInitializedRef.current = true
+      }
+
+      return
+    }
+
+    for (const testCase of testCases) {
+      const previousStatus = prevStatusesRef.current.get(testCase.id)
+      const currentStatus = testCase.latestRunStatus
+
+      if (
+        isActiveTestRunStatus(previousStatus) &&
+        currentStatus === 'passed'
+      ) {
+        toast.success('Test passed', {
+          description: `${testCase.name} finished in ${((testCase.latestRunDurationMs ?? 0) / 1000).toLocaleString(undefined, { maximumFractionDigits: 1 })} s`,
+        })
+      } else if (
+        isActiveTestRunStatus(previousStatus) &&
+        (currentStatus === 'failed' || currentStatus === 'error')
+      ) {
+        toast.error(currentStatus === 'failed' ? 'Test failed' : 'Run error', {
+          description: `${testCase.name} did not finish successfully.`,
+        })
+      }
+
+      prevStatusesRef.current.set(testCase.id, currentStatus)
+    }
+  }, [loading, testCases])
+
   function openCreateDialog() {
     setDialogMode('create')
     setSelectedTestCase(null)
@@ -97,14 +182,107 @@ export function FeatureDetailPage() {
     setStepsOpen(true)
   }
 
-  function handleRunAll() {
-    if (!feature) {
+  async function waitForTestCaseCompletion(testCaseId: string) {
+    while (true) {
+      const nextCases = await refreshTestCases()
+      const testCase = nextCases.find((item) => item.id === testCaseId)
+
+      if (!testCase || !isActiveTestRunStatus(testCase.latestRunStatus)) {
+        return testCase ?? null
+      }
+
+      await delay(POLL_INTERVAL_MS)
+    }
+  }
+
+  async function executeTestCaseRun(testCase: TestCaseSummary) {
+    if (testCase.stepCount === 0) {
+      toast.error('No steps to run', {
+        description: `Add steps to “${testCase.name}” before running it.`,
+      })
+      return null
+    }
+
+    if (isActiveTestRunStatus(testCase.latestRunStatus)) {
+      toast.info('Already running', {
+        description: `${testCase.name} is still executing.`,
+      })
+      return null
+    }
+
+    try {
+      const result = await runCaseFn({ data: { testCaseId: testCase.id } })
+
+      setTestCases((current) =>
+        current.map((item) =>
+          item.id === result.testCase.id ? result.testCase : item,
+        ),
+      )
+      setStepsTestCase((current) =>
+        current?.id === result.testCase.id ? result.testCase : current,
+      )
+      prevStatusesRef.current.set(testCase.id, 'running')
+
+      return result
+    } catch (error) {
+      toast.error('Unable to run test case', {
+        description:
+          error instanceof Error ? error.message : 'Try again in a moment.',
+      })
+      return null
+    }
+  }
+
+  async function handleRunTestCase(testCase: TestCaseSummary) {
+    await executeTestCaseRun(testCase)
+  }
+
+  async function handleRunAll() {
+    if (!feature || testCases.length === 0) {
       return
     }
 
-    toast.info('Run queued', {
-      description: `All test cases in “${feature.name}” will run here soon.`,
-    })
+    const runnableCases = testCases.filter((testCase) => testCase.stepCount > 0)
+
+    if (runnableCases.length === 0) {
+      toast.error('No runnable test cases', {
+        description: 'Add steps to at least one test case before running.',
+      })
+      return
+    }
+
+    setRunningAll(true)
+
+    try {
+      let passed = 0
+      let failed = 0
+
+      for (const testCase of runnableCases) {
+        const started = await executeTestCaseRun(testCase)
+        if (!started) {
+          continue
+        }
+
+        const completed = await waitForTestCaseCompletion(testCase.id)
+        if (completed?.latestRunStatus === 'passed') {
+          passed += 1
+        } else if (completed && isTerminalTestRunStatus(completed.latestRunStatus)) {
+          failed += 1
+        }
+      }
+
+      if (failed === 0) {
+        toast.success('All tests passed', {
+          description: `${passed} test case${passed === 1 ? '' : 's'} passed in ${feature.name}.`,
+        })
+      } else {
+        toast.error('Some tests failed', {
+          description: `${passed} passed, ${failed} failed in ${feature.name}.`,
+        })
+      }
+    } finally {
+      setRunningAll(false)
+    }
   }
 
   if (loading) {
@@ -168,10 +346,10 @@ export function FeatureDetailPage() {
             <Button
               variant="outline"
               className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-              disabled={!hasCases}
-              onClick={handleRunAll}
+              disabled={!hasCases || runningAll || hasActiveRuns}
+              onClick={() => void handleRunAll()}
             >
-              <CirclePlay />
+              {runningAll ? <Loader2 className="animate-spin" /> : <CirclePlay />}
               Run all
             </Button>
             <Button
@@ -212,6 +390,7 @@ export function FeatureDetailPage() {
       ) : (
         <TestCasesTable
           testCases={testCases}
+          onRun={(testCase) => void handleRunTestCase(testCase)}
           onRename={openEditDialog}
           onViewSteps={openStepsSheet}
           onDelete={openDeleteDialog}

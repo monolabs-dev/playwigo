@@ -12,3 +12,6 @@ dist-ssr
 __unconfig*
 todos.json
 .cursor/hooks/state
+
+# Localflare generated files
+.localflare/

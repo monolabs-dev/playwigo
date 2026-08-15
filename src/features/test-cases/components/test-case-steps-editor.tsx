@@ -151,11 +151,14 @@ export function TestCaseStepsEditor({
     fields: ReactNode
     viewSteps: Array<{
       id: string
+      stepNumber: number
       action: string
       selector: string | null
       selectorType: string | null
       value: string | null
       screenshotUrl: string | null
+      runStatus: TestCaseStep['runStatus']
+      errorMessage: string | null
     }>
     isSubmitting: boolean
     isDirty: boolean
@@ -508,7 +511,7 @@ export function TestCaseStepsEditor({
       {([isSubmitting, isDirty, formSteps]) =>
         children({
           fields,
-          viewSteps: formSteps.map((step) => {
+          viewSteps: formSteps.map((step, index) => {
             const saved = step.id
               ? initialSteps.find((item) => item.id === step.id)
               : undefined
@@ -518,11 +521,14 @@ export function TestCaseStepsEditor({
 
             return {
               id: step.id ?? step.clientId,
+              stepNumber: index + 1,
               action: formatStepActionLabel(step.action),
               selector: fieldsForStep.selector ? step.selector || null : null,
               selectorType: fieldsForStep.selector ? step.selectorType : null,
               value: fieldsForStep.value ? step.value || null : null,
               screenshotUrl: saved?.screenshotUrl ?? null,
+              runStatus: saved?.runStatus ?? null,
+              errorMessage: saved?.errorMessage ?? null,
             }
           }),
           isSubmitting,

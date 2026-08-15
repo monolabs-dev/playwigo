@@ -15,6 +15,7 @@ import type {
   UpdateTestCaseValues,
 } from '#/features/test-cases/schemas/test-case.ts'
 import type { ReplaceTestCaseStepsValues } from '#/features/test-cases/schemas/test-case-step.ts'
+import { normalizeScreenshotUrl } from '#/features/test-cases/server/test-run-screenshots.server.ts'
 import type {
   TestCaseStep,
   TestCaseSummary,
@@ -59,16 +60,18 @@ function testCaseSummarySelect() {
       where tr.test_case_id = ${testCases.id}
       order by tr.created_at desc
       limit 1
-    )`,
+    )`.mapWith((value) => (value ? new Date(String(value)) : null)),
   }
 }
 
 async function requireOwnedFeature(featureId: string) {
-  const [feature] = await db
-    .select({ id: features.id, projectId: features.projectId })
-    .from(features)
-    .where(eq(features.id, featureId))
-    .limit(1)
+  const feature = (
+    await db
+      .select({ id: features.id, projectId: features.projectId })
+      .from(features)
+      .where(eq(features.id, featureId))
+      .limit(1)
+  ).at(0)
 
   if (!feature) {
     throw new Error('Feature not found')
@@ -79,16 +82,18 @@ async function requireOwnedFeature(featureId: string) {
   return feature
 }
 
-async function requireOwnedTestCase(id: string) {
-  const [testCase] = await db
-    .select({
-      ...testCaseColumns,
-      projectId: features.projectId,
-    })
-    .from(testCases)
-    .innerJoin(features, eq(testCases.featureId, features.id))
-    .where(eq(testCases.id, id))
-    .limit(1)
+export async function requireOwnedTestCase(id: string) {
+  const testCase = (
+    await db
+      .select({
+        ...testCaseColumns,
+        projectId: features.projectId,
+      })
+      .from(testCases)
+      .innerJoin(features, eq(testCases.featureId, features.id))
+      .where(eq(testCases.id, id))
+      .limit(1)
+  ).at(0)
 
   if (!testCase) {
     throw new Error('Test case not found')
@@ -107,16 +112,18 @@ async function resolveTestAccountId(
     return null
   }
 
-  const [account] = await db
-    .select({ id: testAccounts.id })
-    .from(testAccounts)
-    .where(
-      and(
-        eq(testAccounts.id, testAccountId),
-        eq(testAccounts.projectId, projectId),
-      ),
-    )
-    .limit(1)
+  const account = (
+    await db
+      .select({ id: testAccounts.id })
+      .from(testAccounts)
+      .where(
+        and(
+          eq(testAccounts.id, testAccountId),
+          eq(testAccounts.projectId, projectId),
+        ),
+      )
+      .limit(1)
+  ).at(0)
 
   if (!account) {
     throw new Error('Test account not found')
@@ -125,13 +132,15 @@ async function resolveTestAccountId(
   return testAccountId
 }
 
-async function getTestCaseSummary(id: string) {
-  const [testCase] = await db
-    .select(testCaseSummarySelect())
-    .from(testCases)
-    .leftJoin(testAccounts, eq(testCases.testAccountId, testAccounts.id))
-    .where(eq(testCases.id, id))
-    .limit(1)
+export async function getTestCaseSummary(id: string) {
+  const testCase = (
+    await db
+      .select(testCaseSummarySelect())
+      .from(testCases)
+      .leftJoin(testAccounts, eq(testCases.testAccountId, testAccounts.id))
+      .where(eq(testCases.id, id))
+      .limit(1)
+  ).at(0)
 
   if (!testCase) {
     throw new Error('Test case not found')
@@ -168,10 +177,6 @@ export async function insertTestCase(input: CreateTestCaseValues) {
     })
     .returning({ id: testCases.id })
 
-  if (!testCase) {
-    throw new Error('Unable to create test case')
-  }
-
   return getTestCaseSummary(testCase.id)
 }
 
@@ -192,10 +197,6 @@ export async function updateTestCase(input: UpdateTestCaseValues) {
     .where(eq(testCases.id, input.id))
     .returning({ id: testCases.id })
 
-  if (!testCase) {
-    throw new Error('Unable to update test case')
-  }
-
   return getTestCaseSummary(testCase.id)
 }
 
@@ -206,10 +207,6 @@ export async function removeTestCase(id: string) {
     .delete(testCases)
     .where(eq(testCases.id, id))
     .returning({ id: testCases.id, name: testCases.name })
-
-  if (!testCase) {
-    throw new Error('Unable to delete test case')
-  }
 
   return {
     ...testCase,
@@ -229,24 +226,62 @@ const testCaseStepColumns = {
   updatedAt: testCaseSteps.updatedAt,
 } as const
 
-export async function listOwnedTestCaseSteps(testCaseId: string) {
+export async function listOwnedTestCaseStepDefinitions(testCaseId: string) {
   await requireOwnedTestCase(testCaseId)
 
   return db
-    .select({
-      ...testCaseStepColumns,
-      screenshotUrl: sql<string | null>`(
-        select ${testRunSteps.screenshotUrl}
-        from ${testRunSteps}
-        where ${testRunSteps.testCaseStepId} = ${testCaseSteps.id}
-          and ${testRunSteps.screenshotUrl} is not null
-        order by ${testRunSteps.createdAt} desc
-        limit 1
-      )`,
-    })
+    .select(testCaseStepColumns)
     .from(testCaseSteps)
     .where(eq(testCaseSteps.testCaseId, testCaseId))
-    .orderBy(asc(testCaseSteps.sortOrder)) satisfies Promise<TestCaseStep[]>
+    .orderBy(asc(testCaseSteps.sortOrder))
+}
+
+export async function listOwnedTestCaseSteps(testCaseId: string) {
+  await requireOwnedTestCase(testCaseId)
+
+  const latestRun = (
+    await db
+      .select({ id: testRuns.id })
+      .from(testRuns)
+      .where(eq(testRuns.testCaseId, testCaseId))
+      .orderBy(desc(testRuns.createdAt))
+      .limit(1)
+  ).at(0)
+
+  const rows = await db
+    .select({
+      ...testCaseStepColumns,
+      screenshotUrl: testRunSteps.screenshotUrl,
+      runStatus: testRunSteps.status,
+      errorMessage: testRunSteps.errorMessage,
+    })
+    .from(testCaseSteps)
+    .leftJoin(
+      testRunSteps,
+      and(
+        eq(testRunSteps.testCaseStepId, testCaseSteps.id),
+        latestRun
+          ? eq(testRunSteps.testRunId, latestRun.id)
+          : sql`1 = 0`,
+      ),
+    )
+    .where(eq(testCaseSteps.testCaseId, testCaseId))
+    .orderBy(asc(testCaseSteps.sortOrder))
+
+  return rows.map((row) => ({
+    id: row.id,
+    testCaseId: row.testCaseId,
+    sortOrder: row.sortOrder,
+    action: row.action,
+    selector: row.selector,
+    selectorType: row.selectorType,
+    value: row.value,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    screenshotUrl: normalizeScreenshotUrl(row.screenshotUrl ?? null),
+    runStatus: row.runStatus ?? null,
+    errorMessage: row.errorMessage ?? null,
+  })) satisfies TestCaseStep[]
 }
 
 export async function replaceOwnedTestCaseSteps(

@@ -16,6 +16,8 @@ export type TestCaseSummary = {
   updatedAt: Date
 }
 
+export type TestRunStepStatus = 'pending' | 'running' | 'passed' | 'failed'
+
 export type TestCaseStep = {
   id: string
   testCaseId: string
@@ -25,6 +27,8 @@ export type TestCaseStep = {
   selectorType: string | null
   value: string | null
   screenshotUrl: string | null
+  runStatus: TestRunStepStatus | null
+  errorMessage: string | null
   createdAt: Date
   updatedAt: Date
 }

@@ -1,0 +1,63 @@
+src/features/test-cases/components/test-case-dialog.tsx
+  s_f9a82bc886b2c6::t_70d9261e9624a2 1-93
+src/features/test-cases/components/test-case-form.tsx
+  s_f9a82bc886b2c6::t_0464d625dbef79 1-223
+src/features/test-cases/components/test-case-field.tsx
+  s_f9a82bc886b2c6::t_90a77d57d9b5a7 1-82
+src/features/test-cases/components/test-cases-table.tsx
+  s_f9a82bc886b2c6::t_07313a1f1ef7a8 2-4,6-10,12,19-32,41-51,54-62,71,76-78,81-87,89-95,110-111,113-116,118,130-134,136-154,156-157,160-164,283-313,315-339,341-380
+  h_c8a1da106d576c 340
+  s_f9a82bc886b2c6::t_1b583bbc092de7 1,5,11,13,39-40,98-109,112,117,119-129,158-159,165-218,220-237,239-278,280-282,314
+src/components/ui/table.tsx
+  s_f9a82bc886b2c6::t_ed8e69deeb4a07 1-114
+src/features/test-cases/schemas/test-case.ts
+  s_f9a82bc886b2c6::t_fb1eebbef4f73a 3-43,47-65
+src/features/test-cases/components/delete-test-case-dialog.tsx
+  s_f9a82bc886b2c6::t_40e67fa032a43f 1-100
+src/features/test-cases/server/test-cases.ts
+  s_f9a82bc886b2c6::t_0e0bb7a72a71a4 3-14,21-38
+src/features/test-cases/server/test-cases.server.ts
+  s_f9a82bc886b2c6::t_fbfae31ca40da4 1,4-10,12-15,28-43,58-60,77-137,142,144,148-213
+  s_f9a82bc886b2c6::t_4ad798119c1fef 44-57
+src/features/features/components/feature-detail-page.tsx
+  s_f9a82bc886b2c6::t_a1b0264e75e7dd 15,18-19,23-24,28,30-31,34,36-48,54,56-57,61,67,73-89,116,169,195,209-249
+  s_f9a82bc886b2c6::t_1b39eb47ef3c39 20,104-105,203-207
+AGENTS.md
+  s_ed27f937c40cd8::t_1688920c3aad18 914-915,922-924
+src/features/test-cases/types/test-case.ts
+  s_f9a82bc886b2c6::t_44d9991de9cebc 15-16
+  s_f9a82bc886b2c6::t_6ae4f4743495d3 18-19
+package.json
+  h_c8a1da106d576c 49
+pnpm-lock.yaml
+  h_c8a1da106d576c 86-88,3749-3759,4314-4330,8642-8650,9064-9077
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "56c53cae19c2d5a710983f6180f965487a99dec8",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_ed27f937c40cd8": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a1a452a7-91d5-4e12-9804-39ec8ec0f875",
+        "model": "composer-2.5-fast"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_f9a82bc886b2c6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "d18eff4a-77f4-470e-88a5-e5650314f6a8",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,133 @@
+src/routes/_app/_shell/dashboard.tsx
+  s_2d4d8fe98c7575::t_1872be1653d7a3 5
+src/features/dashboard/components/project-command.tsx
+  s_2d4d8fe98c7575::t_e98e997b09108a 16,19-26,56,61
+  s_5927f4b8932e11::t_c0e6ce6a789c5f 50-54
+  s_2d4d8fe98c7575::t_d1dd3836aa03f3 73
+src/routes/index.tsx
+  s_2d4d8fe98c7575::t_f3b28f46980e12 4,7-8,20-25
+src/features/projects/components/project-field.tsx
+  s_2d4d8fe98c7575::t_a39eb8d59cb382 62
+  s_2d4d8fe98c7575::t_1e4a56eff21fb6 1
+  s_2d4d8fe98c7575::t_babb717e468d40 43
+  s_2d4d8fe98c7575::t_fa1bf1e9d81563 30
+  s_2d4d8fe98c7575::t_dcfc580d9a2663 2-29,31-42,44-61,63-83
+  s_2d4d8fe98c7575::t_68cb44f48d34e8 84-87
+src/features/dashboard/hooks/active-project.tsx
+  s_2d4d8fe98c7575::t_09f42d6a25a9fe 40-44
+  s_2d4d8fe98c7575::t_dc771eef3f0726 53-56
+  s_2d4d8fe98c7575::t_35ffdd179aad05 82-83,85
+  s_2d4d8fe98c7575::t_babda1148f9c89 11-12,15-16,20-21,28-29,32-39,45,47,50-51,57,60-61,91,93,97,102-103,105
+src/features/projects/schemas/project.ts
+  s_2d4d8fe98c7575::t_b26e5ed8f057e4 1-18,21-22
+  s_2d4d8fe98c7575::t_b1ecce644cdf61 19-20
+  s_2d4d8fe98c7575::t_7b12d682e643ff 23-24
+src/features/dashboard/components/app-shell.tsx
+  s_2d4d8fe98c7575::t_25e0fd4334006e 3
+  s_2d4d8fe98c7575::t_bd7d2a34c38a22 26-27,32,36,40,46,53-59,66
+  s_2d4d8fe98c7575::t_0ca3f521b2188f 60-65
+  s_2d4d8fe98c7575::t_3db622db7745ed 67-69
+src/features/projects/components/create-project-form.tsx
+  h_c8a1da106d576c 1-2
+  s_2d4d8fe98c7575::t_65ea249c6462f7 4,25-26,37-38,45
+  s_2d4d8fe98c7575::t_f8b36fb4bae3f4 44
+  s_2d4d8fe98c7575::t_9a262865d33be7 61
+  s_2d4d8fe98c7575::t_d9c2321035d2dc 29
+  s_2d4d8fe98c7575::t_dcc636f37c3caf 15-16,18,22-23
+  s_2d4d8fe98c7575::t_67d746810b1f7d 62-87,90-92,98-112,116-117,123-124
+  s_2d4d8fe98c7575::t_af058368d8c7b0 3,6-13,17,19-20,24,27-28,30-36,39-41,43,47-57,125-126
+  s_2d4d8fe98c7575::t_79071b73f9a009 42
+  s_2d4d8fe98c7575::t_c8fdf4a1dd7955 5
+  s_2d4d8fe98c7575::t_2ae6e290cf4d6c 14
+  s_2d4d8fe98c7575::t_6de88ea1b8e1cb 21
+  s_2d4d8fe98c7575::t_d9ac30905f9c40 46
+  s_2d4d8fe98c7575::t_2840fbf6ff1a14 58-60
+  s_2d4d8fe98c7575::t_b96b2c38057042 88-89
+  s_2d4d8fe98c7575::t_e4bc6436f9359e 93-97
+  s_2d4d8fe98c7575::t_0ef84f339bb883 113-115
+  s_2d4d8fe98c7575::t_a09e3585b7644b 118-122
+src/features/dashboard/components/project-switcher.tsx
+  s_5927f4b8932e11::t_7642ce80508591 41
+  s_5927f4b8932e11::t_c744dddcacd7c4 76-80
+  s_2d4d8fe98c7575::t_ebd5757641d095 21,25,82,91,93,100
+src/routes/_app/_shell/route.tsx
+  s_2d4d8fe98c7575::t_04379ed8e0b9c6 1-28
+src/features/projects/server/projects.ts
+  s_2d4d8fe98c7575::t_7a019eebb74c16 1-3,8-10,12-15,17,19
+  s_2d4d8fe98c7575::t_aa3501d3369f2a 4-7,11,18
+  s_2d4d8fe98c7575::t_e8646f492b3232 16
+src/features/projects/components/create-project-dialog.tsx
+  s_2d4d8fe98c7575::t_b65c54014afd6a 12,14-22,24-25,34-35,37,39-44,50-54
+  s_2d4d8fe98c7575::t_a7f156c09a1f9f 38,45-49
+  s_2d4d8fe98c7575::t_5d4b62aa3f7d3b 1-11,13,23,26-33,36,55-58
+src/features/projects/utils/selected-project.ts
+  s_2d4d8fe98c7575::t_2470a05a812184 1
+src/features/landing/components/landing-page.tsx
+  s_2d4d8fe98c7575::t_1b296a62acec7d 10-13
+  s_2d4d8fe98c7575::t_b031d6c7cf740c 18
+  s_2d4d8fe98c7575::t_a3e99c9bf21be4 66
+  s_2d4d8fe98c7575::t_6a5af91397fbb8 35
+  s_2d4d8fe98c7575::t_453828346c1b8f 21
+src/features/auth/server/session.ts
+  s_2d4d8fe98c7575::t_d2e129534da9cc 3-6
+  s_2d4d8fe98c7575::t_0a74f0b60d7810 10,16
+src/features/auth/server/session.server.ts
+  s_2d4d8fe98c7575::t_a7d4bb61075a21 1-24
+src/routeTree.gen.ts
+  s_2d4d8fe98c7575::t_3641292a40b088 16-18,40-49,52,64-65,72-73,82-84,89-90,92,99-101,143-158,161-162,174-185,187-188,192-193
+src/features/projects/utils/website.ts
+  s_2d4d8fe98c7575::t_0a113e2501eb72 1-22
+src/features/projects/components/onboard-project-page.tsx
+  s_2d4d8fe98c7575::t_2af5bbdabc14c4 1-6,8-39,41-52
+  s_2d4d8fe98c7575::t_610eebb5abff08 7
+  s_2d4d8fe98c7575::t_e9dea156a253b1 40
+src/features/dashboard/utils/project-display.ts
+  s_5927f4b8932e11::t_c9ac18e7f0dd86 18-27
+src/features/projects/types/project.ts
+  s_2d4d8fe98c7575::t_928ff8b31ce899 1-5
+src/routes/_app/route.tsx
+  s_2d4d8fe98c7575::t_5a675cecf68c50 25
+src/features/projects/server/projects.server.ts
+  s_2d4d8fe98c7575::t_0a9c0e8db54eb7 1-40
+src/features/dashboard/components/dashboard-page.tsx
+  s_2d4d8fe98c7575::t_3e1d3f5e4c8e8a 44
+  s_2d4d8fe98c7575::t_f8a0146c66bb99 35,37,40,43,45-46,53,60,67,74,89-93,102-106
+src/integrations/better-auth/header-user.tsx
+  s_2d4d8fe98c7575::t_e27351de773f3d 25-26,30
+  s_2d4d8fe98c7575::t_1c52e7a3bf8abb 19-23,27-29,31-34
+src/routes/_app/onboard.tsx
+  s_2d4d8fe98c7575::t_988814ce90c128 1-20
+src/features/dashboard/components/project-mark.tsx
+  s_5927f4b8932e11::t_3702e37bdfe823 1-5,8,16,21,24-25,27-29,31-46
+src/features/dashboard/components/app-sidebar.tsx
+  s_2d4d8fe98c7575::t_ddad3d440735af 50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "cbc04f07b0ab6f1ba1cbf4895fbc78a3c9d5faaa",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_2d4d8fe98c7575": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "fe7c10c5-053b-4fc6-9c56-fa140056f264",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_5927f4b8932e11": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8f40b57a-cc58-402d-9112-cea415b39edb",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

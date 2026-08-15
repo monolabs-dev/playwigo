@@ -3,6 +3,7 @@
   "name": "playwigo",
   "compatibility_date": "2026-08-14",
   "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
   "main": "./src/server-entry.ts",
   "browser": {
     "binding": "BROWSER",

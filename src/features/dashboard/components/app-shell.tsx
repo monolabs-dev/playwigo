@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CirclePlay, Plus, Search } from 'lucide-react'
+import { useRouterState } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
 import { Button } from '#/components/ui/button.tsx'
@@ -26,6 +27,11 @@ import { ProjectCommand } from '#/features/dashboard/components/project-command.
 import { CreateProjectDialog } from '#/features/projects/components/create-project-dialog.tsx'
 import type { Project } from '#/features/projects/types/project.ts'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
+
+const PAGE_TITLES: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/test-accounts': 'Test accounts',
+}
 
 export function AppShell({
   user,
@@ -69,6 +75,8 @@ function CreateProjectHost() {
 
 function AppInset({ children }: { children: ReactNode }) {
   const { project, setSwitcherOpen } = useActiveProject()
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const pageTitle = PAGE_TITLES[pathname] ?? 'Dashboard'
 
   return (
     <SidebarInset>
@@ -91,7 +99,7 @@ function AppInset({ children }: { children: ReactNode }) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Dashboard</BreadcrumbPage>
+              <BreadcrumbPage>{pageTitle}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>

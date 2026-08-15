@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
 
 import { Button } from '#/components/ui/button.tsx'
@@ -67,7 +68,7 @@ export function DashboardPage() {
           value={0}
           hint="Saved credentials"
           icon={Users}
-          onClick={() => comingSoon('Test accounts')}
+          to="/test-accounts"
         />
         <StatCard
           label="Pass rate"
@@ -117,30 +118,44 @@ function StatCard({
   hint,
   icon: Icon,
   onClick,
+  to,
 }: {
   label: string
   value: string | number
   hint: string
   icon: typeof FolderKanban
-  onClick: () => void
+  onClick?: () => void
+  to?: '/test-accounts'
 }) {
+  const content = (
+    <Card
+      size="sm"
+      className="h-full transition-colors duration-150 ease-out-strong fine-hover:bg-muted/40"
+    >
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardDescription>{label}</CardDescription>
+          <Icon className="size-4 text-muted-foreground" />
+        </div>
+        <CardTitle className="text-2xl font-semibold tracking-tight tabular-nums">
+          {value}
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">{hint}</p>
+      </CardHeader>
+    </Card>
+  )
+
+  if (to) {
+    return (
+      <Link to={to} className="text-left">
+        {content}
+      </Link>
+    )
+  }
+
   return (
     <button type="button" className="text-left" onClick={onClick}>
-      <Card
-        size="sm"
-        className="h-full transition-colors duration-150 ease-out-strong fine-hover:bg-muted/40"
-      >
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardDescription>{label}</CardDescription>
-            <Icon className="size-4 text-muted-foreground" />
-          </div>
-          <CardTitle className="text-2xl font-semibold tracking-tight tabular-nums">
-            {value}
-          </CardTitle>
-          <p className="text-xs text-muted-foreground">{hint}</p>
-        </CardHeader>
-      </Card>
+      {content}
     </button>
   )
 }

@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useRouterState } from '@tanstack/react-router'
 import {
   BugPlay,
   CirclePlay,
@@ -31,7 +31,7 @@ const primaryNav = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
   { title: 'Features', icon: FolderKanban },
   { title: 'Test cases', icon: ListChecks },
-  { title: 'Test accounts', icon: Users },
+  { title: 'Test accounts', icon: Users, href: '/test-accounts' as const },
   { title: 'Test runs', icon: CirclePlay },
 ] as const
 
@@ -40,6 +40,8 @@ export function AppSidebar({
 }: {
   user: { name: string; email: string; image?: string | null }
 }) {
+  const pathname = useRouterState({ select: (state) => state.location.pathname })
+
   return (
     <Sidebar variant="inset" collapsible="icon">
       <SidebarHeader>
@@ -60,7 +62,11 @@ export function AppSidebar({
               {primaryNav.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   {'href' in item ? (
-                    <SidebarMenuButton asChild isActive tooltip={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.href}
+                      tooltip={item.title}
+                    >
                       <Link to={item.href}>
                         <item.icon />
                         <span>{item.title}</span>

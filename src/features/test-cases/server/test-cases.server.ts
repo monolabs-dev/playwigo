@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 
 import { db } from '#/db/index.ts'
 import {
@@ -9,6 +9,10 @@ import {
   testRuns,
   testRunSteps,
 } from '#/db/schema.ts'
+import {
+  getProjectLoginFlowSummary,
+  resolveLoginPreludeSteps,
+} from '#/features/login-flows/server/login-flows.server.ts'
 import { requireUserProject } from '#/features/projects/server/projects.server.ts'
 import type {
   CreateTestCaseValues,
@@ -17,8 +21,11 @@ import type {
 import type { ReplaceTestCaseStepsValues } from '#/features/test-cases/schemas/test-case-step.ts'
 import { normalizeScreenshotUrl } from '#/features/test-cases/server/test-run-screenshots.server.ts'
 import type {
+  TestCaseLoginPrelude,
   TestCaseStep,
+  TestCaseStepsPayload,
   TestCaseSummary,
+  TestRunStepStatus,
 } from '#/features/test-cases/types/test-case.ts'
 
 const testCaseColumns = {
@@ -278,8 +285,105 @@ export async function listOwnedTestCaseStepDefinitions(testCaseId: string) {
     .orderBy(asc(testCaseSteps.sortOrder))
 }
 
-export async function listOwnedTestCaseSteps(testCaseId: string) {
-  await requireOwnedTestCase(testCaseId)
+function aggregateLoginPreludeRunStatus(
+  statuses: TestRunStepStatus[],
+): TestRunStepStatus | null {
+  if (statuses.length === 0) {
+    return null
+  }
+
+  if (statuses.some((status) => status === 'running')) {
+    return 'running'
+  }
+
+  if (statuses.some((status) => status === 'failed')) {
+    return 'failed'
+  }
+
+  if (statuses.every((status) => status === 'passed')) {
+    return 'passed'
+  }
+
+  if (statuses.some((status) => status === 'pending')) {
+    return 'pending'
+  }
+
+  return null
+}
+
+async function buildLoginPreludeView(input: {
+  projectId: string
+  testAccountId: string | null
+  testAccountName: string | null
+  latestRunId: string | undefined
+}): Promise<TestCaseLoginPrelude | null> {
+  if (!input.testAccountId) {
+    return null
+  }
+
+  const [preludeSteps, loginFlow] = await Promise.all([
+    resolveLoginPreludeSteps({
+      projectId: input.projectId,
+      testAccountId: input.testAccountId,
+    }),
+    getProjectLoginFlowSummary(input.projectId),
+  ])
+
+  if (preludeSteps.length === 0) {
+    return null
+  }
+
+  let runStatus: TestRunStepStatus | null = null
+  let errorMessage: string | null = null
+
+  if (input.latestRunId) {
+    const preludeRunSteps = await db
+      .select({
+        status: testRunSteps.status,
+        errorMessage: testRunSteps.errorMessage,
+      })
+      .from(testRunSteps)
+      .where(
+        and(
+          eq(testRunSteps.testRunId, input.latestRunId),
+          isNull(testRunSteps.testCaseStepId),
+        ),
+      )
+      .orderBy(asc(testRunSteps.sortOrder))
+
+    if (preludeRunSteps.length > 0) {
+      runStatus = aggregateLoginPreludeRunStatus(
+        preludeRunSteps.map((step) => step.status),
+      )
+      errorMessage =
+        preludeRunSteps.find((step) => step.status === 'failed')
+          ?.errorMessage ?? null
+    }
+  }
+
+  return {
+    stepCount: preludeSteps.length,
+    testAccountName: input.testAccountName,
+    loginFlowName: loginFlow.name,
+    runStatus,
+    errorMessage,
+  }
+}
+
+export async function listOwnedTestCaseSteps(
+  testCaseId: string,
+): Promise<TestCaseStepsPayload> {
+  const owned = await requireOwnedTestCase(testCaseId)
+
+  const testAccount = owned.testAccountId
+    ? (
+        await db
+          .select({ name: testAccounts.name })
+          .from(testAccounts)
+          .where(eq(testAccounts.id, owned.testAccountId))
+          .limit(1)
+      ).at(0)
+    : null
 
   const latestRun = (
     await db
@@ -290,27 +394,35 @@ export async function listOwnedTestCaseSteps(testCaseId: string) {
       .limit(1)
   ).at(0)
 
-  const rows = await db
-    .select({
-      ...testCaseStepColumns,
-      screenshotUrl: testRunSteps.screenshotUrl,
-      runStatus: testRunSteps.status,
-      errorMessage: testRunSteps.errorMessage,
-    })
-    .from(testCaseSteps)
-    .leftJoin(
-      testRunSteps,
-      and(
-        eq(testRunSteps.testCaseStepId, testCaseSteps.id),
-        latestRun
-          ? eq(testRunSteps.testRunId, latestRun.id)
-          : sql`1 = 0`,
-      ),
-    )
-    .where(eq(testCaseSteps.testCaseId, testCaseId))
-    .orderBy(asc(testCaseSteps.sortOrder))
+  const [rows, loginPrelude] = await Promise.all([
+    db
+      .select({
+        ...testCaseStepColumns,
+        screenshotUrl: testRunSteps.screenshotUrl,
+        runStatus: testRunSteps.status,
+        errorMessage: testRunSteps.errorMessage,
+      })
+      .from(testCaseSteps)
+      .leftJoin(
+        testRunSteps,
+        and(
+          eq(testRunSteps.testCaseStepId, testCaseSteps.id),
+          latestRun
+            ? eq(testRunSteps.testRunId, latestRun.id)
+            : sql`1 = 0`,
+        ),
+      )
+      .where(eq(testCaseSteps.testCaseId, testCaseId))
+      .orderBy(asc(testCaseSteps.sortOrder)),
+    buildLoginPreludeView({
+      projectId: owned.projectId,
+      testAccountId: owned.testAccountId,
+      testAccountName: testAccount?.name ?? null,
+      latestRunId: latestRun?.id,
+    }),
+  ])
 
-  return rows.map((row) => ({
+  const steps = rows.map((row) => ({
     id: row.id,
     testCaseId: row.testCaseId,
     sortOrder: row.sortOrder,
@@ -324,6 +436,8 @@ export async function listOwnedTestCaseSteps(testCaseId: string) {
     runStatus: row.runStatus ?? null,
     errorMessage: row.errorMessage ?? null,
   })) satisfies TestCaseStep[]
+
+  return { steps, loginPrelude }
 }
 
 export async function replaceOwnedTestCaseSteps(
@@ -397,10 +511,10 @@ export async function replaceOwnedTestCaseSteps(
     }
   }
 
-  const [steps, testCase] = await Promise.all([
+  const [payload, testCase] = await Promise.all([
     listOwnedTestCaseSteps(input.testCaseId),
     getTestCaseSummary(input.testCaseId),
   ])
 
-  return { steps, testCase }
+  return { steps: payload.steps, testCase }
 }

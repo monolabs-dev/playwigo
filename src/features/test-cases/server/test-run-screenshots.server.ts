@@ -5,6 +5,7 @@ import {
   features,
   testCaseSteps,
   testCases,
+  testRunSteps,
   testRuns,
 } from '#/db/schema.ts'
 import { requireUserProject } from '#/features/projects/server/projects.server.ts'
@@ -26,9 +27,9 @@ export function normalizeScreenshotUrl(screenshotUrl: string | null) {
     /^test-runs\/([^/]+)\/([^/]+)\.jpg$/,
   )
   if (legacyKeyMatch) {
-    const [, testRunId, testCaseStepId] = legacyKeyMatch
-    if (testRunId && testCaseStepId) {
-      return testRunScreenshotApiPath(testRunId, testCaseStepId)
+    const [, testRunId, stepId] = legacyKeyMatch
+    if (testRunId && stepId) {
+      return testRunScreenshotApiPath(testRunId, stepId)
     }
   }
 
@@ -37,9 +38,9 @@ export function normalizeScreenshotUrl(screenshotUrl: string | null) {
 
 async function requireOwnedTestRunScreenshotAccess(
   testRunId: string,
-  testCaseStepId: string,
+  stepId: string,
 ) {
-  const row = (
+  const byTestCaseStep = (
     await db
       .select({ projectId: features.projectId })
       .from(testRuns)
@@ -48,7 +49,7 @@ async function requireOwnedTestRunScreenshotAccess(
       .innerJoin(
         testCaseSteps,
         and(
-          eq(testCaseSteps.id, testCaseStepId),
+          eq(testCaseSteps.id, stepId),
           eq(testCaseSteps.testCaseId, testCases.id),
         ),
       )
@@ -56,20 +57,36 @@ async function requireOwnedTestRunScreenshotAccess(
       .limit(1)
   ).at(0)
 
-  if (!row) {
+  if (byTestCaseStep) {
+    await requireUserProject(byTestCaseStep.projectId)
+    return byTestCaseStep
+  }
+
+  const byRunStep = (
+    await db
+      .select({ projectId: features.projectId })
+      .from(testRunSteps)
+      .innerJoin(testRuns, eq(testRunSteps.testRunId, testRuns.id))
+      .innerJoin(testCases, eq(testRuns.testCaseId, testCases.id))
+      .innerJoin(features, eq(testCases.featureId, features.id))
+      .where(and(eq(testRunSteps.id, stepId), eq(testRuns.id, testRunId)))
+      .limit(1)
+  ).at(0)
+
+  if (!byRunStep) {
     throw new Error('Screenshot not found')
   }
 
-  await requireUserProject(row.projectId)
+  await requireUserProject(byRunStep.projectId)
 
-  return row
+  return byRunStep
 }
 
 export async function readOwnedTestRunStepScreenshot(
   testRunId: string,
-  testCaseStepId: string,
+  stepId: string,
 ) {
-  await requireOwnedTestRunScreenshotAccess(testRunId, testCaseStepId)
+  await requireOwnedTestRunScreenshotAccess(testRunId, stepId)
 
-  return getTestRunScreenshotObject(testRunId, testCaseStepId)
+  return getTestRunScreenshotObject(testRunId, stepId)
 }

@@ -1,13 +1,17 @@
-import { useState } from 'react'
-import { Check, ImageOff, Loader2, X } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
+import { Check, ImageOff, Loader2, LogIn, X } from 'lucide-react'
 
+import { Badge } from '#/components/ui/badge.tsx'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
 } from '#/components/ui/dialog.tsx'
 import { formatSelector } from '#/features/test-cases/utils/step-actions.ts'
-import type { TestRunStepStatus } from '#/features/test-cases/types/test-case.ts'
+import type {
+  TestCaseLoginPrelude,
+  TestRunStepStatus,
+} from '#/features/test-cases/types/test-case.ts'
 import { cn } from '#/lib/utils.ts'
 
 export type TestCaseStepViewItem = {
@@ -51,19 +55,102 @@ function StepMeta({
   )
 }
 
+function loginPreludeStatusLabel(status: TestRunStepStatus | null) {
+  switch (status) {
+    case 'running':
+      return 'Running login'
+    case 'passed':
+      return 'Login complete'
+    case 'failed':
+      return 'Login failed'
+    case 'pending':
+      return 'Login pending'
+    default:
+      return null
+  }
+}
+
+function LoginPreludeRow({
+  loginPrelude,
+  hasRun,
+}: {
+  loginPrelude: TestCaseLoginPrelude
+  hasRun: boolean
+}) {
+  const showStatus = hasRun && loginPrelude.runStatus !== null
+  const statusLabel = loginPreludeStatusLabel(loginPrelude.runStatus)
+  const accountLabel = loginPrelude.testAccountName ?? 'test account'
+
+  return (
+    <li className="relative flex items-start gap-3">
+      <StepIndicator
+        stepNumber={0}
+        runStatus={showStatus ? loginPrelude.runStatus : null}
+        hasRun={showStatus}
+        icon={<LogIn className="size-3" aria-hidden />}
+      />
+      <div className="min-w-0 flex-1 rounded-xl border border-dashed bg-muted/20">
+        <div className="flex flex-wrap items-start justify-between gap-2 px-3 py-2.5">
+          <div className="min-w-0 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-sm font-medium">{loginPrelude.loginFlowName}</p>
+              <Badge variant="secondary" className="text-[10px] uppercase tracking-wide">
+                Login
+              </Badge>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Runs before test steps using {accountLabel}
+              {loginPrelude.stepCount > 0
+                ? ` · ${loginPrelude.stepCount} ${loginPrelude.stepCount === 1 ? 'step' : 'steps'}`
+                : ''}
+            </p>
+          </div>
+          {statusLabel ? (
+            <p
+              className={cn(
+                'text-xs font-medium',
+                loginPrelude.runStatus === 'running' && 'text-primary',
+                loginPrelude.runStatus === 'passed' &&
+                  'text-emerald-600 dark:text-emerald-400',
+                loginPrelude.runStatus === 'failed' && 'text-destructive',
+                loginPrelude.runStatus === 'pending' && 'text-muted-foreground',
+              )}
+            >
+              {statusLabel}
+            </p>
+          ) : null}
+        </div>
+
+        {showStatus &&
+        loginPrelude.runStatus === 'failed' &&
+        loginPrelude.errorMessage ? (
+          <div className="border-t bg-destructive/5 px-3 py-2.5">
+            <p className="text-[11px] font-medium text-destructive">Error</p>
+            <p className="mt-0.5 text-sm text-destructive/90">
+              {loginPrelude.errorMessage}
+            </p>
+          </div>
+        ) : null}
+      </div>
+    </li>
+  )
+}
+
 function StepIndicator({
   stepNumber,
   runStatus,
   hasRun,
+  icon,
 }: {
   stepNumber: number
   runStatus: TestRunStepStatus | null
   hasRun: boolean
+  icon?: ReactNode
 }) {
   if (!hasRun || !runStatus) {
     return (
       <span className="relative z-10 mt-3 flex size-5 shrink-0 items-center justify-center rounded-full border bg-popover text-[11px] font-medium tabular-nums text-muted-foreground">
-        {stepNumber}
+        {icon ?? stepNumber}
       </span>
     )
   }
@@ -162,9 +249,11 @@ function ScreenshotLightbox({
 
 export function TestCaseStepsView({
   steps,
+  loginPrelude,
   hasRun,
 }: {
   steps: TestCaseStepViewItem[]
+  loginPrelude?: TestCaseLoginPrelude | null
   hasRun: boolean
 }) {
   const [lightbox, setLightbox] = useState<{
@@ -187,7 +276,10 @@ export function TestCaseStepsView({
     <>
       <div className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          {steps.length} {steps.length === 1 ? 'step' : 'steps'}
+          {steps.length} test {steps.length === 1 ? 'step' : 'steps'}
+          {loginPrelude
+            ? ` · login runs first (${loginPrelude.stepCount} ${loginPrelude.stepCount === 1 ? 'step' : 'steps'})`
+            : ''}
         </p>
 
         <ol className="relative space-y-3">
@@ -195,6 +287,9 @@ export function TestCaseStepsView({
             aria-hidden
             className="absolute top-2.5 bottom-2.5 left-2.5 w-px bg-border"
           />
+          {loginPrelude ? (
+            <LoginPreludeRow loginPrelude={loginPrelude} hasRun={hasRun} />
+          ) : null}
           {steps.map((step) => {
             const selector = formatSelector(step.selectorType, step.selector)
             const showScreenshot = Boolean(step.screenshotUrl)

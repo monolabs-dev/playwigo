@@ -158,6 +158,48 @@ export const testAccounts = pgTable(
   (table) => [index("test_accounts_project_id_idx").on(table.projectId)],
 );
 
+export const loginFlows = pgTable(
+  "login_flows",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("login_flows_project_id_idx").on(table.projectId),
+  ],
+);
+
+export const loginFlowSteps = pgTable(
+  "login_flow_steps",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    loginFlowId: text("login_flow_id")
+      .notNull()
+      .references(() => loginFlows.id, { onDelete: "cascade" }),
+    sortOrder: integer("sort_order").notNull(),
+    action: text("action").notNull(),
+    selector: text("selector"),
+    selectorType: text("selector_type"),
+    value: text("value"),
+    ...timestamps(),
+  },
+  (table) => [
+    uniqueIndex("login_flow_steps_login_flow_id_sort_order_idx").on(
+      table.loginFlowId,
+      table.sortOrder,
+    ),
+  ],
+);
+
 export const testCases = pgTable(
   "test_cases",
   {
@@ -294,7 +336,26 @@ export const projectsRelations = relations(projects, ({ one, many }) => ({
   }),
   features: many(features),
   testAccounts: many(testAccounts),
+  loginFlow: one(loginFlows),
 }));
+
+export const loginFlowsRelations = relations(loginFlows, ({ one, many }) => ({
+  project: one(projects, {
+    fields: [loginFlows.projectId],
+    references: [projects.id],
+  }),
+  steps: many(loginFlowSteps),
+}));
+
+export const loginFlowStepsRelations = relations(
+  loginFlowSteps,
+  ({ one }) => ({
+    loginFlow: one(loginFlows, {
+      fields: [loginFlowSteps.loginFlowId],
+      references: [loginFlows.id],
+    }),
+  }),
+);
 
 export const featuresRelations = relations(features, ({ one, many }) => ({
   project: one(projects, {

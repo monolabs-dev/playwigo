@@ -17,6 +17,7 @@ import { Route as AppShellRouteRouteImport } from './routes/_app/_shell/route'
 import { Route as AppOnboardRouteImport } from './routes/_app/onboard'
 import { Route as AppShellDashboardRouteImport } from './routes/_app/_shell/dashboard'
 import { Route as AppShellFeaturesRouteRouteImport } from './routes/_app/_shell/features/route'
+import { Route as AppShellLoginFlowsRouteImport } from './routes/_app/_shell/login-flows'
 import { Route as AppShellTestAccountsRouteImport } from './routes/_app/_shell/test-accounts'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppShellFeaturesIndexRouteImport } from './routes/_app/_shell/features/index'
@@ -61,6 +62,11 @@ const AppShellFeaturesRouteRoute = AppShellFeaturesRouteRouteImport.update({
   path: '/features',
   getParentRoute: () => AppShellRouteRoute,
 } as any)
+const AppShellLoginFlowsRoute = AppShellLoginFlowsRouteImport.update({
+  id: '/login-flows',
+  path: '/login-flows',
+  getParentRoute: () => AppShellRouteRoute,
+} as any)
 const AppShellTestAccountsRoute = AppShellTestAccountsRouteImport.update({
   id: '/test-accounts',
   path: '/test-accounts',
@@ -96,6 +102,7 @@ export interface FileRoutesByFullPath {
   '/onboard': typeof AppOnboardRoute
   '/features': typeof AppShellFeaturesRouteRouteWithChildren
   '/dashboard': typeof AppShellDashboardRoute
+  '/login-flows': typeof AppShellLoginFlowsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/onboard': typeof AppOnboardRoute
   '/dashboard': typeof AppShellDashboardRoute
+  '/login-flows': typeof AppShellLoginFlowsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/_app/onboard': typeof AppOnboardRoute
   '/_app/_shell/features': typeof AppShellFeaturesRouteRouteWithChildren
   '/_app/_shell/dashboard': typeof AppShellDashboardRoute
+  '/_app/_shell/login-flows': typeof AppShellLoginFlowsRoute
   '/_app/_shell/test-accounts': typeof AppShellTestAccountsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/_app/_shell/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/onboard'
     | '/features'
     | '/dashboard'
+    | '/login-flows'
     | '/test-accounts'
     | '/api/auth/$'
     | '/features/$featureId'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/onboard'
     | '/dashboard'
+    | '/login-flows'
     | '/test-accounts'
     | '/api/auth/$'
     | '/features/$featureId'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/_app/onboard'
     | '/_app/_shell/features'
     | '/_app/_shell/dashboard'
+    | '/_app/_shell/login-flows'
     | '/_app/_shell/test-accounts'
     | '/api/auth/$'
     | '/_app/_shell/features/$featureId'
@@ -240,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShellFeaturesRouteRouteImport
       parentRoute: typeof AppShellRouteRoute
     }
+    '/_app/_shell/login-flows': {
+      id: '/_app/_shell/login-flows'
+      path: '/login-flows'
+      fullPath: '/login-flows'
+      preLoaderRoute: typeof AppShellLoginFlowsRouteImport
+      parentRoute: typeof AppShellRouteRoute
+    }
     '/_app/_shell/test-accounts': {
       id: '/_app/_shell/test-accounts'
       path: '/test-accounts'
@@ -296,12 +315,14 @@ const AppShellFeaturesRouteRouteWithChildren =
 interface AppShellRouteRouteChildren {
   AppShellFeaturesRouteRoute: typeof AppShellFeaturesRouteRouteWithChildren
   AppShellDashboardRoute: typeof AppShellDashboardRoute
+  AppShellLoginFlowsRoute: typeof AppShellLoginFlowsRoute
   AppShellTestAccountsRoute: typeof AppShellTestAccountsRoute
 }
 
 const AppShellRouteRouteChildren: AppShellRouteRouteChildren = {
   AppShellFeaturesRouteRoute: AppShellFeaturesRouteRouteWithChildren,
   AppShellDashboardRoute: AppShellDashboardRoute,
+  AppShellLoginFlowsRoute: AppShellLoginFlowsRoute,
   AppShellTestAccountsRoute: AppShellTestAccountsRoute,
 }
 

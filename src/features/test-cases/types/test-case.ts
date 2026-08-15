@@ -18,6 +18,19 @@ export type TestCaseSummary = {
 
 export type TestRunStepStatus = 'pending' | 'running' | 'passed' | 'failed'
 
+export type TestCaseLoginPrelude = {
+  stepCount: number
+  testAccountName: string | null
+  loginFlowName: string
+  runStatus: TestRunStepStatus | null
+  errorMessage: string | null
+}
+
+export type TestCaseStepsPayload = {
+  steps: TestCaseStep[]
+  loginPrelude: TestCaseLoginPrelude | null
+}
+
 export type TestCaseStep = {
   id: string
   testCaseId: string

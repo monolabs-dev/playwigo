@@ -74,7 +74,8 @@ export function TestAccountsPage() {
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             Save login details once and reuse them when writing test cases for{' '}
-            <span className="text-foreground">{project.name}</span>.
+            <span className="text-foreground">{project.name}</span>. Pair accounts
+            with the project login flow to sign in automatically before runs.
           </p>
         </div>
         <Button

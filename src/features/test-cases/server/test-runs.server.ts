@@ -12,6 +12,7 @@ import {
   requireOwnedTestCase,
 } from '#/features/test-cases/server/test-cases.server.ts'
 import type { TestRunStatus } from '#/features/test-cases/types/test-case.ts'
+import { resolveLoginPreludeSteps } from '#/features/login-flows/server/login-flows.server.ts'
 import { scheduleBackgroundWork } from '#/server/cloudflare/execution-context.ts'
 
 async function findActiveTestRun(testCaseId: string) {
@@ -31,7 +32,7 @@ async function findActiveTestRun(testCaseId: string) {
 
 async function updateTestRunStep(
   testRunId: string,
-  testCaseStepId: string,
+  sortOrder: number,
   values: {
     status: 'running' | 'passed' | 'failed'
     durationMs?: number
@@ -45,9 +46,62 @@ async function updateTestRunStep(
     .where(
       and(
         eq(testRunSteps.testRunId, testRunId),
-        eq(testRunSteps.testCaseStepId, testCaseStepId),
+        eq(testRunSteps.sortOrder, sortOrder),
       ),
     )
+}
+
+async function buildRunSteps(testCaseId: string, testAccountId: string | null) {
+  const owned = await requireOwnedTestCase(testCaseId)
+  const [loginPrelude, testCaseStepsList] = await Promise.all([
+    resolveLoginPreludeSteps({
+      projectId: owned.projectId,
+      testAccountId,
+    }),
+    listOwnedTestCaseStepDefinitions(testCaseId),
+  ])
+
+  if (testCaseStepsList.length === 0) {
+    throw new Error('Add at least one step before running this test case.')
+  }
+
+  const combined = [
+    ...loginPrelude.map((step) => ({
+      testCaseStepId: null as string | null,
+      action: step.action,
+      selector: step.selector,
+      selectorType: step.selectorType,
+      value: step.value,
+    })),
+    ...testCaseStepsList.map((step) => ({
+      testCaseStepId: step.id,
+      action: step.action,
+      selector: step.selector,
+      selectorType: step.selectorType,
+      value: step.value,
+    })),
+  ]
+
+  return combined
+}
+
+async function finalizeOwnedTestRun(
+  testRunId: string,
+  values: {
+    status: TestRunStatus
+    durationMs: number
+    errorMessage?: string | null
+  },
+) {
+  await db
+    .update(testRuns)
+    .set({
+      status: values.status,
+      completedAt: new Date(),
+      durationMs: values.durationMs,
+      errorMessage: values.errorMessage ?? null,
+    })
+    .where(eq(testRuns.id, testRunId))
 }
 
 export async function executeOwnedTestCaseRun(testRunId: string) {
@@ -67,69 +121,105 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
     return
   }
 
-  const owned = await requireOwnedTestCase(testRun.testCaseId)
-  const steps = await listOwnedTestCaseStepDefinitions(testRun.testCaseId)
+  const runStartedAtMs = testRun.startedAt?.getTime() ?? Date.now()
 
-  if (steps.length === 0) {
-    await db
-      .update(testRuns)
-      .set({
+  try {
+    const owned = await requireOwnedTestCase(testRun.testCaseId)
+
+    const runSteps = await db
+      .select({
+        id: testRunSteps.id,
+        sortOrder: testRunSteps.sortOrder,
+        testCaseStepId: testRunSteps.testCaseStepId,
+        action: testRunSteps.action,
+        selector: testRunSteps.selector,
+        selectorType: testRunSteps.selectorType,
+        value: testRunSteps.value,
+      })
+      .from(testRunSteps)
+      .where(eq(testRunSteps.testRunId, testRunId))
+      .orderBy(asc(testRunSteps.sortOrder))
+
+    if (runSteps.length === 0) {
+      await finalizeOwnedTestRun(testRunId, {
         status: 'error',
-        completedAt: new Date(),
         durationMs: 0,
         errorMessage: 'Add at least one step before running this test case.',
       })
-      .where(eq(testRuns.id, testRunId))
-    return
-  }
+      return
+    }
 
-  const result = await executeTestCaseSteps({
-    steps: steps.map((step) => ({
-      ...step,
-      screenshotUrl: null,
-      runStatus: null,
-      errorMessage: null,
-    })),
-    baseUrl: owned.baseUrl,
-    testRunId,
-    progress: {
-      onStepStart: async (step) => {
-        await updateTestRunStep(testRunId, step.id, { status: 'running' })
-      },
-      onStepComplete: async (step, _index, stepResult: ExecutedStepResult) => {
-        await updateTestRunStep(testRunId, step.id, {
-          status: stepResult.status,
-          durationMs: stepResult.durationMs,
-          errorMessage: stepResult.errorMessage,
-          screenshotUrl: stepResult.screenshotUrl,
-        })
-      },
-    },
-  })
+    const loginPreludeStepCount = runSteps.filter(
+      (step) => step.testCaseStepId === null,
+    ).length
 
-  await db
-    .update(testRuns)
-    .set({
+    const result = await executeTestCaseSteps({
+      steps: runSteps.map((step) => ({
+        id: step.testCaseStepId ?? step.id,
+        testCaseId: testRun.testCaseId,
+        sortOrder: step.sortOrder,
+        action: step.action,
+        selector: step.selector,
+        selectorType: step.selectorType,
+        value: step.value,
+        screenshotUrl: null,
+        runStatus: null,
+        errorMessage: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
+      baseUrl: owned.baseUrl,
+      testRunId,
+      loginPreludeStepCount,
+      progress: {
+        onStepStart: async (_step, index) => {
+          await updateTestRunStep(testRunId, index, { status: 'running' })
+        },
+        onStepComplete: async (_step, index, stepResult: ExecutedStepResult) => {
+          await updateTestRunStep(testRunId, index, {
+            status: stepResult.status,
+            durationMs: stepResult.durationMs,
+            errorMessage: stepResult.errorMessage,
+            screenshotUrl: stepResult.screenshotUrl,
+          })
+
+          if (stepResult.status === 'failed') {
+            await finalizeOwnedTestRun(testRunId, {
+              status: 'failed',
+              durationMs: Date.now() - runStartedAtMs,
+              errorMessage: stepResult.errorMessage,
+            })
+          }
+        },
+      },
+    })
+
+    await finalizeOwnedTestRun(testRunId, {
       status: result.status,
-      completedAt: new Date(),
       durationMs: result.durationMs,
       errorMessage: result.errorMessage,
     })
-    .where(eq(testRuns.id, testRunId))
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : 'Test run failed unexpectedly'
+
+    await finalizeOwnedTestRun(testRunId, {
+      status: 'error',
+      durationMs: Date.now() - runStartedAtMs,
+      errorMessage: message,
+    })
+  }
 }
 
 export async function startOwnedTestCaseRun(testCaseId: string) {
   const owned = await requireOwnedTestCase(testCaseId)
-  const steps = await listOwnedTestCaseStepDefinitions(testCaseId)
-
-  if (steps.length === 0) {
-    throw new Error('Add at least one step before running this test case.')
-  }
 
   const activeRun = await findActiveTestRun(testCaseId)
   if (activeRun) {
     throw new Error('This test case is already running.')
   }
+
+  const combinedSteps = await buildRunSteps(testCaseId, owned.testAccountId)
 
   const [testRun] = await db
     .insert(testRuns)
@@ -143,9 +233,9 @@ export async function startOwnedTestCaseRun(testCaseId: string) {
     .returning({ id: testRuns.id })
 
   await db.insert(testRunSteps).values(
-    steps.map((step, index) => ({
+    combinedSteps.map((step, index) => ({
       testRunId: testRun.id,
-      testCaseStepId: step.id,
+      testCaseStepId: step.testCaseStepId,
       sortOrder: index,
       action: step.action,
       selector: step.selector,

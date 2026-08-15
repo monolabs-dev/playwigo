@@ -155,6 +155,7 @@ export async function executeTestCaseSteps(input: {
   steps: TestCaseStep[]
   baseUrl: string | null
   testRunId: string
+  loginPreludeStepCount?: number
   progress?: ExecuteTestCaseProgress
 }) {
   if (!('BROWSER' in env) || !env.BROWSER) {
@@ -163,7 +164,8 @@ export async function executeTestCaseSteps(input: {
     )
   }
 
-  const { steps, baseUrl, testRunId, progress } = input
+  const { steps, baseUrl, testRunId, loginPreludeStepCount = 0, progress } =
+    input
 
   if (steps.length === 0) {
     throw new Error('Add at least one step before running this test case.')
@@ -178,7 +180,11 @@ export async function executeTestCaseSteps(input: {
     const page = await browser.newPage()
 
     const firstAction = normalizeStepAction(steps[0]?.action)
-    if (baseUrl && firstAction !== 'goto') {
+    if (
+      baseUrl &&
+      loginPreludeStepCount === 0 &&
+      firstAction !== 'goto'
+    ) {
       await page.goto(baseUrl, { waitUntil: 'domcontentloaded' })
     }
 
@@ -189,6 +195,14 @@ export async function executeTestCaseSteps(input: {
 
       try {
         await executeStep(page, step)
+
+        if (
+          loginPreludeStepCount > 0 &&
+          index === loginPreludeStepCount - 1
+        ) {
+          await page.waitForLoadState('networkidle').catch(() => {})
+        }
+
         const screenshotUrl = await storeStepScreenshot(
           testRunId,
           step.id,
@@ -265,7 +279,7 @@ export async function executeTestCaseSteps(input: {
     } satisfies ExecuteTestCaseResult
   } finally {
     if (browser) {
-      await browser.close()
+      await browser.close().catch(() => {})
     }
   }
 }

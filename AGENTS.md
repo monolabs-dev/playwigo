@@ -913,12 +913,23 @@ tanstackIntent:
 - Prefer Bricolage Grotesque for display and headline type; do not use Fraunces.
 - Prefer table layout for test case lists over card layouts.
 - Use shadcn sidebar for the authenticated app shell with strong project-switching UX.
+- Limit UI to one or two font families; avoid mixing display, mono, and body fonts on the same screen.
+- Keep dashboard and list views information-light; avoid overwhelming metadata density.
+- Use @dnd-kit for test-case step reordering with visible drag animation.
+- Test case steps sheet width is half the viewport.
+- Show "Element picking is only available in the browser extension" as a Sonner toast.
 
 ## Learned Workspace Facts
 
 - Playwigo is a Playwright test-automation product: users organize projects, features, and test cases.
 - Auth is Better Auth with Google OAuth and email/password sign-in and sign-up.
-- Domain model is projects containing features and test accounts, features containing test cases with ordered steps, and test runs recording each execution.
+- Domain model is projects containing features, test accounts, and reusable login flows; features containing test cases with ordered steps; test runs recording each execution.
 - Project avatars use the project's website favicon.
 - Test cases are accessed from feature detail pages; there is no separate Test Cases sidebar item.
 - New test account login URL defaults to the project's website URL.
+- Test cases authenticate via an assigned test account's login flow, not generic login-field guessing.
+- Test runs use Cloudflare Browser Run (headless Chrome via CDP).
+- Test run screenshots are stored in Cloudflare R2.
+- Element picking is only available in the browser extension.
+- Duplicating a test case adds a "Copy of " prefix and copies all steps.
+- Test runs execute server-side and should continue across page refresh with live status updates in the UI.

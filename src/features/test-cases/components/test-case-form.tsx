@@ -186,7 +186,8 @@ export function TestCaseForm({
                 </SelectContent>
               </Select>
               <p className="text-xs text-muted-foreground">
-                Optional credentials to sign in before running steps.
+                Runs the project login flow with this account's credentials
+                before test steps.
               </p>
             </div>
           )}

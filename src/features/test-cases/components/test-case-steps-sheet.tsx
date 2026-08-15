@@ -24,6 +24,7 @@ import { TestCaseStepsEditor } from '#/features/test-cases/components/test-case-
 import { TestCaseStepsView } from '#/features/test-cases/components/test-case-steps-view.tsx'
 import { listTestCaseSteps } from '#/features/test-cases/server/test-cases.ts'
 import type {
+  TestCaseLoginPrelude,
   TestCaseStep,
   TestCaseSummary,
 } from '#/features/test-cases/types/test-case.ts'
@@ -49,6 +50,9 @@ export function TestCaseStepsSheet({
   const listFn = useServerFn(listTestCaseSteps)
   const [tab, setTab] = useState('steps')
   const [steps, setSteps] = useState<TestCaseStep[]>([])
+  const [loginPrelude, setLoginPrelude] = useState<TestCaseLoginPrelude | null>(
+    null,
+  )
   const [loadingSteps, setLoadingSteps] = useState(false)
 
   const testCaseId = testCase?.id
@@ -75,8 +79,9 @@ export function TestCaseStepsSheet({
     void listFn({ data: { testCaseId } })
       .then((next) => {
         if (!cancelled) {
-          setSteps(next)
-          setTab(next.length === 0 ? 'editor' : 'steps')
+          setSteps(next.steps)
+          setLoginPrelude(next.loginPrelude)
+          setTab(next.steps.length === 0 ? 'editor' : 'steps')
         }
       })
       .catch(() => {
@@ -105,7 +110,8 @@ export function TestCaseStepsSheet({
     const interval = window.setInterval(() => {
       void listFn({ data: { testCaseId } })
         .then((next) => {
-          setSteps(next)
+          setSteps(next.steps)
+          setLoginPrelude(next.loginPrelude)
         })
         .catch(() => {})
     }, POLL_INTERVAL_MS)
@@ -151,8 +157,10 @@ export function TestCaseStepsSheet({
                   <TabsContent value="steps" className="mt-0">
                     <TestCaseStepsView
                       steps={toStepViewItems(steps)}
+                      loginPrelude={loginPrelude}
                       hasRun={
                         stepListHasRun(steps) ||
+                        loginPrelude?.runStatus !== null ||
                         testCase.latestRunStatus !== null
                       }
                     />

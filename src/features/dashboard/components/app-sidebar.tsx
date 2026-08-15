@@ -4,6 +4,7 @@ import {
   CirclePlay,
   FolderKanban,
   LayoutDashboard,
+  LogIn,
   Settings,
   Users,
 } from 'lucide-react'
@@ -30,6 +31,7 @@ const primaryNav = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
   { title: 'Features', icon: FolderKanban, href: '/features' as const },
   { title: 'Test accounts', icon: Users, href: '/test-accounts' as const },
+  { title: 'Login flow', icon: LogIn, href: '/login-flows' as const },
   { title: 'Test runs', icon: CirclePlay },
 ] as const
 

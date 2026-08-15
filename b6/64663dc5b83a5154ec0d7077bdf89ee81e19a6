@@ -1,0 +1,22 @@
+src/server-entry.ts
+  h_c8a1da106d576c 25
+  h_c8a1da106d576c 21-23
+README.md
+  h_c8a1da106d576c 55
+src/db/index.ts
+  h_c8a1da106d576c 1,5-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b664663dc5b83a5154ec0d7077bdf89ee81e19a6",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  }
+}

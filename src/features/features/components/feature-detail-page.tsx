@@ -17,6 +17,7 @@ import { getFeature } from '#/features/features/server/features.ts'
 import type { FeatureSummary } from '#/features/features/types/feature.ts'
 import { DeleteTestCaseDialog } from '#/features/test-cases/components/delete-test-case-dialog.tsx'
 import { TestCaseDialog } from '#/features/test-cases/components/test-case-dialog.tsx'
+import { TestCaseStepsSheet } from '#/features/test-cases/components/test-case-steps-sheet.tsx'
 import { TestCasesTable } from '#/features/test-cases/components/test-cases-table.tsx'
 import { listTestCases } from '#/features/test-cases/server/test-cases.ts'
 import type { TestCaseSummary } from '#/features/test-cases/types/test-case.ts'
@@ -40,6 +41,10 @@ export function FeatureDetailPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [testCaseToDelete, setTestCaseToDelete] =
     useState<TestCaseSummary | null>(null)
+  const [stepsOpen, setStepsOpen] = useState(false)
+  const [stepsTestCase, setStepsTestCase] = useState<TestCaseSummary | null>(
+    null,
+  )
 
   const refreshFeature = useCallback(async () => {
     const next = await getFeatureFn({ data: { featureId } })
@@ -85,6 +90,11 @@ export function FeatureDetailPage() {
   function openDeleteDialog(testCase: TestCaseSummary) {
     setTestCaseToDelete(testCase)
     setDeleteOpen(true)
+  }
+
+  function openStepsSheet(testCase: TestCaseSummary) {
+    setStepsTestCase(testCase)
+    setStepsOpen(true)
   }
 
   function handleRunAll() {
@@ -203,6 +213,7 @@ export function FeatureDetailPage() {
         <TestCasesTable
           testCases={testCases}
           onRename={openEditDialog}
+          onViewSteps={openStepsSheet}
           onDelete={openDeleteDialog}
         />
       )}
@@ -230,6 +241,18 @@ export function FeatureDetailPage() {
             dialogMode === 'create' ? 'Test case added' : 'Test case updated',
             { description: saved.name },
           )
+        }}
+      />
+
+      <TestCaseStepsSheet
+        testCase={stepsTestCase}
+        open={stepsOpen}
+        onOpenChange={setStepsOpen}
+        onSaved={(saved) => {
+          setTestCases((current) =>
+            current.map((item) => (item.id === saved.id ? saved : item)),
+          )
+          setStepsTestCase(saved)
         }}
       />
 

@@ -199,9 +199,7 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
               key="play"
               className="absolute inset-0 flex items-center justify-center"
               initial={
-                reduceMotion
-                  ? false
-                  : { opacity: 0, transform: 'scale(0.92)' }
+                reduceMotion ? false : { opacity: 0, transform: 'scale(0.92)' }
               }
               animate={{ opacity: 1, transform: 'scale(1)' }}
               exit={
@@ -211,19 +209,14 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
               }
               transition={transition}
             >
-              <CirclePlay
-                className="size-4 text-emerald-500"
-                aria-hidden
-              />
+              <CirclePlay className="size-4 text-emerald-500" aria-hidden />
             </motion.span>
           ) : (
             <motion.span
               key="status"
               className="absolute inset-0 flex items-center justify-center"
               initial={
-                reduceMotion
-                  ? false
-                  : { opacity: 0, transform: 'scale(0.92)' }
+                reduceMotion ? false : { opacity: 0, transform: 'scale(0.92)' }
               }
               animate={{ opacity: 1, transform: 'scale(1)' }}
               exit={
@@ -246,7 +239,9 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
               key="run-label"
               className="block truncate"
               initial={
-                reduceMotion ? false : { opacity: 0, transform: 'translateX(-4px)' }
+                reduceMotion
+                  ? false
+                  : { opacity: 0, transform: 'translateX(-4px)' }
               }
               animate={{ opacity: 1, transform: 'translateX(0)' }}
               exit={
@@ -264,7 +259,9 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
               key="name"
               className="block truncate"
               initial={
-                reduceMotion ? false : { opacity: 0, transform: 'translateX(4px)' }
+                reduceMotion
+                  ? false
+                  : { opacity: 0, transform: 'translateX(4px)' }
               }
               animate={{ opacity: 1, transform: 'translateX(0)' }}
               exit={
@@ -286,10 +283,12 @@ function TestCaseNameCell({ testCase }: { testCase: TestCaseSummary }) {
 export function TestCasesTable({
   testCases,
   onRename,
+  onViewSteps,
   onDelete,
 }: {
   testCases: TestCaseSummary[]
   onRename: (testCase: TestCaseSummary) => void
+  onViewSteps: (testCase: TestCaseSummary) => void
   onDelete: (testCase: TestCaseSummary) => void
 }) {
   return (
@@ -337,18 +336,12 @@ export function TestCasesTable({
                       <MoreHorizontal />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className='w-48'>
+                  <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem onClick={() => onRename(testCase)}>
                       <Pencil />
                       Rename
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        toast.info('Coming soon', {
-                          description: 'Step editor is on the way.',
-                        })
-                      }
-                    >
+                    <DropdownMenuItem onClick={() => onViewSteps(testCase)}>
                       <ListTree />
                       View & edit steps
                     </DropdownMenuItem>

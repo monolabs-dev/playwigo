@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm'
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm'
 
 import { db } from '#/db/index.ts'
 import {
@@ -7,13 +7,18 @@ import {
   testCaseSteps,
   testCases,
   testRuns,
+  testRunSteps,
 } from '#/db/schema.ts'
 import { requireUserProject } from '#/features/projects/server/projects.server.ts'
 import type {
   CreateTestCaseValues,
   UpdateTestCaseValues,
 } from '#/features/test-cases/schemas/test-case.ts'
-import type { TestCaseSummary } from '#/features/test-cases/types/test-case.ts'
+import type { ReplaceTestCaseStepsValues } from '#/features/test-cases/schemas/test-case-step.ts'
+import type {
+  TestCaseStep,
+  TestCaseSummary,
+} from '#/features/test-cases/types/test-case.ts'
 
 const testCaseColumns = {
   id: testCases.id,
@@ -210,4 +215,115 @@ export async function removeTestCase(id: string) {
     ...testCase,
     featureId: owned.featureId,
   }
+}
+
+const testCaseStepColumns = {
+  id: testCaseSteps.id,
+  testCaseId: testCaseSteps.testCaseId,
+  sortOrder: testCaseSteps.sortOrder,
+  action: testCaseSteps.action,
+  selector: testCaseSteps.selector,
+  selectorType: testCaseSteps.selectorType,
+  value: testCaseSteps.value,
+  createdAt: testCaseSteps.createdAt,
+  updatedAt: testCaseSteps.updatedAt,
+} as const
+
+export async function listOwnedTestCaseSteps(testCaseId: string) {
+  await requireOwnedTestCase(testCaseId)
+
+  return db
+    .select({
+      ...testCaseStepColumns,
+      screenshotUrl: sql<string | null>`(
+        select ${testRunSteps.screenshotUrl}
+        from ${testRunSteps}
+        where ${testRunSteps.testCaseStepId} = ${testCaseSteps.id}
+          and ${testRunSteps.screenshotUrl} is not null
+        order by ${testRunSteps.createdAt} desc
+        limit 1
+      )`,
+    })
+    .from(testCaseSteps)
+    .where(eq(testCaseSteps.testCaseId, testCaseId))
+    .orderBy(asc(testCaseSteps.sortOrder)) satisfies Promise<TestCaseStep[]>
+}
+
+export async function replaceOwnedTestCaseSteps(
+  input: ReplaceTestCaseStepsValues,
+) {
+  await requireOwnedTestCase(input.testCaseId)
+
+  const existing = await db
+    .select({ id: testCaseSteps.id })
+    .from(testCaseSteps)
+    .where(eq(testCaseSteps.testCaseId, input.testCaseId))
+
+  const existingIds = new Set(existing.map((step) => step.id))
+
+  for (const step of input.steps) {
+    if (step.id && !existingIds.has(step.id)) {
+      throw new Error('Step not found')
+    }
+  }
+
+  const incomingIds = new Set(
+    input.steps.flatMap((step) => (step.id ? [step.id] : [])),
+  )
+  const removedIds = existing
+    .map((step) => step.id)
+    .filter((id) => !incomingIds.has(id))
+
+  if (removedIds.length > 0) {
+    await db.delete(testCaseSteps).where(inArray(testCaseSteps.id, removedIds))
+  }
+
+  const kept = input.steps.filter((step) => step.id && existingIds.has(step.id))
+
+  for (const [index, step] of kept.entries()) {
+    await db
+      .update(testCaseSteps)
+      .set({ sortOrder: -(index + 1) })
+      .where(eq(testCaseSteps.id, step.id!))
+  }
+
+  for (const [index, step] of input.steps.entries()) {
+    const selector = step.selector ?? null
+    const value = step.value ?? null
+    const selectorType = selector ? (step.selectorType ?? 'css') : null
+
+    if (step.id && existingIds.has(step.id)) {
+      await db
+        .update(testCaseSteps)
+        .set({
+          action: step.action,
+          selector,
+          selectorType,
+          value,
+          sortOrder: index,
+        })
+        .where(
+          and(
+            eq(testCaseSteps.id, step.id),
+            eq(testCaseSteps.testCaseId, input.testCaseId),
+          ),
+        )
+    } else {
+      await db.insert(testCaseSteps).values({
+        testCaseId: input.testCaseId,
+        action: step.action,
+        selector,
+        selectorType,
+        value,
+        sortOrder: index,
+      })
+    }
+  }
+
+  const [steps, testCase] = await Promise.all([
+    listOwnedTestCaseSteps(input.testCaseId),
+    getTestCaseSummary(input.testCaseId),
+  ])
+
+  return { steps, testCase }
 }

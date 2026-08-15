@@ -1,0 +1,27 @@
+src/features/test-cases/components/test-run-detail-sheet.tsx
+  s_b5cb4a180c5d8c::t_873c4481589e6f 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c5746dfb2838dbe2d38e17d016b0e31c0344d7e9",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_b5cb4a180c5d8c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "cb915b80-3e87-4213-92a0-c052bcb44e47",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

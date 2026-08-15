@@ -1,0 +1,106 @@
+src/features/test-cases/schemas/test-case-step.ts
+  s_f4c5a019c08b46::t_9665576d5c4df6 1-97
+src/features/test-cases/components/test-case-steps-view.tsx
+  s_f4c5a019c08b46::t_1bf1dd196937bc 5-13
+  s_f4c5a019c08b46::t_f3c800bb3a6012 1-4,14-43,49-68,70-76,78-88,90-91,93-105
+  s_f4c5a019c08b46::t_bc451e782eea86 69
+  s_f4c5a019c08b46::t_ff697e8adeecba 89,92
+  s_f4c5a019c08b46::t_f23235b9aa7cab 77
+  s_f4c5a019c08b46::t_ea5fdda8ff4893 44-48
+src/features/features/components/feature-detail-page.tsx
+  s_f4c5a019c08b46::t_d12103e05b0ac8 247-258
+  s_f4c5a019c08b46::t_3c0d8333044b17 44-47
+  s_f4c5a019c08b46::t_518242ed1e97eb 216
+  s_f4c5a019c08b46::t_8225cca584bf65 20
+  s_f4c5a019c08b46::t_cf8379d2cf5331 95-99
+src/features/test-cases/components/test-case-steps-editor.tsx
+  s_f4c5a019c08b46::t_b544f344591a9e 2-18,32-35
+  s_f4c5a019c08b46::t_db1352c0e4c3e1 47,51-52
+  s_f4c5a019c08b46::t_5e864460caef3b 125,280-305,327,335,370,372,374,409,489-499
+  s_f4c5a019c08b46::t_53fd50b4c94ced 53
+  s_f4c5a019c08b46::t_19bd0cb5efe8f9 279
+  s_f4c5a019c08b46::t_c4a410a6c613d4 36
+  s_f4c5a019c08b46::t_65306c05db8ed2 306-326,328-334,336-369,371,373,375-403,405,408,410-468,487-488
+  s_f4c5a019c08b46::t_b983f76907f018 151-159
+  s_f4c5a019c08b46::t_dcbd091f0588f5 404
+  s_f4c5a019c08b46::t_ac507184134a99 173-182
+  s_f4c5a019c08b46::t_0e782dcfa371b7 108,115-117,119-122
+  s_f4c5a019c08b46::t_b54dba5939fece 1,19-31,37-46,48-49,54-107,109-114,123-124,126-150,160-172,183-247,271-278,406-407,501,535-536
+  s_f4c5a019c08b46::t_e7aa76a2fda3f8 248-270
+  s_f4c5a019c08b46::t_1557fd5676618b 515-517,521
+  s_f4c5a019c08b46::t_028e072a809a94 50
+  s_f4c5a019c08b46::t_bed86aa718a93b 118
+  s_f4c5a019c08b46::t_cdd4b845a56f36 511
+  s_f4c5a019c08b46::t_1de6e6c6dc3bb0 469-486
+  s_f4c5a019c08b46::t_d0d6b221ebd80e 500,502-510,512-514,518-520,522-534
+src/components/ui/popover.tsx
+  s_f4c5a019c08b46::t_5c46b7bffb65db 1-2,4,20,31-32,46,50,56,60,69,73
+  s_f4c5a019c08b46::t_9e137c21d5e9e7 3,5-19,21-30,33-45,47-49,51-55,57-59,61-68,70-72,74-87
+src/features/test-cases/components/test-cases-table.tsx
+  s_f4c5a019c08b46::t_fb62a930878853 286,291
+  s_f4c5a019c08b46::t_5e864460caef3b 202,212,219,242-244,262-264,339
+  s_f4c5a019c08b46::t_61d0a442161a18 344
+src/features/test-cases/server/test-cases.server.ts
+  s_f4c5a019c08b46::t_8db6a0404d8b01 219-329
+  s_f4c5a019c08b46::t_f2fda6e4daacbe 1,10,17-21
+src/features/test-cases/components/step-selector-field.tsx
+  s_f4c5a019c08b46::t_75d47c2f726756 1,3-20,22,24-52,58-61,63-95,97-117,119-122,125-138,146-161
+  s_f4c5a019c08b46::t_c6b895a39ca722 2,21,23,53-57,62,96,118,123-124,139-145
+package.json
+  s_f4c5a019c08b46::t_bee41e86ef0cab 25-27
+src/features/test-cases/types/test-case.ts
+  s_f4c5a019c08b46::t_5e864460caef3b 2
+  s_f4c5a019c08b46::t_569ac0e42ca8b5 18-30
+src/features/test-cases/components/test-case-steps-sheet.tsx
+  s_f4c5a019c08b46::t_8e508c501b3f06 86
+  s_f4c5a019c08b46::t_b1a601ec0a201a 47,49
+  s_f4c5a019c08b46::t_0d80a5191ee01f 51-56
+  s_f4c5a019c08b46::t_917f4ced12bc23 1-44,46,50,57-65,68-73,76-81,83-85,87-117,119-129,138-140,142,150-206
+  s_f4c5a019c08b46::t_4bdfb3b98c1e83 45,48,67,75
+  s_f4c5a019c08b46::t_d9684bc3a7cb0f 147
+  s_f4c5a019c08b46::t_942e4832ef1c1b 66,74,82
+  s_f4c5a019c08b46::t_43b48a9562c2bf 118,141,143-146,148-149
+  s_f4c5a019c08b46::t_5e864460caef3b 130-137
+src/features/test-cases/components/sortable-step-card.tsx
+  s_f4c5a019c08b46::t_de2995ea35e22d 1-7,9-33,37-145,147-165
+  s_f4c5a019c08b46::t_6588d6fbc83c58 8
+  s_f4c5a019c08b46::t_c27ba1fd840a7a 146
+  s_f4c5a019c08b46::t_cd3d007967de7a 34-36
+src/components/ui/tabs.tsx
+  s_f4c5a019c08b46::t_28e730b3915a8c 4,6-8,10-16,19-25,27-29,32-34,36,38-41,43-64,69-81,83-88
+  s_f4c5a019c08b46::t_5e864460caef3b 1-3,5,9,17-18,26,30-31,35,37,42,65-68,82
+src/features/test-cases/server/test-cases.ts
+  s_f4c5a019c08b46::t_3f039f09e6b00c 10-12,16,18
+  s_f4c5a019c08b46::t_d68209b0fd79e4 45-56
+  s_f4c5a019c08b46::t_92559788922bad 9
+src/features/test-cases/utils/step-actions.ts
+  s_f4c5a019c08b46::t_056ede6385a2a7 68
+  s_f4c5a019c08b46::t_392e80fcb17a60 156-158,160-164,166-188,191
+  s_f4c5a019c08b46::t_117624606b4280 5,8-15,28-53,64-67,69-82,110,113-120,125-145
+  s_f4c5a019c08b46::t_0c080044c23ba5 20,22,54-63,83-88,90,95-99
+  s_f4c5a019c08b46::t_e0166e8a4148a9 89,91-94,165
+  s_f4c5a019c08b46::t_69df1d4f849e5d 1-4,6-7,16-19,21,23-27,100-109,111-112,121-124,146-155,159,189-190,192
+pnpm-lock.yaml
+  s_f4c5a019c08b46::t_5ac20746fbe116 14-22,452-473,5615-5639
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0705babf372396e94f5f88c18f806639bdfcdd85",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f4c5a019c08b46": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "bac57638-cf77-4a56-bba4-46c1c72d9209",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

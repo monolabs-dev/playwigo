@@ -137,7 +137,6 @@ function AppInset({ children }: { children: ReactNode }) {
             </kbd>
           </Button>
           <Button
-            variant="outline"
             size="sm"
             className="h-8"
             aria-label="Run tests"
@@ -145,15 +144,6 @@ function AppInset({ children }: { children: ReactNode }) {
           >
             <CirclePlay />
             <span className="hidden sm:inline">Run</span>
-          </Button>
-          <Button
-            size="sm"
-            className="h-8"
-            aria-label="New test case"
-            onClick={() => comingSoon('New test case')}
-          >
-            <Plus />
-            <span className="hidden sm:inline">New test</span>
           </Button>
         </div>
       </header>

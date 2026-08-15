@@ -13,7 +13,6 @@ import {
 import { Skeleton } from '#/components/ui/skeleton.tsx'
 import { TestCaseStepsView } from '#/features/test-cases/components/test-case-steps-view.tsx'
 import { getTestRunStatus } from '#/features/test-cases/server/test-cases.ts'
-import { getOwnedTestRunStatus } from '#/features/test-cases/server/test-runs.server.ts'
 import type {
   TestRunStatus,
   TestRunSummary,
@@ -28,7 +27,7 @@ import type { TestCaseStepViewItem } from '#/features/test-cases/components/test
 
 const POLL_INTERVAL_MS = 1500
 
-type TestRunDetail = Awaited<ReturnType<typeof getOwnedTestRunStatus>>
+type TestRunDetail = Awaited<ReturnType<typeof getTestRunStatus>>
 
 function toStepViewItems(steps: TestRunDetail['steps']): TestCaseStepViewItem[] {
   const testCaseSteps = steps.filter((step) => step.testCaseStepId !== null)

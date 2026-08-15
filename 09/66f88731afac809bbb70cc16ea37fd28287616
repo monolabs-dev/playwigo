@@ -1,0 +1,54 @@
+src/features/test-cases/schemas/test-case.ts
+  s_c016452c338471::t_31cb5e426ff764 48-51
+src/features/test-cases/server/test-cases.server.ts
+  s_c016452c338471::t_8265f781c8b6ee 184
+  s_c016452c338471::t_46a21106c2d77c 28
+  s_c016452c338471::t_df5e7d3180bcc2 171-183,185-187
+src/features/test-cases/server/test-cases.ts
+  s_c016452c338471::t_0dda2b35df3c0b 24
+  s_c016452c338471::t_cb42db1866ae83 42-47
+  s_c016452c338471::t_165f427401fae2 8
+src/features/dashboard/components/run-command.tsx
+  s_c016452c338471::t_10062202df66c8 74,76-78
+  s_c016452c338471::t_09c456e1ba0729 161-162,172-176,186-187
+  s_c016452c338471::t_010c34bb364b09 164-166
+  s_c016452c338471::t_0ac3e9be6fc704 1-19,24-73,75,79-143,149-160,163,167-171,177-185,188,192-203
+  s_c016452c338471::t_5fbf8e27a7c76a 144-148
+  s_c016452c338471::t_b892a9a9e966d5 20-23
+  s_c016452c338471::t_11f2085d31bc05 189-191
+src/features/dashboard/hooks/active-project.tsx
+  s_c016452c338471::t_08b5f0365192fe 105-106
+  s_c016452c338471::t_88f9d7151e96e6 110
+  s_c016452c338471::t_99d734172185f1 49
+  s_c016452c338471::t_691a515af84e31 20-21
+src/features/test-cases/types/test-case.ts
+  s_c016452c338471::t_71052d2317dfa5 19-22
+src/features/dashboard/components/app-shell.tsx
+  s_c016452c338471::t_a66b35e1b31008 57
+  s_c016452c338471::t_116bbe2540c5e1 27
+  s_c016452c338471::t_77394454bc6b75 83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0966f88731afac809bbb70cc16ea37fd28287616",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_c016452c338471": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "0ccdc4b8-0c2a-4507-89bf-a5b2474371bc",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

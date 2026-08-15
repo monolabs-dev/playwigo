@@ -24,7 +24,6 @@ import {
 } from '#/components/ui/sidebar.tsx'
 import { NavUser } from '#/features/dashboard/components/nav-user.tsx'
 import { ProjectSwitcher } from '#/features/dashboard/components/project-switcher.tsx'
-import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 const primaryNav = [
   { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
@@ -93,11 +92,14 @@ export function AppSidebar({
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  asChild
+                  isActive={pathname === '/settings'}
                   tooltip="Settings"
-                  onClick={() => comingSoon('Project settings')}
                 >
-                  <Settings />
-                  <span>Settings</span>
+                  <Link to="/settings">
+                    <Settings />
+                    <span>Settings</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

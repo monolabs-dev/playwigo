@@ -32,6 +32,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/features': 'Features',
   '/test-runs': 'Test runs',
+  '/settings': 'Settings',
   '/authentication/accounts': 'Authentication',
   '/authentication/login-flow': 'Authentication',
 }

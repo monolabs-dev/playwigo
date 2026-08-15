@@ -56,3 +56,41 @@ export async function insertProject(input: { name: string; website: string }) {
 
   return project
 }
+
+export async function updateProject(input: {
+  id: string
+  name: string
+  website: string
+}) {
+  await requireUserProject(input.id)
+
+  const [project] = await db
+    .update(projects)
+    .set({
+      name: input.name,
+      website: input.website,
+    })
+    .where(eq(projects.id, input.id))
+    .returning(projectColumns)
+
+  if (!project) {
+    throw new Error('Unable to update project')
+  }
+
+  return project
+}
+
+export async function removeProject(projectId: string) {
+  await requireUserProject(projectId)
+
+  const [project] = await db
+    .delete(projects)
+    .where(eq(projects.id, projectId))
+    .returning(projectColumns)
+
+  if (!project) {
+    throw new Error('Unable to delete project')
+  }
+
+  return project
+}

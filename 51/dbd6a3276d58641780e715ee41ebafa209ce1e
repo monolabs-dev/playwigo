@@ -1,0 +1,24 @@
+src/components/ui/separator.tsx
+  h_c8a1da106d576c 1-26
+src/components/ui/sheet.tsx
+  h_c8a1da106d576c 1-145
+src/components/ui/sidebar.tsx
+  h_c8a1da106d576c 1-702
+src/components/ui/skeleton.tsx
+  h_c8a1da106d576c 1-13
+src/components/ui/tooltip.tsx
+  h_c8a1da106d576c 1-57
+src/hooks/use-mobile.ts
+  h_c8a1da106d576c 1-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "51dbd6a3276d58641780e715ee41ebafa209ce1e",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

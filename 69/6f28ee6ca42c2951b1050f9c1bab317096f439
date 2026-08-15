@@ -1,0 +1,111 @@
+src/features/login-flows/components/login-flow-page.tsx
+  s_b5613c41b836a2::t_760099cbd006ec 1-162
+src/features/login-flows/server/login-flows.ts
+  s_b5613c41b836a2::t_c16fbce943d8fb 1-30
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_b5613c41b836a2::t_297a0d492b2121 167-168
+  s_b5613c41b836a2::t_6a915609db2bf6 158
+  s_b5613c41b836a2::t_54b0fc8dbd869b 183-187
+  s_c0e5ac8e97cc19::t_934ad9e941ef20 282
+  s_b5613c41b836a2::t_cbb7f6131ee21d 198-205
+src/features/test-cases/components/test-case-form.tsx
+  s_b5613c41b836a2::t_84356c322331c8 190
+  s_b5613c41b836a2::t_0d434305090840 189
+AGENTS.md
+  s_c88bf4091f5cce::t_4d8cf45eb36f5c 916-920,926,930-935
+src/db/schema.ts
+  s_b5613c41b836a2::t_4a76309dec5c0e 161-202
+  s_b5613c41b836a2::t_142f3be8582287 339-347,350-358
+  s_b5613c41b836a2::t_d6f1531906f977 359
+src/features/login-flows/utils/login-flow-variables.ts
+  s_b5613c41b836a2::t_922ac731a77def 37-49
+  s_b5613c41b836a2::t_cb035620a0cc18 1-36,50-60
+src/features/test-cases/components/test-case-steps-view.tsx
+  s_c0e5ac8e97cc19::t_3a89fef9dc0cc5 2,4,11-14
+  s_c0e5ac8e97cc19::t_43254a082a92d5 58-138,143,153
+  s_c0e5ac8e97cc19::t_9b702b8be329ff 148
+  s_c0e5ac8e97cc19::t_5a32fce260f867 1
+  s_c0e5ac8e97cc19::t_1cfe5b94d11d3a 252,256
+  s_c0e5ac8e97cc19::t_697f053b1d379d 279-282,290-292
+src/features/login-flows/components/login-flow-steps-editor.tsx
+  s_b5613c41b836a2::t_82bc88b0e95353 1-509
+src/features/test-accounts/components/test-accounts-page.tsx
+  s_b5613c41b836a2::t_0eaad8ad82c395 77-78
+src/features/login-flows/schemas/login-flow-step.ts
+  s_b5613c41b836a2::t_117da4a08cc60b 1-101
+src/features/test-cases/server/test-run-screenshots.server.ts
+  s_b5613c41b836a2::t_673748a8e3eaa8 8,30-32,41,43,52,60-76,80,82,87,89,91
+src/features/test-cases/server/test-cases.server.ts
+  s_c0e5ac8e97cc19::t_6829032a2ad492 1,24,26,28
+  s_c0e5ac8e97cc19::t_4e45231f726f44 12-15
+  s_c0e5ac8e97cc19::t_7a974727c65a44 367
+  s_c0e5ac8e97cc19::t_dbd963b5667fc8 514,519
+  s_c0e5ac8e97cc19::t_c540a2ced6e2de 288-366,368-386,397-423,425,439-440
+src/features/test-cases/server/test-runs.server.ts
+  s_c0e5ac8e97cc19::t_f8abb51c9dd4fa 88-106,124,126-144,149-150,152-193,195,197,202-211
+  s_b5613c41b836a2::t_51de3003e532a6 15,35,49,54-87,222-223,236,238
+src/features/test-cases/types/test-case.ts
+  s_c0e5ac8e97cc19::t_87fe093836209e 21-33
+src/features/login-flows/types/login-flow.ts
+  s_b5613c41b836a2::t_b9c20ede8a9c74 1-21
+drizzle/0002_tense_thing.sql
+  s_b5613c41b836a2::t_d98ca9c74f7231 1-25
+src/routes/_app/_shell/login-flows.tsx
+  s_b5613c41b836a2::t_f2a48d55d629b8 1-10
+src/features/login-flows/server/login-flows.server.ts
+  s_b5613c41b836a2::t_47319e37f5f3e3 1-15,17-267,280
+  s_b5613c41b836a2::t_34b1a3909a4386 16
+  s_b5613c41b836a2::t_bd7a2aaeaf8066 268-279
+src/features/dashboard/components/app-sidebar.tsx
+  s_b5613c41b836a2::t_b4230609d39085 7
+  s_b5613c41b836a2::t_6af4aec4d9d9f7 34
+src/features/test-cases/components/test-case-steps-sheet.tsx
+  s_c0e5ac8e97cc19::t_aae27a02f8b240 82-84
+  s_c0e5ac8e97cc19::t_1de8aadcb50309 113-114
+  s_c0e5ac8e97cc19::t_61015c994845cd 27
+  s_c0e5ac8e97cc19::t_e203e30903b5fd 160,163
+  s_c0e5ac8e97cc19::t_4ccf71f709600a 53-55
+drizzle/meta/0002_snapshot.json
+  s_b5613c41b836a2::t_64174b990af3fd 1-1382
+drizzle/meta/_journal.json
+  s_b5613c41b836a2::t_659b81ef834ea9 18-24
+src/routeTree.gen.ts
+  s_b5613c41b836a2::t_1263676a7c763c 20,65-69,105,118,135,151,164,180,255-261,318,325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "696f28ee6ca42c2951b1050f9c1bab317096f439",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_b5613c41b836a2": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "498b2d57-d6f2-4228-adac-bea4121f1650",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_c0e5ac8e97cc19": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f13a4d0c-a945-4601-9bb3-8b889b840fe5",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_c88bf4091f5cce": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e7bee359-84ef-461b-bcf8-53242e985c0f",
+        "model": "composer-2.5-fast"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

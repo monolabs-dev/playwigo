@@ -1,0 +1,50 @@
+src/features/features/components/features-page.tsx
+  s_ef6d5904566db7::t_a98299482d9507 3
+  s_ef6d5904566db7::t_640a995453d9d2 24
+  s_ef6d5904566db7::t_38b5b72d76aeff 134
+  s_ef6d5904566db7::t_035f8367f40f23 52-55
+src/features/features/components/feature-detail-page.tsx
+  s_ef6d5904566db7::t_6a895e36778963 78-87,89-93
+  s_ef6d5904566db7::t_0b25ae7f77882d 88
+  s_ef6d5904566db7::t_c57b750bc3db0f 23
+  s_ef6d5904566db7::t_e8b409fd185b40 195
+  s_ef6d5904566db7::t_a40b8b44578a4b 239
+  s_ef6d5904566db7::t_c09245489bfe7b 194,196,202,206-207
+  s_ef6d5904566db7::t_bda65ebfa7137b 271
+src/features/features/server/features.server.ts
+  s_ef6d5904566db7::t_9e347df843df8f 80,82,84,90,92,94
+  s_ef6d5904566db7::t_67f6e5de3d8492 137
+  s_ef6d5904566db7::t_a8a754160d9d71 172-181,190
+  s_ef6d5904566db7::t_b8fca1a4fa903c 26-59
+  s_ef6d5904566db7::t_6156d53733185d 4-9
+src/features/test-cases/hooks/use-run-all-test-cases.ts
+  s_ef6d5904566db7::t_4c1ed0304d29bd 1-137
+src/features/features/components/feature-card.tsx
+  s_ef6d5904566db7::t_0a0afac60dcbc2 53,59,61-72,75,77-82
+  s_ef6d5904566db7::t_bad80f565d4fd5 31-35
+  s_ef6d5904566db7::t_5c8365666b8cf4 4,10-11
+  s_ef6d5904566db7::t_deecb21a886a2a 173-174,176
+src/features/features/types/feature.ts
+  s_ef6d5904566db7::t_8a49d7c740fdfd 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0b253a55b6e197393966746d7a2957c29ecd9365",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_ef6d5904566db7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c8ec7a4b-dbf4-439d-845b-a687042f4283",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

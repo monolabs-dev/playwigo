@@ -1,0 +1,130 @@
+src/features/dashboard/utils/coming-soon.ts
+  s_e7a79b70ad71ce::t_a9b1dac89208b7 1-7
+src/routes/_app/dashboard.tsx
+  s_e7a79b70ad71ce::t_3fb96364e7c01a 1-10
+src/features/dashboard/components/nav-user.tsx
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 2-10,56
+  s_e7a79b70ad71ce::t_008aa8c9b895fb 1,11-55,58-128
+  s_e7a79b70ad71ce::t_84214c854764e4 57
+src/routes/__root.tsx
+  s_e7a79b70ad71ce::t_b3581fe6a2fc58 54
+  s_e7a79b70ad71ce::t_3a3eb84735a358 10
+src/features/dashboard/data/mock-projects.ts
+  s_e7a79b70ad71ce::t_b98e2a85937a60 1-216
+src/routeTree.gen.ts
+  s_e7a79b70ad71ce::t_5db547de1364c8 13,16,24-27,38-42,53,60,66,69,74,76-84,89,104-110,125-131,142-153,156
+src/components/ui/avatar.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-112
+src/features/dashboard/components/app-shell.tsx
+  s_e7a79b70ad71ce::t_615aac8e797602 54-57
+  s_e7a79b70ad71ce::t_bc8a4eb7abd320 79-87
+  s_e7a79b70ad71ce::t_cea257745eea5d 1-18,23-53,58-78,88-93,95-101,103-105,107-110,112-114,116-122
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 19-22
+  h_c8a1da106d576c 94
+  s_e7a79b70ad71ce::t_10a947f76bdcb1 102,111
+  s_e7a79b70ad71ce::t_1cb11ce20e98c1 106,115
+src/features/auth/components/sign-up-page.tsx
+  s_e7a79b70ad71ce::t_6c7cb0f9e454d5 79-82
+  s_e7a79b70ad71ce::t_14981da5a4031d 21
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 171-175
+src/components/ui/badge.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-49
+src/features/dashboard/types/project.ts
+  s_e7a79b70ad71ce::t_1616b1e3246d40 1-32
+src/features/dashboard/components/project-command.tsx
+  s_e7a79b70ad71ce::t_ed3efa13779b71 1-3,5-22,25-32,68,70-71,73-74,77,81-83
+  s_e7a79b70ad71ce::t_2035218779ccd5 4
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 23-24,36-55,57-59,63-67,69,72,75-76,78-79
+  s_e7a79b70ad71ce::t_a9b9020e9913a7 33-35
+  s_e7a79b70ad71ce::t_ecb75cc16fd594 56
+  s_e7a79b70ad71ce::t_ee6b71cacef1ac 60-62
+  s_e7a79b70ad71ce::t_6106801cecf76f 80
+src/components/ui/breadcrumb.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-122
+src/features/dashboard/components/project-mark.tsx
+  s_e7a79b70ad71ce::t_ff1a1f1f7e65ce 1-18,20-27
+  s_e7a79b70ad71ce::t_79b82bd0aa290a 19
+src/components/ui/input-group.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-156
+src/components/ui/card.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-40,42-103
+  s_e7a79b70ad71ce::t_c973dca8f1f0e6 41
+src/components/ui/sonner.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 13-14,16-18,20-21,27-29,34-37,39-46
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 1-3,5-12,15,22-26,30-33,38
+  s_e7a79b70ad71ce::t_04f6350d66bee3 4
+  s_e7a79b70ad71ce::t_44b4edcd92586d 19
+src/components/ui/command.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-193
+package.json
+  s_e7a79b70ad71ce::t_3191d77bcca815 45,54
+src/features/dashboard/components/app-sidebar.tsx
+  s_e7a79b70ad71ce::t_38b26f3f1d31a6 3
+  s_e7a79b70ad71ce::t_7a54b5fc87af81 50
+  h_c8a1da106d576c 18,24,59,82-91
+  s_e7a79b70ad71ce::t_e742829bb7cfe7 1-2,4-17,19-23,25-49,51-58,60-81,92-112
+src/features/dashboard/hooks/active-project.tsx
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 96-98
+  s_e7a79b70ad71ce::t_39cc36ef4d16df 1-8,10-95,99-102
+  s_e7a79b70ad71ce::t_96beaab994575b 9
+src/features/dashboard/utils/project-display.ts
+  s_e7a79b70ad71ce::t_3a9ac87be3ea75 1-24,26-62
+  s_e7a79b70ad71ce::t_b05f11298ae0e2 25
+src/routes/_app/route.tsx
+  s_e7a79b70ad71ce::t_55219a16135973 1-33
+src/components/ui/dialog.tsx
+  s_e7a79b70ad71ce::t_3191d77bcca815 1-166
+src/features/dashboard/components/dashboard-page.tsx
+  h_c8a1da106d576c 1-11,16-19,28-30,33-34,36-44,46-48,51,54-56,60-61,64-67,71,75-76,79-80,83,86-87,90,93-94,97,100-101,106-115,121-123,126-130,132,134-138,142-144,146-151,158,165,169-179,182-183,189,192-193,198-199,203,208-209,211-212,214-218,221-233,236,247-249,252
+  s_e7a79b70ad71ce::t_c83bc29b745875 133
+  s_e7a79b70ad71ce::t_abd9ac6c392671 116-119,124-125,139-141,159-164,167-168
+  s_e7a79b70ad71ce::t_2e66df95773499 210,213
+  s_e7a79b70ad71ce::t_5125c5fdb2b42c 25
+  s_e7a79b70ad71ce::t_433aed6f7a39ad 62
+  s_e7a79b70ad71ce::t_e41b1a079f4f43 166
+  s_e7a79b70ad71ce::t_b32a135f6fb0d1 12-15,20-24,26-27,57-59,63,68-70,72-74,77-78,81-82,84-85,88-89,91-92,95-96,98-99,102-105,131,145,152-157,180-181,184-188,190-191,194-197,200-202,219-220,234-235,237-246,250-251,253-254
+  s_e7a79b70ad71ce::t_569e7f767a5ec0 31-32,35,45
+  s_e7a79b70ad71ce::t_d0b5f0edc1388d 120
+  s_e7a79b70ad71ce::t_fd11f6ab70c2c5 49-50,52-53
+  s_e7a79b70ad71ce::t_323cc6f8d68777 204-207
+src/features/auth/utils/safe-redirect.ts
+  s_e7a79b70ad71ce::t_327e8419414bdc 1,5,9
+src/features/dashboard/components/project-switcher.tsx
+  s_e7a79b70ad71ce::t_c33fdde073fd50 1-41,47,50-65,67-86,88-116
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 42-46
+  s_e7a79b70ad71ce::t_ec999351de78ed 48-49
+  s_e7a79b70ad71ce::t_57424f72e668a3 87
+  s_e7a79b70ad71ce::t_c38fda343d3d04 66
+src/features/auth/components/sign-in-page.tsx
+  s_e7a79b70ad71ce::t_6779e51c707436 21
+  s_e7a79b70ad71ce::t_1d8d4ef020042a 139-143
+  s_e7a79b70ad71ce::t_b0302e6e5f1f29 76-79
+src/integrations/better-auth/header-user.tsx
+  s_e7a79b70ad71ce::t_65d387328d7c7f 36-39
+  s_e7a79b70ad71ce::t_1e42e85f34ae43 33
+  s_e7a79b70ad71ce::t_5de13feee2982c 80
+  s_e7a79b70ad71ce::t_f31af7109f1442 40-58,60-79
+pnpm-lock.yaml
+  s_e7a79b70ad71ce::t_a7150ba12a8f82 74-76,101-103,3208-3213,4791-4800,8032-8043,9636-9642
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "253c5434c6590b3b52d4f07073efd9c9472113ed",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e7a79b70ad71ce": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e2f8c87f-e387-4cc6-ad87-3e22d185cc55",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

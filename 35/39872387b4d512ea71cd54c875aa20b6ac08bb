@@ -1,0 +1,40 @@
+src/features/test-cases/server/test-cases.server.ts
+  s_4be7bed4697735::t_c0e3a04ae93544 203-244
+src/features/test-cases/server/test-cases.ts
+  s_4be7bed4697735::t_8b729fa2211e50 16
+  s_4be7bed4697735::t_4e02c29253a945 53-58
+  s_4be7bed4697735::t_01612ab07b27e9 6
+src/features/test-cases/schemas/test-case.ts
+  s_4be7bed4697735::t_ac589fc5397d4b 62-65
+src/features/test-cases/components/test-cases-table.tsx
+  s_4be7bed4697735::t_cbe1835c667a13 396
+  s_4be7bed4697735::t_4d4fa676656958 323,330
+src/features/test-cases/components/test-case-steps-sheet.tsx
+  h_c8a1da106d576c 118
+src/features/features/components/feature-detail-page.tsx
+  s_4be7bed4697735::t_37ddc07fb9369d 45
+  s_4be7bed4697735::t_cb81eefc6af6c3 215-227
+  s_4be7bed4697735::t_5f6f0c74768b4c 22-26
+  s_4be7bed4697735::t_5d26ff45dde568 336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3539872387b4d512ea71cd54c875aa20b6ac08bb",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_4be7bed4697735": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "cd14e088-27a6-40e6-8403-510731d7d81d",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

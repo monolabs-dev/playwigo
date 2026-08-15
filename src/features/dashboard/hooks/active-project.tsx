@@ -17,6 +17,8 @@ type ActiveProjectContextValue = {
   selectProject: (id: string) => void
   switcherOpen: boolean
   setSwitcherOpen: (open: boolean) => void
+  runCommandOpen: boolean
+  setRunCommandOpen: (open: boolean) => void
   createOpen: boolean
   setCreateOpen: (open: boolean) => void
 }
@@ -44,6 +46,7 @@ export function ActiveProjectProvider({
 
   const [projectId, setProjectId] = useState(initial.id)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [runCommandOpen, setRunCommandOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
 
   useEffect(() => {
@@ -99,10 +102,12 @@ export function ActiveProjectProvider({
       selectProject,
       switcherOpen,
       setSwitcherOpen,
+      runCommandOpen,
+      setRunCommandOpen,
       createOpen,
       setCreateOpen,
     }),
-    [projects, project, selectProject, switcherOpen, createOpen],
+    [projects, project, selectProject, switcherOpen, runCommandOpen, createOpen],
   )
 
   return <ActiveProjectContext value={value}>{children}</ActiveProjectContext>

@@ -25,6 +25,7 @@ import type {
   TestCaseStep,
   TestCaseStepsPayload,
   TestCaseSummary,
+  ProjectTestCaseSummary,
   TestRunStepStatus,
 } from '#/features/test-cases/types/test-case.ts'
 
@@ -165,6 +166,23 @@ export async function listFeatureTestCases(featureId: string) {
     .leftJoin(testAccounts, eq(testCases.testAccountId, testAccounts.id))
     .where(eq(testCases.featureId, featureId))
     .orderBy(desc(testCases.createdAt)) satisfies Promise<TestCaseSummary[]>
+}
+
+export async function listProjectTestCases(projectId: string) {
+  await requireUserProject(projectId)
+
+  return db
+    .select({
+      ...testCaseSummarySelect(),
+      featureName: features.name,
+    })
+    .from(testCases)
+    .innerJoin(features, eq(testCases.featureId, features.id))
+    .leftJoin(testAccounts, eq(testCases.testAccountId, testAccounts.id))
+    .where(eq(features.projectId, projectId))
+    .orderBy(desc(features.createdAt), desc(testCases.createdAt)) satisfies Promise<
+    ProjectTestCaseSummary[]
+  >
 }
 
 export async function insertTestCase(input: CreateTestCaseValues) {

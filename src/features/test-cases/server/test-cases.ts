@@ -5,6 +5,7 @@ import {
   deleteTestCaseSchema,
   duplicateTestCaseSchema,
   listFeatureTestCasesSchema,
+  listProjectTestCasesSchema,
   updateTestCaseSchema,
 } from '#/features/test-cases/schemas/test-case.ts'
 import {
@@ -20,6 +21,7 @@ import {
   duplicateOwnedTestCase,
   insertTestCase,
   listFeatureTestCases,
+  listProjectTestCases,
   listOwnedTestCaseSteps,
   removeTestCase,
   replaceOwnedTestCaseSteps,
@@ -35,6 +37,12 @@ export const listTestCases = createServerFn({ method: 'GET' })
   .validator(listFeatureTestCasesSchema)
   .handler(async ({ data }) => {
     return listFeatureTestCases(data.featureId)
+  })
+
+export const listProjectTestCasesFn = createServerFn({ method: 'GET' })
+  .validator(listProjectTestCasesSchema)
+  .handler(async ({ data }) => {
+    return listProjectTestCases(data.projectId)
   })
 
 export const createTestCase = createServerFn({ method: 'POST' })

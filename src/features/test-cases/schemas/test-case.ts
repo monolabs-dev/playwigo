@@ -45,6 +45,10 @@ export const listFeatureTestCasesSchema = z.object({
   featureId: z.string().min(1),
 })
 
+export const listProjectTestCasesSchema = z.object({
+  projectId: z.string().min(1),
+})
+
 export const createTestCaseSchema = z.object({
   featureId: z.string().min(1),
   ...testCaseFields,

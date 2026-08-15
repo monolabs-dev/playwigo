@@ -24,6 +24,7 @@ import {
 } from '#/features/dashboard/hooks/active-project.tsx'
 import { AppSidebar } from '#/features/dashboard/components/app-sidebar.tsx'
 import { ProjectCommand } from '#/features/dashboard/components/project-command.tsx'
+import { RunCommand } from '#/features/dashboard/components/run-command.tsx'
 import { CreateProjectDialog } from '#/features/projects/components/create-project-dialog.tsx'
 import type { Project } from '#/features/projects/types/project.ts'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
@@ -53,6 +54,7 @@ export function AppShell({
           <AppSidebar user={user} />
           <AppInset>{children}</AppInset>
           <ProjectCommand />
+          <RunCommand />
           <CreateProjectHost />
         </SidebarProvider>
       </TooltipProvider>
@@ -78,7 +80,7 @@ function CreateProjectHost() {
 }
 
 function AppInset({ children }: { children: ReactNode }) {
-  const { project, setSwitcherOpen } = useActiveProject()
+  const { project, setSwitcherOpen, setRunCommandOpen } = useActiveProject()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const pageTitle = pathname.startsWith('/features/')
     ? 'Feature'
@@ -139,7 +141,7 @@ function AppInset({ children }: { children: ReactNode }) {
             size="sm"
             className="h-8"
             aria-label="Run tests"
-            onClick={() => comingSoon('Run tests')}
+            onClick={() => setRunCommandOpen(true)}
           >
             <CirclePlay />
             <span className="hidden sm:inline">Run</span>

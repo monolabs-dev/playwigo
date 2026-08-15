@@ -16,6 +16,10 @@ export type TestCaseSummary = {
   updatedAt: Date
 }
 
+export type ProjectTestCaseSummary = TestCaseSummary & {
+  featureName: string
+}
+
 export type TestRunStepStatus = 'pending' | 'running' | 'passed' | 'failed'
 
 export type TestRunSummary = {

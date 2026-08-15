@@ -8,41 +8,57 @@ import {
 } from 'react'
 import type { ReactNode } from 'react'
 
-import { mockProjects } from '#/features/dashboard/data/mock-projects.ts'
-import type { DashboardProject } from '#/features/dashboard/types/project.ts'
-
-const STORAGE_KEY = 'playwigo:selected-project'
+import type { Project } from '#/features/projects/types/project.ts'
+import { SELECTED_PROJECT_STORAGE_KEY } from '#/features/projects/utils/selected-project.ts'
 
 type ActiveProjectContextValue = {
-  projects: DashboardProject[]
-  project: DashboardProject
+  projects: Project[]
+  project: Project
   selectProject: (id: string) => void
   switcherOpen: boolean
   setSwitcherOpen: (open: boolean) => void
+  createOpen: boolean
+  setCreateOpen: (open: boolean) => void
 }
 
 const ActiveProjectContext = createContext<ActiveProjectContextValue | null>(
   null,
 )
 
-function projectById(id: string | null) {
-  return mockProjects.find((project) => project.id === id) ?? mockProjects[0]
+function resolveProject(projects: Project[], id: string | null) {
+  return projects.find((project) => project.id === id) ?? projects[0]
 }
 
-export function ActiveProjectProvider({ children }: { children: ReactNode }) {
-  const [projectId, setProjectId] = useState(mockProjects[0].id)
+export function ActiveProjectProvider({
+  projects,
+  children,
+}: {
+  projects: Project[]
+  children: ReactNode
+}) {
+  const initial = projects[0]
+
+  if (!initial) {
+    throw new Error('ActiveProjectProvider requires at least one project')
+  }
+
+  const [projectId, setProjectId] = useState(initial.id)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    const match = projectById(stored)
+    const stored = localStorage.getItem(SELECTED_PROJECT_STORAGE_KEY)
+    const match = resolveProject(projects, stored)
     setProjectId(match.id)
-  }, [])
+
+    if (match.id !== stored) {
+      localStorage.setItem(SELECTED_PROJECT_STORAGE_KEY, match.id)
+    }
+  }, [projects])
 
   const selectProject = useCallback((id: string) => {
-    const match = projectById(id)
-    setProjectId(match.id)
-    localStorage.setItem(STORAGE_KEY, match.id)
+    setProjectId(id)
+    localStorage.setItem(SELECTED_PROJECT_STORAGE_KEY, id)
   }, [])
 
   useEffect(() => {
@@ -63,27 +79,30 @@ export function ActiveProjectProvider({ children }: { children: ReactNode }) {
       }
 
       const index = Number(event.key) - 1
-      if (index >= 0 && index < mockProjects.length) {
+      const next = projects[index]
+      if (next) {
         event.preventDefault()
-        selectProject(mockProjects[index].id)
+        selectProject(next.id)
       }
     }
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [selectProject])
+  }, [projects, selectProject])
 
-  const project = projectById(projectId)
+  const project = resolveProject(projects, projectId)
 
   const value = useMemo<ActiveProjectContextValue>(
     () => ({
-      projects: mockProjects,
+      projects,
       project,
       selectProject,
       switcherOpen,
       setSwitcherOpen,
+      createOpen,
+      setCreateOpen,
     }),
-    [project, selectProject, switcherOpen],
+    [projects, project, selectProject, switcherOpen, createOpen],
   )
 
   return <ActiveProjectContext value={value}>{children}</ActiveProjectContext>

@@ -1,9 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { LandingPage } from '#/features/landing/components/landing-page.tsx'
+import { getSession } from '#/features/auth/server/session.ts'
 
 export const Route = createFileRoute('/')({
-  component: LandingPage,
+  loader: () => getSession(),
+  component: HomeRoute,
   head: () => ({
     meta: [
       { title: 'Playwigo — Playwright on the go' },
@@ -15,3 +17,9 @@ export const Route = createFileRoute('/')({
     ],
   }),
 })
+
+function HomeRoute() {
+  const session = Route.useLoaderData()
+
+  return <LandingPage session={session} />
+}

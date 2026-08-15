@@ -1,6 +1,5 @@
 import { CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
 
-import { Badge } from '#/components/ui/badge.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import {
   Card,
@@ -10,14 +9,12 @@ import {
   CardTitle,
 } from '#/components/ui/card.tsx'
 import { authClient } from '#/lib/auth-client.ts'
-import { cn } from '#/lib/utils.ts'
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 import {
   healthDotClass,
   healthLabel,
 } from '#/features/dashboard/utils/project-display.ts'
-import type { RunStatus } from '#/features/dashboard/types/project.ts'
 
 export function DashboardPage() {
   const { project } = useActiveProject()
@@ -35,68 +32,46 @@ export function DashboardPage() {
           <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <span
-                className={cn(
-                  'size-1.5 rounded-full',
-                  healthDotClass(project.health),
-                )}
+                className={`size-1.5 rounded-full ${healthDotClass('idle')}`}
               />
-              {healthLabel(project.health)}
+              {healthLabel('idle')}
             </span>
             <span aria-hidden>·</span>
-            <span>Last run {project.lastRunLabel}</span>
+            <span>No runs yet</span>
           </p>
         </div>
-        <Button
-          variant="outline"
-          className="self-start"
-          onClick={() => comingSoon('Open website')}
-        >
-          Open site
+        <Button variant="outline" className="self-start" asChild>
+          <a href={project.website} target="_blank" rel="noopener noreferrer">
+            Open site
+          </a>
         </Button>
       </section>
-
-      {project.health === 'failing' ? (
-        <div className="flex flex-col gap-3 rounded-xl border border-destructive/20 bg-destructive/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm">
-            Recent runs need attention in {project.name}. Check failing cases
-            before the next deploy.
-          </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="self-start"
-            onClick={() => comingSoon('Test runs')}
-          >
-            View runs
-          </Button>
-        </div>
-      ) : null}
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Features"
-          value={project.features}
+          value={0}
           hint="Coverage groups"
           icon={FolderKanban}
           onClick={() => comingSoon('Features')}
         />
         <StatCard
           label="Test cases"
-          value={project.testCases}
+          value={0}
           hint="Ready to run"
           icon={ListChecks}
           onClick={() => comingSoon('Test cases')}
         />
         <StatCard
           label="Accounts"
-          value={project.testAccounts}
+          value={0}
           hint="Saved credentials"
           icon={Users}
           onClick={() => comingSoon('Test accounts')}
         />
         <StatCard
           label="Pass rate"
-          value={`${project.passRate}%`}
+          value="—"
           hint="Last 7 days"
           icon={CirclePlay}
           onClick={() => comingSoon('Test runs')}
@@ -111,35 +86,11 @@ export function DashboardPage() {
               Latest executions for this project.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-0">
-            <ul className="divide-y">
-              {project.recentRuns.map((run) => (
-                <li key={run.id}>
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors duration-150 ease-out-strong fine-hover:bg-muted/50"
-                    onClick={() => comingSoon(run.name)}
-                  >
-                    <StatusDot status={run.status} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">
-                        {run.name}
-                      </span>
-                      <span className="block truncate text-xs text-muted-foreground">
-                        {run.feature}
-                      </span>
-                    </span>
-                    <RunBadge status={run.status} />
-                    <span className="hidden w-14 text-right text-xs tabular-nums text-muted-foreground sm:block">
-                      {run.duration}
-                    </span>
-                    <span className="hidden w-20 text-right text-xs text-muted-foreground md:block">
-                      {run.at}
-                    </span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+          <CardContent className="px-4 py-10 text-center">
+            <p className="text-sm text-muted-foreground">No runs yet.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              They’ll show up here after you add a test case.
+            </p>
           </CardContent>
         </Card>
 
@@ -148,37 +99,11 @@ export function DashboardPage() {
             <CardTitle>Feature coverage</CardTitle>
             <CardDescription>Passing cases in each feature.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 pt-1">
-            {project.featureCoverage.map((feature) => {
-              const percent = Math.round(
-                (feature.passing / Math.max(feature.cases, 1)) * 100,
-              )
-
-              return (
-                <button
-                  key={feature.name}
-                  type="button"
-                  className="block w-full text-left"
-                  onClick={() => comingSoon(feature.name)}
-                >
-                  <span className="flex items-baseline justify-between gap-3 text-sm">
-                    <span className="font-medium">{feature.name}</span>
-                    <span className="text-xs tabular-nums text-muted-foreground">
-                      {feature.passing}/{feature.cases}
-                    </span>
-                  </span>
-                  <span className="mt-2 block h-1.5 overflow-hidden rounded-full bg-muted">
-                    <span
-                      className={cn(
-                        'block h-full rounded-full',
-                        percent === 100 ? 'bg-emerald-500' : 'bg-primary',
-                      )}
-                      style={{ width: `${percent}%` }}
-                    />
-                  </span>
-                </button>
-              )
-            })}
+          <CardContent className="py-10 text-center">
+            <p className="text-sm text-muted-foreground">No features yet.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Group test cases by the parts of the product they cover.
+            </p>
           </CardContent>
         </Card>
       </section>
@@ -217,38 +142,5 @@ function StatCard({
         </CardHeader>
       </Card>
     </button>
-  )
-}
-
-function StatusDot({ status }: { status: RunStatus }) {
-  const tone =
-    status === 'passed'
-      ? 'bg-emerald-500'
-      : status === 'failed'
-        ? 'bg-destructive'
-        : status === 'running'
-          ? 'bg-primary animate-pulse'
-          : 'bg-muted-foreground/40'
-
-  return <span className={cn('size-2 shrink-0 rounded-full', tone)} />
-}
-
-function RunBadge({ status }: { status: RunStatus }) {
-  const label =
-    status === 'passed'
-      ? 'Passed'
-      : status === 'failed'
-        ? 'Failed'
-        : status === 'running'
-          ? 'Running'
-          : 'Queued'
-
-  return (
-    <Badge
-      variant={status === 'failed' ? 'destructive' : 'secondary'}
-      className="capitalize"
-    >
-      {label}
-    </Badge>
   )
 }

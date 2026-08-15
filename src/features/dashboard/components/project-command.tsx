@@ -13,15 +13,17 @@ import {
 } from '#/components/ui/command.tsx'
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { ProjectMark } from '#/features/dashboard/components/project-mark.tsx'
-import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
-import {
-  healthDotClass,
-  websiteHost,
-} from '#/features/dashboard/utils/project-display.ts'
+import { websiteHost } from '#/features/dashboard/utils/project-display.ts'
 
 export function ProjectCommand() {
-  const { projects, project, selectProject, switcherOpen, setSwitcherOpen } =
-    useActiveProject()
+  const {
+    projects,
+    project,
+    selectProject,
+    switcherOpen,
+    setSwitcherOpen,
+    setCreateOpen,
+  } = useActiveProject()
 
   return (
     <CommandDialog
@@ -45,19 +47,18 @@ export function ProjectCommand() {
                   setSwitcherOpen(false)
                 }}
               >
-                <ProjectMark id={item.id} name={item.name} />
+                <ProjectMark
+                  id={item.id}
+                  name={item.name}
+                  website={item.website}
+                />
                 <span className="grid min-w-0 flex-1 leading-tight">
-                  <span className="flex items-center gap-2 truncate">
-                    {item.name}
-                    <span
-                      className={`size-1.5 rounded-full ${healthDotClass(item.health)}`}
-                    />
-                  </span>
+                  <span className="truncate">{item.name}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     {websiteHost(item.website)}
                   </span>
                 </span>
-                {item.id === project.id ? null : (
+                {item.id === project.id || index >= 9 ? null : (
                   <CommandShortcut>⌘{index + 1}</CommandShortcut>
                 )}
               </CommandItem>
@@ -69,7 +70,7 @@ export function ProjectCommand() {
               value="create new project"
               onSelect={() => {
                 setSwitcherOpen(false)
-                comingSoon('New project')
+                window.setTimeout(() => setCreateOpen(true), 100)
               }}
             >
               <FolderPlus />

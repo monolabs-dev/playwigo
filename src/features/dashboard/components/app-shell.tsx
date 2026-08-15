@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { CirclePlay, Plus, Search } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '#/components/ui/button.tsx'
 import { Separator } from '#/components/ui/separator.tsx'
@@ -22,25 +23,47 @@ import {
 } from '#/features/dashboard/hooks/active-project.tsx'
 import { AppSidebar } from '#/features/dashboard/components/app-sidebar.tsx'
 import { ProjectCommand } from '#/features/dashboard/components/project-command.tsx'
+import { CreateProjectDialog } from '#/features/projects/components/create-project-dialog.tsx'
+import type { Project } from '#/features/projects/types/project.ts'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 export function AppShell({
   user,
+  projects,
   children,
 }: {
   user: { name: string; email: string; image?: string | null }
+  projects: Project[]
   children: ReactNode
 }) {
   return (
-    <ActiveProjectProvider>
+    <ActiveProjectProvider projects={projects}>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
           <AppSidebar user={user} />
           <AppInset>{children}</AppInset>
           <ProjectCommand />
+          <CreateProjectHost />
         </SidebarProvider>
       </TooltipProvider>
     </ActiveProjectProvider>
+  )
+}
+
+function CreateProjectHost() {
+  const { createOpen, setCreateOpen, selectProject } = useActiveProject()
+
+  return (
+    <CreateProjectDialog
+      open={createOpen}
+      onOpenChange={setCreateOpen}
+      onCreated={(project) => {
+        selectProject(project.id)
+        toast.success('Project created', {
+          description: project.name,
+        })
+      }}
+    />
   )
 }
 

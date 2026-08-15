@@ -16,18 +16,22 @@ import { authClient } from '#/lib/auth-client.ts'
 const ctaClass =
   'h-11 rounded-full px-5 text-[15px] transition-[transform,background-color,box-shadow,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:translate-y-0 active:scale-[0.97]'
 
-export function AuthHeaderActions() {
-  const navigate = useNavigate()
-  const { data: session, isPending } = authClient.useSession()
+type HeaderUser = {
+  name: string
+  email: string
+  image?: string | null
+}
 
-  if (isPending) {
-    return (
-      <div className="flex items-center gap-2">
-        <div className="hidden h-9 w-16 animate-pulse rounded-full bg-muted sm:block" />
-        <div className="h-9 w-24 animate-pulse rounded-full bg-muted" />
-      </div>
-    )
-  }
+export type HeaderSession = { user: HeaderUser } | null
+
+export function AuthHeaderActions({
+  initialSession,
+}: {
+  initialSession: HeaderSession
+}) {
+  const navigate = useNavigate()
+  const { data: clientSession, isPending } = authClient.useSession()
+  const session = isPending ? initialSession : clientSession
 
   if (session?.user) {
     const initial = session.user.name.charAt(0).toUpperCase() || 'U'

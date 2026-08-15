@@ -47,9 +47,7 @@ export function AppSidebar({
           <span className="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <BugPlay className="size-3.5" />
           </span>
-          <span className="text-sm font-semibold tracking-tight">
-            Playwigo
-          </span>
+          <span className="text-sm font-semibold tracking-tight">Playwigo</span>
         </div>
         <ProjectSwitcher />
       </SidebarHeader>

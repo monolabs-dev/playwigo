@@ -18,15 +18,11 @@ import {
 } from '#/components/ui/sidebar.tsx'
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { ProjectMark } from '#/features/dashboard/components/project-mark.tsx'
-import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
-import {
-  healthDotClass,
-  websiteHost,
-} from '#/features/dashboard/utils/project-display.ts'
+import { websiteHost } from '#/features/dashboard/utils/project-display.ts'
 
 export function ProjectSwitcher() {
   const { isMobile } = useSidebar()
-  const { projects, project, selectProject, setSwitcherOpen } =
+  const { projects, project, selectProject, setSwitcherOpen, setCreateOpen } =
     useActiveProject()
 
   return (
@@ -42,6 +38,7 @@ export function ProjectSwitcher() {
               <ProjectMark
                 id={project.id}
                 name={project.name}
+                website={project.website}
                 className="size-8 text-xs"
               />
               <span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
@@ -76,14 +73,13 @@ export function ProjectSwitcher() {
                   className="gap-2 py-2"
                   onSelect={() => selectProject(item.id)}
                 >
-                  <ProjectMark id={item.id} name={item.name} />
+                  <ProjectMark
+                    id={item.id}
+                    name={item.name}
+                    website={item.website}
+                  />
                   <span className="grid min-w-0 flex-1 leading-tight">
-                    <span className="flex items-center gap-2 truncate">
-                      {item.name}
-                      <span
-                        className={`size-1.5 rounded-full ${healthDotClass(item.health)}`}
-                      />
-                    </span>
+                    <span className="truncate">{item.name}</span>
                     <span className="truncate text-xs text-muted-foreground">
                       {websiteHost(item.website)}
                     </span>
@@ -92,16 +88,16 @@ export function ProjectSwitcher() {
                     <span className="text-[11px] text-muted-foreground">
                       Current
                     </span>
-                  ) : (
+                  ) : index < 9 ? (
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                  )}
+                  ) : null}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="gap-2 py-2"
-              onSelect={() => comingSoon('New project')}
+              onSelect={() => setCreateOpen(true)}
             >
               <span className="flex size-6 items-center justify-center rounded-md border border-dashed border-border text-muted-foreground">
                 <FolderPlus className="size-3.5" />

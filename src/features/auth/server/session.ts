@@ -1,30 +1,18 @@
 import { createServerFn } from '@tanstack/react-start'
-import { getRequest } from '@tanstack/react-start/server'
 
-import { auth } from '#/lib/auth.ts'
+import {
+  readSession,
+  requireSession,
+} from '#/features/auth/server/session.server.ts'
 
 export const getSession = createServerFn({ method: 'GET' }).handler(
   async () => {
-    try {
-      return await auth.api.getSession({
-        headers: getRequest().headers,
-      })
-    } catch {
-      return null
-    }
+    return readSession()
   },
 )
 
 export const ensureSession = createServerFn({ method: 'GET' }).handler(
   async () => {
-    const session = await auth.api.getSession({
-      headers: getRequest().headers,
-    })
-
-    if (!session) {
-      throw new Error('Unauthorized')
-    }
-
-    return session
+    return requireSession()
   },
 )

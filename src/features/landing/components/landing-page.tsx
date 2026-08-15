@@ -7,15 +7,18 @@ import { cn } from '#/lib/utils.ts'
 import { features, steps } from '#/features/landing/content.ts'
 import { TestRunnerPreview } from '#/features/landing/components/test-runner-preview.tsx'
 import { PageShell } from '#/components/page-shell.tsx'
-import { AuthHeaderActions } from '#/integrations/better-auth/header-user.tsx'
+import {
+  AuthHeaderActions,
+  type HeaderSession,
+} from '#/integrations/better-auth/header-user.tsx'
 
 const ctaClass =
   'h-11 rounded-full px-5 text-[15px] transition-[transform,background-color,box-shadow,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:translate-y-0 active:scale-[0.97]'
 
-export function LandingPage() {
+export function LandingPage({ session }: { session: HeaderSession }) {
   return (
     <PageShell>
-      <Header />
+      <Header session={session} />
 
       <main>
         <Hero />
@@ -29,7 +32,7 @@ export function LandingPage() {
   )
 }
 
-function Header() {
+function Header({ session }: { session: HeaderSession }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -60,7 +63,7 @@ function Header() {
 
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <AuthHeaderActions />
+          <AuthHeaderActions initialSession={session} />
         </div>
       </div>
     </header>

@@ -1,7 +1,6 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 
 import { getSession } from '#/features/auth/server/session.ts'
-import { AppShell } from '#/features/dashboard/components/app-shell.tsx'
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ location }) => {
@@ -23,11 +22,5 @@ export const Route = createFileRoute('/_app')({
 })
 
 function AppLayout() {
-  const { session } = Route.useRouteContext()
-
-  return (
-    <AppShell user={session.user}>
-      <Outlet />
-    </AppShell>
-  )
+  return <Outlet />
 }

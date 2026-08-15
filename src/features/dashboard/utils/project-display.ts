@@ -15,6 +15,16 @@ export function websiteHost(website: string) {
   }
 }
 
+export function projectFaviconUrl(website: string) {
+  const host = websiteHost(website)
+
+  if (!host) {
+    return undefined
+  }
+
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(host)}&sz=64`
+}
+
 export function projectInitials(name: string) {
   const parts = name.split(/\s+/).filter(Boolean)
 

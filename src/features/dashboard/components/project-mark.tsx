@@ -1,5 +1,11 @@
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '#/components/ui/avatar.tsx'
 import { cn } from '#/lib/utils.ts'
 import {
+  projectFaviconUrl,
   projectInitials,
   projectMarkTone,
 } from '#/features/dashboard/utils/project-display.ts'
@@ -7,21 +13,36 @@ import {
 export function ProjectMark({
   id,
   name,
+  website,
   className,
 }: {
   id: string
   name: string
+  website: string
   className?: string
 }) {
+  const faviconUrl = projectFaviconUrl(website)
+
   return (
-    <span
-      className={cn(
-        'flex size-6 shrink-0 items-center justify-center rounded-md text-[11px] font-semibold',
-        projectMarkTone(id),
-        className,
-      )}
+    <Avatar
+      size="sm"
+      className={cn('size-6 rounded-md after:rounded-md', className)}
     >
-      {projectInitials(name)}
-    </span>
+      {faviconUrl ? (
+        <AvatarImage
+          src={faviconUrl}
+          alt=""
+          className="rounded-md bg-background object-contain p-0.5"
+        />
+      ) : null}
+      <AvatarFallback
+        className={cn(
+          'rounded-md text-[11px] font-semibold',
+          projectMarkTone(id),
+        )}
+      >
+        {projectInitials(name)}
+      </AvatarFallback>
+    </Avatar>
   )
 }

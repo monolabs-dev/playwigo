@@ -18,7 +18,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:pull": "drizzle-kit pull",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "cli": "node packages/cli/dist/index.js",
+    "cli:build": "pnpm --filter @playwigo/cli build"
   },
   "dependencies": {
     "@better-auth/api-key": "^1.6.29",

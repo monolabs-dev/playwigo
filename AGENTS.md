@@ -922,14 +922,14 @@ tanstackIntent:
 ## Learned Workspace Facts
 
 - Playwigo is a Playwright test-automation product: users organize projects, features, and test cases.
-- Auth is Better Auth with Google OAuth and email/password sign-in and sign-up.
+- Auth is Better Auth with Google OAuth, email/password sign-in, and the apiKey plugin (`sk-pwg-` prefix, `x-api-key` header for agents/CLI).
 - Domain model is projects containing features, test accounts, and reusable login flows; features containing test cases with ordered steps; test runs recording each execution.
+- Database is Neon Postgres (aws-ap-southeast-1); production Workers use Cloudflare Hyperdrive, local dev uses the Neon HTTP driver.
+- A CLI for AI agents is planned to manage projects, features, test cases, steps, and runs via REST API.
 - Project avatars use the project's website favicon.
-- Test cases are accessed from feature detail pages; there is no separate Test Cases sidebar item.
+- Test cases are accessed from feature detail pages; sidebar includes Test runs and Project settings, not a Test Cases item.
+- Test accounts and login flows share one sidebar page with tabs.
 - New test account login URL defaults to the project's website URL.
 - Test cases authenticate via an assigned test account's login flow, not generic login-field guessing.
-- Test runs use Cloudflare Browser Run (headless Chrome via CDP).
-- Test run screenshots are stored in Cloudflare R2.
-- Element picking is only available in the browser extension.
-- Duplicating a test case adds a "Copy of " prefix and copies all steps.
-- Test runs execute server-side and should continue across page refresh with live status updates in the UI.
+- Test runs use Cloudflare Browser Run (headless Chrome via CDP); screenshots are stored in Cloudflare R2.
+- Element picking is only available in the browser extension; duplicating a test case adds a "Copy of " prefix and copies all steps; test runs execute server-side with live status updates across page refresh.

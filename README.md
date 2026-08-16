@@ -54,6 +54,31 @@ For production env vars, run `wrangler secret put MY_VAR` for each secret listed
 
 KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
 
+## CLI for AI agents
+
+Playwigo exposes a REST API at `/api/v1/*` authenticated with Better Auth API keys (`x-api-key: sk-pwg-...`).
+
+1. Sign in to the app and open **Settings → API Keys** to create a key (shown once).
+2. Apply DB migrations so the `apikeys` table exists (`pnpm db:migrate`).
+3. Install and build the CLI package:
+
+```bash
+pnpm install
+pnpm cli:build
+```
+
+4. Configure env and run commands:
+
+```bash
+export PLAYWIGO_API_URL="http://localhost:3000"   # or your deployed Worker URL
+export PLAYWIGO_API_KEY="sk-pwg-..."
+
+pnpm cli:build
+pnpm run cli projects list --json
+pnpm run cli run --test-case <id> --wait --json
+```
+
+See [packages/cli/README.md](packages/cli/README.md) for the full command list, agent workflow, and **how to publish `@playwigo/cli` to npm**.
 
 ## Shadcn
 

@@ -85,7 +85,11 @@ export function NavUser({
                 <UserRound />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => comingSoon('Settings')}>
+              <DropdownMenuItem
+                onSelect={() => {
+                  void navigate({ to: '/settings/api-keys' })
+                }}
+              >
                 <Settings />
                 Settings
               </DropdownMenuItem>

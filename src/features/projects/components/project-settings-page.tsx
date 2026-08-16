@@ -20,11 +20,9 @@ export function ProjectSettingsPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-      <section className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Project settings
-        </h1>
+    <div className="flex flex-1 flex-col gap-6">
+      <section className="space-y-1">
+        <h2 className="text-lg font-semibold tracking-tight">Project</h2>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Manage the name and website for{' '}
           <span className="text-foreground">{project.name}</span>.

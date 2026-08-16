@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { CirclePlay, Plus, Search } from 'lucide-react'
+import { CirclePlay, Search } from 'lucide-react'
 import { useRouterState } from '@tanstack/react-router'
 import { toast } from 'sonner'
 
@@ -27,13 +27,14 @@ import { ProjectCommand } from '#/features/dashboard/components/project-command.
 import { RunCommand } from '#/features/dashboard/components/run-command.tsx'
 import { CreateProjectDialog } from '#/features/projects/components/create-project-dialog.tsx'
 import type { Project } from '#/features/projects/types/project.ts'
-import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/features': 'Features',
   '/test-runs': 'Test runs',
   '/settings': 'Settings',
+  '/settings/project': 'Settings',
+  '/settings/api-keys': 'Settings',
   '/authentication/accounts': 'Authentication',
   '/authentication/login-flow': 'Authentication',
 }
@@ -86,7 +87,9 @@ function AppInset({ children }: { children: ReactNode }) {
     ? 'Feature'
     : pathname.startsWith('/authentication')
       ? 'Authentication'
-      : PAGE_TITLES[pathname] ?? 'Dashboard'
+      : pathname.startsWith('/settings')
+        ? 'Settings'
+        : PAGE_TITLES[pathname] ?? 'Dashboard'
 
   return (
     <SidebarInset>

@@ -19,16 +19,26 @@ import { Route as AppShellAuthenticationRouteRouteImport } from './routes/_app/_
 import { Route as AppShellDashboardRouteImport } from './routes/_app/_shell/dashboard'
 import { Route as AppShellFeaturesRouteRouteImport } from './routes/_app/_shell/features/route'
 import { Route as AppShellLoginFlowsRouteImport } from './routes/_app/_shell/login-flows'
-import { Route as AppShellSettingsRouteImport } from './routes/_app/_shell/settings'
+import { Route as AppShellSettingsRouteRouteImport } from './routes/_app/_shell/settings/route'
 import { Route as AppShellTestAccountsRouteImport } from './routes/_app/_shell/test-accounts'
 import { Route as AppShellTestRunsRouteImport } from './routes/_app/_shell/test-runs'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiV1ProjectsRouteImport } from './routes/api/v1/projects'
 import { Route as AppShellAuthenticationIndexRouteImport } from './routes/_app/_shell/authentication/index'
 import { Route as AppShellAuthenticationAccountsRouteImport } from './routes/_app/_shell/authentication/accounts'
 import { Route as AppShellAuthenticationLoginFlowRouteImport } from './routes/_app/_shell/authentication/login-flow'
 import { Route as AppShellFeaturesIndexRouteImport } from './routes/_app/_shell/features/index'
 import { Route as AppShellFeaturesFeatureIdRouteImport } from './routes/_app/_shell/features/$featureId'
+import { Route as AppShellSettingsIndexRouteImport } from './routes/_app/_shell/settings/index'
+import { Route as AppShellSettingsApiKeysRouteImport } from './routes/_app/_shell/settings/api-keys'
+import { Route as AppShellSettingsProjectRouteImport } from './routes/_app/_shell/settings/project'
+import { Route as ApiV1TestRunsTestRunIdRouteImport } from './routes/api/v1/test-runs/$testRunId'
 import { Route as ApiScreenshotsTestRunsTestRunIdStepIdRouteImport } from './routes/api/screenshots/test-runs/$testRunId/$stepId'
+import { Route as ApiV1FeaturesFeatureIdTestCasesRouteImport } from './routes/api/v1/features/$featureId/test-cases'
+import { Route as ApiV1ProjectsProjectIdFeaturesRouteImport } from './routes/api/v1/projects/$projectId/features'
+import { Route as ApiV1ProjectsProjectIdTestRunsRouteImport } from './routes/api/v1/projects/$projectId/test-runs'
+import { Route as ApiV1TestCasesTestCaseIdRunRouteImport } from './routes/api/v1/test-cases/$testCaseId/run'
+import { Route as ApiV1TestCasesTestCaseIdStepsRouteImport } from './routes/api/v1/test-cases/$testCaseId/steps'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -79,7 +89,7 @@ const AppShellLoginFlowsRoute = AppShellLoginFlowsRouteImport.update({
   path: '/login-flows',
   getParentRoute: () => AppShellRouteRoute,
 } as any)
-const AppShellSettingsRoute = AppShellSettingsRouteImport.update({
+const AppShellSettingsRouteRoute = AppShellSettingsRouteRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AppShellRouteRoute,
@@ -97,6 +107,11 @@ const AppShellTestRunsRoute = AppShellTestRunsRouteImport.update({
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1ProjectsRoute = ApiV1ProjectsRouteImport.update({
+  id: '/api/v1/projects',
+  path: '/api/v1/projects',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppShellAuthenticationIndexRoute =
@@ -128,10 +143,60 @@ const AppShellFeaturesFeatureIdRoute =
     path: '/$featureId',
     getParentRoute: () => AppShellFeaturesRouteRoute,
   } as any)
+const AppShellSettingsIndexRoute = AppShellSettingsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppShellSettingsRouteRoute,
+} as any)
+const AppShellSettingsApiKeysRoute = AppShellSettingsApiKeysRouteImport.update({
+  id: '/api-keys',
+  path: '/api-keys',
+  getParentRoute: () => AppShellSettingsRouteRoute,
+} as any)
+const AppShellSettingsProjectRoute = AppShellSettingsProjectRouteImport.update({
+  id: '/project',
+  path: '/project',
+  getParentRoute: () => AppShellSettingsRouteRoute,
+} as any)
+const ApiV1TestRunsTestRunIdRoute = ApiV1TestRunsTestRunIdRouteImport.update({
+  id: '/api/v1/test-runs/$testRunId',
+  path: '/api/v1/test-runs/$testRunId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiScreenshotsTestRunsTestRunIdStepIdRoute =
   ApiScreenshotsTestRunsTestRunIdStepIdRouteImport.update({
     id: '/api/screenshots/test-runs/$testRunId/$stepId',
     path: '/api/screenshots/test-runs/$testRunId/$stepId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1FeaturesFeatureIdTestCasesRoute =
+  ApiV1FeaturesFeatureIdTestCasesRouteImport.update({
+    id: '/api/v1/features/$featureId/test-cases',
+    path: '/api/v1/features/$featureId/test-cases',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1ProjectsProjectIdFeaturesRoute =
+  ApiV1ProjectsProjectIdFeaturesRouteImport.update({
+    id: '/$projectId/features',
+    path: '/$projectId/features',
+    getParentRoute: () => ApiV1ProjectsRoute,
+  } as any)
+const ApiV1ProjectsProjectIdTestRunsRoute =
+  ApiV1ProjectsProjectIdTestRunsRouteImport.update({
+    id: '/$projectId/test-runs',
+    path: '/$projectId/test-runs',
+    getParentRoute: () => ApiV1ProjectsRoute,
+  } as any)
+const ApiV1TestCasesTestCaseIdRunRoute =
+  ApiV1TestCasesTestCaseIdRunRouteImport.update({
+    id: '/api/v1/test-cases/$testCaseId/run',
+    path: '/api/v1/test-cases/$testCaseId/run',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiV1TestCasesTestCaseIdStepsRoute =
+  ApiV1TestCasesTestCaseIdStepsRouteImport.update({
+    id: '/api/v1/test-cases/$testCaseId/steps',
+    path: '/api/v1/test-cases/$testCaseId/steps',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -142,18 +207,28 @@ export interface FileRoutesByFullPath {
   '/onboard': typeof AppOnboardRoute
   '/authentication': typeof AppShellAuthenticationRouteRouteWithChildren
   '/features': typeof AppShellFeaturesRouteRouteWithChildren
+  '/settings': typeof AppShellSettingsRouteRouteWithChildren
   '/dashboard': typeof AppShellDashboardRoute
   '/login-flows': typeof AppShellLoginFlowsRoute
-  '/settings': typeof AppShellSettingsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/test-runs': typeof AppShellTestRunsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
   '/authentication/login-flow': typeof AppShellAuthenticationLoginFlowRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/settings/api-keys': typeof AppShellSettingsApiKeysRoute
+  '/settings/project': typeof AppShellSettingsProjectRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
   '/authentication/': typeof AppShellAuthenticationIndexRoute
   '/features/': typeof AppShellFeaturesIndexRoute
+  '/settings/': typeof AppShellSettingsIndexRoute
   '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
+  '/api/v1/features/$featureId/test-cases': typeof ApiV1FeaturesFeatureIdTestCasesRoute
+  '/api/v1/projects/$projectId/features': typeof ApiV1ProjectsProjectIdFeaturesRoute
+  '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
+  '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
+  '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -162,16 +237,25 @@ export interface FileRoutesByTo {
   '/onboard': typeof AppOnboardRoute
   '/dashboard': typeof AppShellDashboardRoute
   '/login-flows': typeof AppShellLoginFlowsRoute
-  '/settings': typeof AppShellSettingsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/test-runs': typeof AppShellTestRunsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
   '/authentication/login-flow': typeof AppShellAuthenticationLoginFlowRoute
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/settings/api-keys': typeof AppShellSettingsApiKeysRoute
+  '/settings/project': typeof AppShellSettingsProjectRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
   '/authentication': typeof AppShellAuthenticationIndexRoute
   '/features': typeof AppShellFeaturesIndexRoute
+  '/settings': typeof AppShellSettingsIndexRoute
   '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
+  '/api/v1/features/$featureId/test-cases': typeof ApiV1FeaturesFeatureIdTestCasesRoute
+  '/api/v1/projects/$projectId/features': typeof ApiV1ProjectsProjectIdFeaturesRoute
+  '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
+  '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
+  '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,18 +267,28 @@ export interface FileRoutesById {
   '/_app/onboard': typeof AppOnboardRoute
   '/_app/_shell/authentication': typeof AppShellAuthenticationRouteRouteWithChildren
   '/_app/_shell/features': typeof AppShellFeaturesRouteRouteWithChildren
+  '/_app/_shell/settings': typeof AppShellSettingsRouteRouteWithChildren
   '/_app/_shell/dashboard': typeof AppShellDashboardRoute
   '/_app/_shell/login-flows': typeof AppShellLoginFlowsRoute
-  '/_app/_shell/settings': typeof AppShellSettingsRoute
   '/_app/_shell/test-accounts': typeof AppShellTestAccountsRoute
   '/_app/_shell/test-runs': typeof AppShellTestRunsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/_app/_shell/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
   '/_app/_shell/authentication/login-flow': typeof AppShellAuthenticationLoginFlowRoute
   '/_app/_shell/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
+  '/_app/_shell/settings/api-keys': typeof AppShellSettingsApiKeysRoute
+  '/_app/_shell/settings/project': typeof AppShellSettingsProjectRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
   '/_app/_shell/authentication/': typeof AppShellAuthenticationIndexRoute
   '/_app/_shell/features/': typeof AppShellFeaturesIndexRoute
+  '/_app/_shell/settings/': typeof AppShellSettingsIndexRoute
   '/api/screenshots/test-runs/$testRunId/$stepId': typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
+  '/api/v1/features/$featureId/test-cases': typeof ApiV1FeaturesFeatureIdTestCasesRoute
+  '/api/v1/projects/$projectId/features': typeof ApiV1ProjectsProjectIdFeaturesRoute
+  '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
+  '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
+  '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -205,18 +299,28 @@ export interface FileRouteTypes {
     | '/onboard'
     | '/authentication'
     | '/features'
+    | '/settings'
     | '/dashboard'
     | '/login-flows'
-    | '/settings'
     | '/test-accounts'
     | '/test-runs'
     | '/api/auth/$'
+    | '/api/v1/projects'
     | '/authentication/accounts'
     | '/authentication/login-flow'
     | '/features/$featureId'
+    | '/settings/api-keys'
+    | '/settings/project'
+    | '/api/v1/test-runs/$testRunId'
     | '/authentication/'
     | '/features/'
+    | '/settings/'
     | '/api/screenshots/test-runs/$testRunId/$stepId'
+    | '/api/v1/features/$featureId/test-cases'
+    | '/api/v1/projects/$projectId/features'
+    | '/api/v1/projects/$projectId/test-runs'
+    | '/api/v1/test-cases/$testCaseId/run'
+    | '/api/v1/test-cases/$testCaseId/steps'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -225,16 +329,25 @@ export interface FileRouteTypes {
     | '/onboard'
     | '/dashboard'
     | '/login-flows'
-    | '/settings'
     | '/test-accounts'
     | '/test-runs'
     | '/api/auth/$'
+    | '/api/v1/projects'
     | '/authentication/accounts'
     | '/authentication/login-flow'
     | '/features/$featureId'
+    | '/settings/api-keys'
+    | '/settings/project'
+    | '/api/v1/test-runs/$testRunId'
     | '/authentication'
     | '/features'
+    | '/settings'
     | '/api/screenshots/test-runs/$testRunId/$stepId'
+    | '/api/v1/features/$featureId/test-cases'
+    | '/api/v1/projects/$projectId/features'
+    | '/api/v1/projects/$projectId/test-runs'
+    | '/api/v1/test-cases/$testCaseId/run'
+    | '/api/v1/test-cases/$testCaseId/steps'
   id:
     | '__root__'
     | '/'
@@ -245,18 +358,28 @@ export interface FileRouteTypes {
     | '/_app/onboard'
     | '/_app/_shell/authentication'
     | '/_app/_shell/features'
+    | '/_app/_shell/settings'
     | '/_app/_shell/dashboard'
     | '/_app/_shell/login-flows'
-    | '/_app/_shell/settings'
     | '/_app/_shell/test-accounts'
     | '/_app/_shell/test-runs'
     | '/api/auth/$'
+    | '/api/v1/projects'
     | '/_app/_shell/authentication/accounts'
     | '/_app/_shell/authentication/login-flow'
     | '/_app/_shell/features/$featureId'
+    | '/_app/_shell/settings/api-keys'
+    | '/_app/_shell/settings/project'
+    | '/api/v1/test-runs/$testRunId'
     | '/_app/_shell/authentication/'
     | '/_app/_shell/features/'
+    | '/_app/_shell/settings/'
     | '/api/screenshots/test-runs/$testRunId/$stepId'
+    | '/api/v1/features/$featureId/test-cases'
+    | '/api/v1/projects/$projectId/features'
+    | '/api/v1/projects/$projectId/test-runs'
+    | '/api/v1/test-cases/$testCaseId/run'
+    | '/api/v1/test-cases/$testCaseId/steps'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -265,7 +388,12 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiV1ProjectsRoute: typeof ApiV1ProjectsRouteWithChildren
+  ApiV1TestRunsTestRunIdRoute: typeof ApiV1TestRunsTestRunIdRoute
   ApiScreenshotsTestRunsTestRunIdStepIdRoute: typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
+  ApiV1FeaturesFeatureIdTestCasesRoute: typeof ApiV1FeaturesFeatureIdTestCasesRoute
+  ApiV1TestCasesTestCaseIdRunRoute: typeof ApiV1TestCasesTestCaseIdRunRoute
+  ApiV1TestCasesTestCaseIdStepsRoute: typeof ApiV1TestCasesTestCaseIdStepsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -344,7 +472,7 @@ declare module '@tanstack/react-router' {
       id: '/_app/_shell/settings'
       path: '/settings'
       fullPath: '/settings'
-      preLoaderRoute: typeof AppShellSettingsRouteImport
+      preLoaderRoute: typeof AppShellSettingsRouteRouteImport
       parentRoute: typeof AppShellRouteRoute
     }
     '/_app/_shell/test-accounts': {
@@ -366,6 +494,13 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/projects': {
+      id: '/api/v1/projects'
+      path: '/api/v1/projects'
+      fullPath: '/api/v1/projects'
+      preLoaderRoute: typeof ApiV1ProjectsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/_shell/authentication/': {
@@ -403,11 +538,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppShellFeaturesFeatureIdRouteImport
       parentRoute: typeof AppShellFeaturesRouteRoute
     }
+    '/_app/_shell/settings/': {
+      id: '/_app/_shell/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AppShellSettingsIndexRouteImport
+      parentRoute: typeof AppShellSettingsRouteRoute
+    }
+    '/_app/_shell/settings/api-keys': {
+      id: '/_app/_shell/settings/api-keys'
+      path: '/api-keys'
+      fullPath: '/settings/api-keys'
+      preLoaderRoute: typeof AppShellSettingsApiKeysRouteImport
+      parentRoute: typeof AppShellSettingsRouteRoute
+    }
+    '/_app/_shell/settings/project': {
+      id: '/_app/_shell/settings/project'
+      path: '/project'
+      fullPath: '/settings/project'
+      preLoaderRoute: typeof AppShellSettingsProjectRouteImport
+      parentRoute: typeof AppShellSettingsRouteRoute
+    }
+    '/api/v1/test-runs/$testRunId': {
+      id: '/api/v1/test-runs/$testRunId'
+      path: '/api/v1/test-runs/$testRunId'
+      fullPath: '/api/v1/test-runs/$testRunId'
+      preLoaderRoute: typeof ApiV1TestRunsTestRunIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/screenshots/test-runs/$testRunId/$stepId': {
       id: '/api/screenshots/test-runs/$testRunId/$stepId'
       path: '/api/screenshots/test-runs/$testRunId/$stepId'
       fullPath: '/api/screenshots/test-runs/$testRunId/$stepId'
       preLoaderRoute: typeof ApiScreenshotsTestRunsTestRunIdStepIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/features/$featureId/test-cases': {
+      id: '/api/v1/features/$featureId/test-cases'
+      path: '/api/v1/features/$featureId/test-cases'
+      fullPath: '/api/v1/features/$featureId/test-cases'
+      preLoaderRoute: typeof ApiV1FeaturesFeatureIdTestCasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/projects/$projectId/features': {
+      id: '/api/v1/projects/$projectId/features'
+      path: '/$projectId/features'
+      fullPath: '/api/v1/projects/$projectId/features'
+      preLoaderRoute: typeof ApiV1ProjectsProjectIdFeaturesRouteImport
+      parentRoute: typeof ApiV1ProjectsRoute
+    }
+    '/api/v1/projects/$projectId/test-runs': {
+      id: '/api/v1/projects/$projectId/test-runs'
+      path: '/$projectId/test-runs'
+      fullPath: '/api/v1/projects/$projectId/test-runs'
+      preLoaderRoute: typeof ApiV1ProjectsProjectIdTestRunsRouteImport
+      parentRoute: typeof ApiV1ProjectsRoute
+    }
+    '/api/v1/test-cases/$testCaseId/run': {
+      id: '/api/v1/test-cases/$testCaseId/run'
+      path: '/api/v1/test-cases/$testCaseId/run'
+      fullPath: '/api/v1/test-cases/$testCaseId/run'
+      preLoaderRoute: typeof ApiV1TestCasesTestCaseIdRunRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/test-cases/$testCaseId/steps': {
+      id: '/api/v1/test-cases/$testCaseId/steps'
+      path: '/api/v1/test-cases/$testCaseId/steps'
+      fullPath: '/api/v1/test-cases/$testCaseId/steps'
+      preLoaderRoute: typeof ApiV1TestCasesTestCaseIdStepsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -446,12 +644,29 @@ const AppShellFeaturesRouteRouteWithChildren =
     AppShellFeaturesRouteRouteChildren,
   )
 
+interface AppShellSettingsRouteRouteChildren {
+  AppShellSettingsApiKeysRoute: typeof AppShellSettingsApiKeysRoute
+  AppShellSettingsProjectRoute: typeof AppShellSettingsProjectRoute
+  AppShellSettingsIndexRoute: typeof AppShellSettingsIndexRoute
+}
+
+const AppShellSettingsRouteRouteChildren: AppShellSettingsRouteRouteChildren = {
+  AppShellSettingsApiKeysRoute: AppShellSettingsApiKeysRoute,
+  AppShellSettingsProjectRoute: AppShellSettingsProjectRoute,
+  AppShellSettingsIndexRoute: AppShellSettingsIndexRoute,
+}
+
+const AppShellSettingsRouteRouteWithChildren =
+  AppShellSettingsRouteRoute._addFileChildren(
+    AppShellSettingsRouteRouteChildren,
+  )
+
 interface AppShellRouteRouteChildren {
   AppShellAuthenticationRouteRoute: typeof AppShellAuthenticationRouteRouteWithChildren
   AppShellFeaturesRouteRoute: typeof AppShellFeaturesRouteRouteWithChildren
+  AppShellSettingsRouteRoute: typeof AppShellSettingsRouteRouteWithChildren
   AppShellDashboardRoute: typeof AppShellDashboardRoute
   AppShellLoginFlowsRoute: typeof AppShellLoginFlowsRoute
-  AppShellSettingsRoute: typeof AppShellSettingsRoute
   AppShellTestAccountsRoute: typeof AppShellTestAccountsRoute
   AppShellTestRunsRoute: typeof AppShellTestRunsRoute
 }
@@ -460,9 +675,9 @@ const AppShellRouteRouteChildren: AppShellRouteRouteChildren = {
   AppShellAuthenticationRouteRoute:
     AppShellAuthenticationRouteRouteWithChildren,
   AppShellFeaturesRouteRoute: AppShellFeaturesRouteRouteWithChildren,
+  AppShellSettingsRouteRoute: AppShellSettingsRouteRouteWithChildren,
   AppShellDashboardRoute: AppShellDashboardRoute,
   AppShellLoginFlowsRoute: AppShellLoginFlowsRoute,
-  AppShellSettingsRoute: AppShellSettingsRoute,
   AppShellTestAccountsRoute: AppShellTestAccountsRoute,
   AppShellTestRunsRoute: AppShellTestRunsRoute,
 }
@@ -485,14 +700,33 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
+interface ApiV1ProjectsRouteChildren {
+  ApiV1ProjectsProjectIdFeaturesRoute: typeof ApiV1ProjectsProjectIdFeaturesRoute
+  ApiV1ProjectsProjectIdTestRunsRoute: typeof ApiV1ProjectsProjectIdTestRunsRoute
+}
+
+const ApiV1ProjectsRouteChildren: ApiV1ProjectsRouteChildren = {
+  ApiV1ProjectsProjectIdFeaturesRoute: ApiV1ProjectsProjectIdFeaturesRoute,
+  ApiV1ProjectsProjectIdTestRunsRoute: ApiV1ProjectsProjectIdTestRunsRoute,
+}
+
+const ApiV1ProjectsRouteWithChildren = ApiV1ProjectsRoute._addFileChildren(
+  ApiV1ProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiV1ProjectsRoute: ApiV1ProjectsRouteWithChildren,
+  ApiV1TestRunsTestRunIdRoute: ApiV1TestRunsTestRunIdRoute,
   ApiScreenshotsTestRunsTestRunIdStepIdRoute:
     ApiScreenshotsTestRunsTestRunIdStepIdRoute,
+  ApiV1FeaturesFeatureIdTestCasesRoute: ApiV1FeaturesFeatureIdTestCasesRoute,
+  ApiV1TestCasesTestCaseIdRunRoute: ApiV1TestCasesTestCaseIdRunRoute,
+  ApiV1TestCasesTestCaseIdStepsRoute: ApiV1TestCasesTestCaseIdStepsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

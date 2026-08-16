@@ -93,10 +93,10 @@ export function AppSidebar({
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={pathname === '/settings'}
+                  isActive={pathname.startsWith('/settings')}
                   tooltip="Settings"
                 >
-                  <Link to="/settings">
+                  <Link to="/settings/project">
                     <Settings />
                     <span>Settings</span>
                   </Link>

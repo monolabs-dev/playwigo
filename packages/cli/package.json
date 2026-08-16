@@ -1,0 +1,52 @@
+{
+  "name": "@playwigo/cli",
+  "version": "0.1.0",
+  "description": "Playwigo CLI for AI agents — manage projects, features, test cases, steps, and runs",
+  "type": "module",
+  "bin": {
+    "playwigo": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monolabs-dev/playwigo.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/monolabs-dev/playwigo/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/monolabs-dev/playwigo/issues"
+  },
+  "keywords": [
+    "playwigo",
+    "playwright",
+    "cli",
+    "testing",
+    "ai-agent"
+  ],
+  "license": "MIT",
+  "author": "Playwigo"
+}

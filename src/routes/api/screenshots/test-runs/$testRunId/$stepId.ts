@@ -9,10 +9,15 @@ export const Route = createFileRoute(
   server: {
     handlers: {
       GET: async ({ params }) => {
+        // Supports session cookie and Better Auth apiKey via x-api-key
+        // (enableSessionForAPIKeys mocks a session for getSession).
         const session = await readSession()
 
         if (!session) {
-          return new Response('Unauthorized', { status: 401 })
+          return Response.json(
+            { error: { code: 'unauthorized', message: 'Unauthorized' } },
+            { status: 401 },
+          )
         }
 
         try {

@@ -51,7 +51,14 @@ export const auth = betterAuth({
         shouldStore: true,
         charactersLength: 10,
       },
-      defaultPrefix: "sk-pwg-",
+      defaultPrefix: 'sk-pwg-',
+      // Agent CLI polls run status ~every 1.5s; keep headroom for bursts.
+      rateLimit: {
+        enabled: true,
+        timeWindow: 1000 * 60,
+        maxRequests: 120,
+      },
     }),
-    tanstackStartCookies()],
+    tanstackStartCookies(),
+  ],
 })

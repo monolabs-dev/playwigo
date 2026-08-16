@@ -1,0 +1,31 @@
+packages/cli/tsup.config.ts
+  s_cf01d05abc626c::t_e7d7197df1d54d 7-10
+eslint.config.js
+  s_cf01d05abc626c::t_6d01fca163e756 18-22
+packages/cli/tsconfig.json
+  s_cf01d05abc626c::t_d3fe367723df52 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "6ca3d03c3c927529a40b4c5ff60dc8bec3f9c159",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_cf01d05abc626c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e2657627-6808-4cbc-b18d-48c56f55bb65",
+        "model": "grok-4.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

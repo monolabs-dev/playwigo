@@ -1,0 +1,27 @@
+AGENTS.md
+  s_b7f63712634f7d::t_c214762d7c18a6 925,928
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "35d350a372414783f26b037812119e0f657144d4",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_b7f63712634f7d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "b4edbc21-1793-4ea2-912f-a50dbd1f8866",
+        "model": "cursor-grok-4.5-high-fast"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

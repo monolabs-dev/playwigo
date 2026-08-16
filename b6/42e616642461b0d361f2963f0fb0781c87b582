@@ -1,0 +1,143 @@
+src/features/projects/components/project-settings-page.tsx
+  s_cf01d05abc626c::t_b8e109465512ba 23-25
+src/routes/api/v1/projects/$projectId/features.ts
+  s_cf01d05abc626c::t_d556429e4a38c2 1-31
+src/server/api/require-api-session.ts
+  s_cf01d05abc626c::t_c87731ed159a1c 1-12
+src/routeTree.gen.ts
+  s_cf01d05abc626c::t_ad8d1fb766746a 22,32-34,92,146-160,210,220-221,225,247-248,252,270,280-281,285,302,312-313,317,339-340,344,361,371-372,376,475,541-560,647-663,667,678
+  s_cf01d05abc626c::t_2d96ceaa2ba6ab 26,35,37-41,112-116,161-165,172-201,216,222,227-231,243,249,254-258,276,282,287-291,308,314,319-323,335,341,346-350,367,373,378-382,391-392,394-396,499-505,561-568,576-610,703-716,723-724,727-729
+packages/cli/README.md
+  s_cf01d05abc626c::t_e2be9679c4a8c9 1-4,6,8-9,15-16,18-19,28-29,31-97,99-108
+  s_cf01d05abc626c::t_4f5396146004d1 22-23,25-26
+  s_cf01d05abc626c::t_91b75aecadb595 5,7,10-14,17,20-21,24,27,30,98,109-175
+packages/cli/tsup.config.ts
+  s_cf01d05abc626c::t_025c5af5d4d460 1-7
+src/features/api-keys/components/reveal-api-key-dialog.tsx
+  s_cf01d05abc626c::t_17bd72b9081714 1-83
+packages/cli/src/commands/projects.ts
+  s_cf01d05abc626c::t_66d47d3cdb76ad 1-2,5-26
+  s_cf01d05abc626c::t_46553d1bc97ab4 3-4
+src/routes/_app/_shell/settings/project.tsx
+  s_cf01d05abc626c::t_332e241b89579f 5
+packages/cli/src/index.ts
+  s_cf01d05abc626c::t_5c30d3c576ff36 1,16-17,27-29,33-39
+  s_cf01d05abc626c::t_46553d1bc97ab4 3-8
+  s_cf01d05abc626c::t_1c3d93169bff70 2,9-15,18-26,30-32,40-46
+src/features/dashboard/components/app-sidebar.tsx
+  s_cf01d05abc626c::t_5ef71c93a205ef 96,99
+src/server/api/respond.ts
+  s_cf01d05abc626c::t_e482ed8082ed19 1-84
+src/routes/api/v1/test-cases/$testCaseId/run.ts
+  s_cf01d05abc626c::t_c56edfc4a3d60b 1-14
+src/routes/api/v1/features/$featureId/test-cases.ts
+  s_cf01d05abc626c::t_f37bb1c350374e 1-31
+src/routes/api/v1/test-runs/$testRunId.ts
+  s_cf01d05abc626c::t_112a3e49d34d2a 1-14
+src/routes/api/v1/projects.ts
+  s_cf01d05abc626c::t_1d7cbb4f6bd103 1-13
+src/routes/_app/_shell/settings/index.tsx
+  s_cf01d05abc626c::t_b1ac389983adec 1-7
+src/features/api-keys/components/api-keys-page.tsx
+  s_cf01d05abc626c::t_8d968facf13974 1-139,146-221
+  s_cf01d05abc626c::t_98997ac1e97848 140-145
+src/routes/api/screenshots/test-runs/$testRunId/$stepId.ts
+  s_cf01d05abc626c::t_d3a148961bb58a 12-13,17-20
+packages/cli/tsconfig.json
+  s_cf01d05abc626c::t_bf38db2109b5c7 1-16
+README.md
+  s_cf01d05abc626c::t_1e19cbd998e0dd 61,67
+  s_cf01d05abc626c::t_313811a82f571b 81
+  s_cf01d05abc626c::t_3e232b9f857e17 76-78
+  s_cf01d05abc626c::t_4dfca4e94b85d9 57-60,62-66,68-75,79-80
+src/routes/_app/_shell/settings/route.tsx
+  s_cf01d05abc626c::t_ba149be1732f5c 1-7
+src/features/api-keys/types/api-key.ts
+  s_cf01d05abc626c::t_00589f9c4e50a8 1-14
+pnpm-workspace.yaml
+  s_cf01d05abc626c::t_e28e138ace715d 3
+src/features/api-keys/components/create-api-key-dialog.tsx
+  s_cf01d05abc626c::t_405884b05e460d 1-129
+src/features/api-keys/components/revoke-api-key-dialog.tsx
+  s_cf01d05abc626c::t_e7e560da21678c 1-98
+src/features/dashboard/components/app-shell.tsx
+  s_cf01d05abc626c::t_c987a474fabda2 2
+  s_cf01d05abc626c::t_ac370cf6a6aea6 36-37
+  s_cf01d05abc626c::t_261a67bb3f398c 90-92
+packages/cli/src/commands/run.ts
+  s_cf01d05abc626c::t_46553d1bc97ab4 5-6
+  s_cf01d05abc626c::t_1b375f50fac9c2 1-4,7-16,18-63,65-79,81-134
+  s_cf01d05abc626c::t_08322dde76784e 64,80
+  s_cf01d05abc626c::t_daea7a15dc4cb6 17
+src/routes/api/v1/test-cases/$testCaseId/steps.ts
+  s_cf01d05abc626c::t_547ef55d0a49c0 1-34
+src/routes/api/v1/projects/$projectId/test-runs.ts
+  s_cf01d05abc626c::t_5a870ea7838f4b 1-23
+packages/cli/package.json
+  s_cf01d05abc626c::t_1df72ad4b80818 4,9-12,16-17,30-51
+  s_cf01d05abc626c::t_85f37c5afe77f8 1-3,5-8,13,15,18-29,52
+  s_cf01d05abc626c::t_7300a21c01fe3a 14
+AGENTS.md
+  s_d8ca0f794c6414::t_7bc8a92091a4b8 925,927-928,930-931,934-935
+packages/cli/src/client.ts
+  s_cf01d05abc626c::t_46553d1bc97ab4 1
+  s_cf01d05abc626c::t_fa678496ae1d34 2-84
+packages/cli/src/commands/features.ts
+  s_cf01d05abc626c::t_46553d1bc97ab4 3-4
+  s_cf01d05abc626c::t_bb23c490a460ae 1-2,5-63
+packages/cli/src/commands/test-cases.ts
+  s_cf01d05abc626c::t_46553d1bc97ab4 3-4
+  s_cf01d05abc626c::t_1164f12e87b69b 1-2,5-67
+src/features/settings/components/settings-layout.tsx
+  s_cf01d05abc626c::t_89d8caa9a2b1d0 1-41
+packages/cli/src/output.ts
+  s_cf01d05abc626c::t_487551cf44d11b 1-52
+tsconfig.json
+  s_cf01d05abc626c::t_e9a1a0447a3ea5 3
+src/lib/auth.ts
+  s_cf01d05abc626c::t_8cedd5c5d0d3b8 54-60,62-63
+src/routes/_app/_shell/settings/api-keys.tsx
+  s_cf01d05abc626c::t_1b4d942d81bb93 1-10
+src/features/dashboard/components/nav-user.tsx
+  s_cf01d05abc626c::t_7a7637ab8f8ace 88-92
+packages/cli/src/commands/steps.ts
+  s_cf01d05abc626c::t_94cdd0b700ea2e 1-4,7-72
+  s_cf01d05abc626c::t_46553d1bc97ab4 5-6
+package.json
+  s_cf01d05abc626c::t_913f0744fff109 21,23
+  s_cf01d05abc626c::t_3eb5f032e6471e 22
+src/server/api/errors.ts
+  s_cf01d05abc626c::t_776fa5a3123d10 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b642e616642461b0d361f2963f0fb0781c87b582",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_cf01d05abc626c": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e2657627-6808-4cbc-b18d-48c56f55bb65",
+        "model": "grok-4.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "s_d8ca0f794c6414": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "cc09c42b-a7be-4373-957c-af5a6296964f",
+        "model": "composer-2.5-fast"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

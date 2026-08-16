@@ -21,7 +21,9 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.6.28",
+    "@better-auth/api-key": "^1.6.29",
+    "@better-auth/drizzle-adapter": "^1.6.29",
+    "@better-auth/utils": "0.4.2",
     "@cloudflare/playwright": "^1.3.5",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
@@ -43,7 +45,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/react-table": "latest",
-    "better-auth": "^1.5.3",
+    "better-auth": "^1.6.29",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
@@ -87,6 +89,10 @@
       "lightningcss",
       "sharp",
       "workerd"
-    ]
+    ],
+    "overrides": {
+      "@better-auth/utils": "0.4.2",
+      "better-call>@better-auth/utils": "0.4.2"
+    }
   }
 }

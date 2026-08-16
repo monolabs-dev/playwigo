@@ -1,4 +1,5 @@
 import { betterAuth } from 'better-auth'
+import { apiKey } from "@better-auth/api-key"
 import { drizzleAdapter } from '@better-auth/drizzle-adapter'
 import { tanstackStartCookies } from 'better-auth/tanstack-start'
 import { db } from '#/db'
@@ -24,12 +25,12 @@ export const auth = betterAuth({
   socialProviders: {
     ...(googleClientId && googleClientSecret
       ? {
-          google: {
-            clientId: googleClientId,
-            clientSecret: googleClientSecret,
-            prompt: 'select_account',
-          },
-        }
+        google: {
+          clientId: googleClientId,
+          clientSecret: googleClientSecret,
+          prompt: 'select_account',
+        },
+      }
       : {}),
   },
   account: {
@@ -43,5 +44,14 @@ export const auth = betterAuth({
       generateId: () => crypto.randomUUID(),
     },
   },
-  plugins: [tanstackStartCookies()],
+  plugins: [
+    apiKey({
+      enableSessionForAPIKeys: true,
+      startingCharactersConfig: {
+        shouldStore: true,
+        charactersLength: 10,
+      },
+      defaultPrefix: "sk-pwg-",
+    }),
+    tanstackStartCookies()],
 })

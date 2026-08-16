@@ -1,0 +1,49 @@
+src/lib/auth.ts
+  h_c8a1da106d576c 2
+  h_e52e9a795f20e8 48-55
+  h_c8a1da106d576c 28-33,47,56
+src/db/schema.ts
+  h_c8a1da106d576c 110-142
+package.json
+  s_f88c18017e744a::t_1981ea0bcc71a1 48
+  s_f88c18017e744a::t_46de95a8321eea 25
+  s_f88c18017e744a::t_e8e97a7a018e5c 26
+  s_f88c18017e744a::t_cd5490dce980e0 92-93,96
+  s_f88c18017e744a::t_f651707b910bdf 94-95
+  s_f88c18017e744a::t_b79b554c4e7546 24
+  s_f88c18017e744a::t_a1f8c8574c5e1f 98
+src/lib/auth-client.ts
+  h_c8a1da106d576c 2,4-8
+pnpm-lock.yaml
+  s_f88c18017e744a::t_4138a420a4c235 7-10,15-17,19-23,88-89,329-338,354-355,357,364-365,367,374-375,377,380-381,383,390-391,393,403-404,406,3118-3119,5525,5527,5529,5533,5535,5545,5547,5552,5554,5559,5561,5564,5566,5569,5571,5574,5576,8004,8006-8012,8037
+drizzle/0003_furry_bruce_banner.sql
+  h_c8a1da106d576c 1-28
+drizzle/meta/0003_snapshot.json
+  h_c8a1da106d576c 1-1579
+drizzle/meta/_journal.json
+  h_c8a1da106d576c 25-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "8672b5efed30fcfaab6a4da7c8b36df519ffd9fc",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_f88c18017e744a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "af5bbb1d-1c61-4c3a-88df-4fad6e82c9b9",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

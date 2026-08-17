@@ -1,0 +1,38 @@
+skills/playwigo/SKILL.md
+  h_c8a1da106d576c 19
+  s_6c02abd2c46989::t_433bfbb3168ded 1-18,20-82
+packages/cli/README.md
+  s_6c02abd2c46989::t_3f05a11f29373f 88-89
+  s_6c02abd2c46989::t_59f127f453c7c3 32-40
+  s_6c02abd2c46989::t_6b5b44e9c666bb 41
+skills/playwigo/references/steps.md
+  s_6c02abd2c46989::t_ed20efb603663d 1-93
+skills/playwigo/references/cli.md
+  s_6c02abd2c46989::t_49df25d8db5818 1-91
+README.md
+  s_6c02abd2c46989::t_3620768998d308 83-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "f1dd9b13892cfa90aade96b520f16803641c7f10",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_6c02abd2c46989": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9d4f50f3-cad4-4f17-be75-3c8cd7c2bb15",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

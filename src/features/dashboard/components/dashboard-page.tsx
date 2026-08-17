@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import type { LinkProps } from '@tanstack/react-router'
-import { CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
+import { ArrowUpRightIcon, CirclePlay, FolderKanban, ListChecks, Users } from 'lucide-react'
 import { useServerFn } from '@tanstack/react-start'
 
 import { Button } from '#/components/ui/button.tsx'
@@ -14,12 +14,11 @@ import {
 } from '#/components/ui/card.tsx'
 import { authClient } from '#/lib/auth-client.ts'
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
-import { countFeatures, listFeatures } from '#/features/features/server/features.ts'
-import type { FeatureSummary } from '#/features/features/types/feature.ts'
 import {
-  healthDotClass,
-  healthLabel,
-} from '#/features/dashboard/utils/project-display.ts'
+  countFeatures,
+  listFeatures,
+} from '#/features/features/server/features.ts'
+import type { FeatureSummary } from '#/features/features/types/feature.ts'
 import { listTestRuns } from '#/features/test-cases/server/test-cases.ts'
 import type { TestRunSummary } from '#/features/test-cases/types/test-case.ts'
 import { RunStatusBadge } from '#/features/test-cases/components/run-status-badge.tsx'
@@ -64,26 +63,26 @@ function computePassRate(runs: TestRunSummary[]) {
   return Math.round((passed / recent.length) * 100)
 }
 
-function projectHealthFromRuns(runs: TestRunSummary[]) {
-  if (runs.some((run) => isActiveTestRunStatus(run.status))) {
-    return 'running' as const
-  }
+// function projectHealthFromRuns(runs: TestRunSummary[]) {
+//   if (runs.some((run) => isActiveTestRunStatus(run.status))) {
+//     return 'running' as const
+//   }
 
-  const latest = runs.at(0)
-  if (!latest) {
-    return 'idle' as const
-  }
+//   const latest = runs.at(0)
+//   if (!latest) {
+//     return 'idle' as const
+//   }
 
-  if (latest.status === 'passed') {
-    return 'passing' as const
-  }
+//   if (latest.status === 'passed') {
+//     return 'passing' as const
+//   }
 
-  if (latest.status === 'failed' || latest.status === 'error') {
-    return 'failing' as const
-  }
+//   if (latest.status === 'failed' || latest.status === 'error') {
+//     return 'failing' as const
+//   }
 
-  return 'idle' as const
-}
+//   return 'idle' as const
+// }
 
 export function DashboardPage() {
   const { project } = useActiveProject()
@@ -123,26 +122,26 @@ export function DashboardPage() {
   }, [loadDashboard])
 
   const passRate = useMemo(() => computePassRate(runs), [runs])
-  const health = useMemo(() => projectHealthFromRuns(runs), [runs])
+  // const health = useMemo(() => projectHealthFromRuns(runs), [runs])
   const recentRuns = runs.slice(0, 5)
   const testCaseCount = useMemo(
     () => features.reduce((total, feature) => total + feature.testCaseCount, 0),
     [features],
   )
-  const lastRunLabel =
-    runs.length === 0
-      ? 'No runs yet'
-      : `Last run ${formatRunTimestamp(runs[0].startedAt ?? runs[0].createdAt)}`
+  // const lastRunLabel =
+  //   runs.length === 0
+  //     ? 'No runs yet'
+  //     : `Last run ${formatRunTimestamp(runs[0].startedAt ?? runs[0].createdAt)}`
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <p className="text-sm text-muted-foreground">Welcome back</p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+          <p className="text-sm text-primary">Welcome back</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl font-display">
             {firstName}, here’s {project.name}
           </h1>
-          <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+          {/* <p className="mt-2 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1.5">
               <span
                 className={`size-1.5 rounded-full ${healthDotClass(health)}`}
@@ -151,10 +150,11 @@ export function DashboardPage() {
             </span>
             <span aria-hidden>·</span>
             <span>{lastRunLabel}</span>
-          </p>
+          </p> */}
         </div>
         <Button variant="outline" className="self-start" asChild>
           <a href={project.website} target="_blank" rel="noopener noreferrer">
+            <ArrowUpRightIcon className="size-4" />
             Open site
           </a>
         </Button>
@@ -252,7 +252,9 @@ export function DashboardPage() {
           <CardContent className="px-0 pb-0">
             {features.length === 0 ? (
               <div className="px-4 py-10 text-center">
-                <p className="text-sm text-muted-foreground">No features yet.</p>
+                <p className="text-sm text-muted-foreground">
+                  No features yet.
+                </p>
                 <p className="mt-1 text-xs text-muted-foreground">
                   Group test cases by the parts of the product they cover.
                 </p>

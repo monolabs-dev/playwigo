@@ -75,7 +75,7 @@ export function FeaturesPage() {
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
       <section className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl font-display">
             Features
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">

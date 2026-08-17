@@ -32,7 +32,7 @@ export function ProjectSwitcher() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-open:bg-sidebar-accent data-open:text-sidebar-accent-foreground"
+              className="data-open:bg-sidebar-accent data-open:text-sidebar-accent-foreground border border-dashed border-muted"
               tooltip={project.name}
             >
               <ProjectMark

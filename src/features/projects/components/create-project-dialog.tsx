@@ -26,7 +26,7 @@ export function CreateProjectDialog({
         <DialogHeader>
           <DialogTitle>Create project</DialogTitle>
           <DialogDescription>
-            Name the project and the site Playwright should open.
+            Name the project and the site you want to test.
           </DialogDescription>
         </DialogHeader>
         <CreateProjectForm

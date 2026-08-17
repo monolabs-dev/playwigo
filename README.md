@@ -80,6 +80,8 @@ pnpm run cli run --test-case <id> --wait --json
 
 See [packages/cli/README.md](packages/cli/README.md) for the full command list, agent workflow, and **how to publish `@playwigo/cli` to npm**.
 
+Users can install the Playwigo agent skill with `npx skills add monolabs-dev/playwigo` (see [`skills/playwigo`](skills/playwigo)).
+
 ## Shadcn
 
 Add components using the latest version of [Shadcn](https://ui.shadcn.com/).

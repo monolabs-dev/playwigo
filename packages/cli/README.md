@@ -29,6 +29,16 @@ playwigo projects list --json
 
 Local development default URL is `http://localhost:3000` when `PLAYWIGO_API_URL` is unset.
 
+## Agent skill
+
+Coding agents (Cursor, Claude Code, Codex, Copilot, and others) can install Playwigo as a [skill](https://www.skills.sh/):
+
+```bash
+npx skills add monolabs-dev/playwigo
+```
+
+The skill teaches the agent when to use this CLI, the project → feature → test case model, and how to write `steps.json`. Users still need `PLAYWIGO_API_URL` and `PLAYWIGO_API_KEY` in the environment.
+
 ## Authentication
 
 Requests send the key as:
@@ -75,8 +85,8 @@ playwigo runs list --project <id> --json
     },
     {
       "action": "click",
-      "selectorType": "role",
-      "selector": "button[name='Submit']"
+        "selectorType": "css",
+        "selector": "button[type='submit']"
     }
   ]
 }

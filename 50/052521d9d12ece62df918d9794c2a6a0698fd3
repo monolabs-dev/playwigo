@@ -1,0 +1,152 @@
+src/features/test-cases/components/test-case-steps-view.tsx
+  s_b044481f6b16ae::t_b150334ba69882 24-25
+  s_b044481f6b16ae::t_302d8c2016ecca 318-335
+src/features/test-cases/utils/step-actions.ts
+  s_b044481f6b16ae::t_cfb8e31b5a0bfc 16-18,47-49,110-111,115-181,192,204-205,256-286
+skills/playwigo/references/steps.md
+  s_b044481f6b16ae::t_e1e0d10b4a8455 10-12,18-54,57-79,81-86,88,90-100,102-123,125,127,132,134-137,141-146,148-158,162-164,172-175,181,183-187,191,193
+src/features/test-cases/components/step-config-fields.tsx
+  s_b044481f6b16ae::t_f59b5f22a0fc87 14
+  s_b044481f6b16ae::t_6f819c19ca1dd9 11
+  s_b044481f6b16ae::t_8d72d7d29e197a 173-180,182-189,191-197,200
+  s_b044481f6b16ae::t_2c72b1e64e4806 1-9,12-13,15-53,55,57-172,181,190,198-199,201-326
+  s_b044481f6b16ae::t_0b103cc52770f0 10,54,56
+src/features/login-flows/server/login-flows.server.ts
+  s_b044481f6b16ae::t_cbb1a81bd0d7c2 103,107-110,112
+  s_b044481f6b16ae::t_4236d380baecb2 271
+  s_b044481f6b16ae::t_a9159dc5aa4d6e 232,234,262-270,273-274,276-280,282-284,286-316
+  s_b044481f6b16ae::t_ac8e1a4e7703b1 159-160,170-171,187-188
+  s_b044481f6b16ae::t_e4e4d1512b81ba 15
+  s_b044481f6b16ae::t_8ed1d4c9001603 211-212,220
+  s_b044481f6b16ae::t_60e01747e4c5d5 35-36
+  s_b044481f6b16ae::t_66dd959673ab23 111
+  s_b044481f6b16ae::t_35d45bd99d1591 272
+  s_b044481f6b16ae::t_79b412cade9d86 221
+src/features/test-cases/types/test-case.ts
+  s_b044481f6b16ae::t_2d9a294b70ce18 64,68
+  s_b044481f6b16ae::t_5180b1df660050 53
+  s_b044481f6b16ae::t_4da4c78427121b 54,63
+src/features/test-cases/server/test-cases.ts
+  s_b044481f6b16ae::t_e8d5147ee75836 87
+src/features/test-cases/components/test-case-steps-editor.tsx
+  s_b044481f6b16ae::t_c82751aba3230e 38-42
+  s_b044481f6b16ae::t_599c30aaa8f895 110-111,121-122,127-141
+  s_b044481f6b16ae::t_48f8a609a71f0b 72-73
+  s_b044481f6b16ae::t_0fafa1bd681da6 600-602
+  s_b044481f6b16ae::t_0f0ad11efe9a04 488,500-530
+  s_b044481f6b16ae::t_d93443e7d86618 228-231
+  s_b044481f6b16ae::t_313614ef457101 178
+  s_b044481f6b16ae::t_510b3b47cfc14e 374-387
+  s_b044481f6b16ae::t_2e4dc86d00d5c3 37
+  s_b044481f6b16ae::t_cda8e0d6b11450 531
+src/features/test-cases/components/test-case-form.tsx
+  h_e52e9a795f20e8 1-2
+src/features/test-cases/server/run-variables.ts
+  s_b044481f6b16ae::t_b7da04d440033b 1-149
+src/routes/api/v1/test-cases/$testCaseId/run.ts
+  s_b044481f6b16ae::t_9c677c10dbca82 2,4,6-14,19-30
+src/features/login-flows/components/login-flow-steps-editor.tsx
+  s_b044481f6b16ae::t_c1dee4c3078c45 136
+  s_b044481f6b16ae::t_66eb25617a2196 68
+  s_b044481f6b16ae::t_2dc3058ce1eac6 214-217
+  s_b044481f6b16ae::t_46a0fb06e92538 90-96,98
+  s_b044481f6b16ae::t_d87eb0eefc3117 109-110,120-121,135
+  s_b044481f6b16ae::t_d78cc370a99f8e 46
+  s_b044481f6b16ae::t_0b0e627667dba9 367
+  s_b044481f6b16ae::t_fa186d96b8d6f1 67
+src/features/test-cases/schemas/test-case-step.ts
+  s_b044481f6b16ae::t_612dfe2d27f5ad 22-70,79,81-85,87-175,183,187,198
+  s_b044481f6b16ae::t_6aa53029687496 77
+  s_b044481f6b16ae::t_a1fe20b716d6e9 86
+  s_b044481f6b16ae::t_60146208f2555d 80,184
+  s_b044481f6b16ae::t_73bf3ff5fcf642 3,71-76,78,199,202
+src/server/integrations/http/step-request.ts
+  h_e52e9a795f20e8 1-2
+  s_b044481f6b16ae::t_bd12657ca010cc 3-243
+skills/playwigo/SKILL.md
+  s_b044481f6b16ae::t_54edcccdde770e 50,60-67
+src/features/test-cases/server/execute-test-case-steps.ts
+  h_e52e9a795f20e8 19-20,22,172
+  s_b044481f6b16ae::t_62cf43b194231e 7-12,18,21,24,33,45,95-171,173-181,183-190,195,198,201,204,207,210,213,216,219,222,225,228,233,238-305,309-321,343,353-360,366-369,393-398,420,451,466,476,484
+skills/playwigo/references/cli.md
+  s_b044481f6b16ae::t_3352cbec8f1d1b 64-67,70-71,74
+src/features/login-flows/schemas/login-flow-step.ts
+  s_b044481f6b16ae::t_21669ec85eddfd 8,132
+  s_b044481f6b16ae::t_28caee73b69b92 10
+  s_b044481f6b16ae::t_b409bc419fb1b2 142
+  s_b044481f6b16ae::t_09b183e6ac1329 4-6,9,29-34,36-108,116,120,131,135-141,143-145
+  s_b044481f6b16ae::t_c8e4a600dc60c4 7,117
+  s_b044481f6b16ae::t_f93e3b86fbba1d 35
+  s_b044481f6b16ae::t_4a830793ac3901 3
+src/features/test-cases/types/step-config.ts
+  s_b044481f6b16ae::t_2ff1e9600855d0 5,10,30-41
+  s_b044481f6b16ae::t_c84d496c23daec 1-4,6-9,11-29
+src/features/login-flows/utils/login-flow-variables.ts
+  s_b044481f6b16ae::t_dadede0f5ef760 1-2,7
+drizzle/0004_nifty_mach_iv.sql
+  s_b044481f6b16ae::t_867b8f7cf43079 1-9
+src/features/test-cases/server/test-cases.server.ts
+  s_b044481f6b16ae::t_b4365379762c8f 461
+  s_b044481f6b16ae::t_ef615331c65cfe 264-265
+  s_b044481f6b16ae::t_61fc27c2f3b106 462
+  s_b044481f6b16ae::t_29ca794736b148 515-516,526-527,543-544
+  s_b044481f6b16ae::t_529912fce74ef8 295-296
+  s_b044481f6b16ae::t_e6d218ccda50c9 23
+  s_b044481f6b16ae::t_78431b1ac9f6cc 304,309-313
+src/lib/step-template.ts
+  s_b044481f6b16ae::t_2a5455d362ec66 1-160
+src/db/schema.ts
+  s_b044481f6b16ae::t_f19a4c54bab404 226-227
+  s_b044481f6b16ae::t_c7eb8a1ed3cf81 274-275
+  s_b044481f6b16ae::t_bbee9a0315c5c6 339-341
+  s_b044481f6b16ae::t_52be88f35643f2 305-308
+packages/cli/src/commands/run.ts
+  s_b044481f6b16ae::t_9f3e26d542726a 6,19-20,22,25,29-54,61-66,72-76,87,93
+src/features/test-cases/utils/step-view-items.ts
+  s_b044481f6b16ae::t_37b986e53a7bf2 20-21
+src/features/login-flows/types/login-flow.ts
+  s_b044481f6b16ae::t_a3a64d73a317c9 11-12,21
+  s_b044481f6b16ae::t_7f348c0d5d42f8 22
+src/features/test-cases/schemas/test-run.ts
+  s_b044481f6b16ae::t_3929a22e95826f 3-22,25
+src/features/test-cases/server/test-runs.server.ts
+  s_b044481f6b16ae::t_0cd70ff18ff07e 210
+  s_b044481f6b16ae::t_c22a6ff17b78c3 15
+  s_b044481f6b16ae::t_ebfc0d868ddc44 94-95
+  s_b044481f6b16ae::t_683a44389fcd6f 16-19,30-33,59,103-104,117,127,138,140,156-171,181-182,211,220,232,240,251,265-268,286,299-300,326-327,348-350,369-370,379-383
+  s_b044481f6b16ae::t_e73f6c5f15c943 372-375
+src/features/test-cases/components/test-run-detail-sheet.tsx
+  s_b044481f6b16ae::t_a822b863de77ff 42-43
+  s_b044481f6b16ae::t_98f20f2ec955e6 217-246
+packages/cli/README.md
+  s_b044481f6b16ae::t_20791b1b6e0461 70,76-77,87-93,96-109,117
+  s_b044481f6b16ae::t_ebf284878c53d6 118
+drizzle/meta/0004_snapshot.json
+  s_b044481f6b16ae::t_f983f678a539ab 1-1633
+drizzle/meta/_journal.json
+  s_b044481f6b16ae::t_214148efd4ba9b 32-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "50052521d9d12ece62df918d9794c2a6a0698fd3",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_b044481f6b16ae": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "2c030245-80b7-4a2c-ab40-5126234ea9f9",
+        "model": "grok-4.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

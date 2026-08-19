@@ -22,7 +22,9 @@ import {
   ActiveProjectProvider,
   useActiveProject,
 } from '#/features/dashboard/hooks/active-project.tsx'
+import { ProductTourProvider } from '#/features/dashboard/hooks/product-tour.tsx'
 import { AppSidebar } from '#/features/dashboard/components/app-sidebar.tsx'
+import { ProductTour } from '#/features/dashboard/components/product-tour.tsx'
 import { ProjectCommand } from '#/features/dashboard/components/project-command.tsx'
 import { RunCommand } from '#/features/dashboard/components/run-command.tsx'
 import { CreateProjectDialog } from '#/features/projects/components/create-project-dialog.tsx'
@@ -44,7 +46,7 @@ export function AppShell({
   projects,
   children,
 }: {
-  user: { name: string; email: string; image?: string | null }
+  user: { id: string; name: string; email: string; image?: string | null }
   projects: Project[]
   children: ReactNode
 }) {
@@ -52,11 +54,14 @@ export function AppShell({
     <ActiveProjectProvider projects={projects}>
       <TooltipProvider delayDuration={0}>
         <SidebarProvider>
-          <AppSidebar user={user} />
-          <AppInset>{children}</AppInset>
-          <ProjectCommand />
-          <RunCommand />
-          <CreateProjectHost />
+          <ProductTourProvider>
+            <AppSidebar user={user} />
+            <AppInset>{children}</AppInset>
+            <ProjectCommand />
+            <RunCommand />
+            <CreateProjectHost />
+            <ProductTour userId={user.id} />
+          </ProductTourProvider>
         </SidebarProvider>
       </TooltipProvider>
     </ActiveProjectProvider>
@@ -143,6 +148,7 @@ function AppInset({ children }: { children: ReactNode }) {
             size="sm"
             className="h-8"
             aria-label="Run tests"
+            data-tour="run"
             onClick={() => setRunCommandOpen(true)}
           >
             <CirclePlay />

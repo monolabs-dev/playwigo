@@ -34,6 +34,7 @@ export function ProjectSwitcher() {
               size="lg"
               className="data-open:bg-sidebar-accent data-open:text-sidebar-accent-foreground border border-dashed border-muted"
               tooltip={project.name}
+              data-tour="project-switcher"
             >
               <ProjectMark
                 id={project.id}

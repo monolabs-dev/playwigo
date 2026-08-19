@@ -184,3 +184,104 @@
     animation: none !important;
   }
 }
+
+/* Product tour (driver.js) — themed to match shadcn tokens */
+.playwigo-driver-popover.driver-popover {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:
+    0 10px 40px color-mix(in oklch, var(--foreground) 12%, transparent),
+    0 1px 2px color-mix(in oklch, var(--foreground) 6%, transparent);
+  min-width: 260px;
+  max-width: 320px;
+  padding: 1rem 1.1rem 0.9rem;
+}
+
+.playwigo-driver-popover .driver-popover-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  padding-right: 1.5rem;
+}
+
+.playwigo-driver-popover .driver-popover-description {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+.playwigo-driver-popover .driver-popover-progress-text {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.playwigo-driver-popover .driver-popover-close-btn {
+  color: var(--muted-foreground);
+}
+
+.playwigo-driver-popover .driver-popover-close-btn:hover,
+.playwigo-driver-popover .driver-popover-close-btn:focus {
+  color: var(--foreground);
+}
+
+.playwigo-driver-popover .driver-popover-footer-btn {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 0.8);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.35rem 0.7rem;
+}
+
+.playwigo-driver-popover .driver-popover-footer-btn:hover,
+.playwigo-driver-popover .driver-popover-footer-btn:focus {
+  background-color: var(--muted);
+}
+
+.playwigo-driver-popover .driver-popover-next-btn {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.playwigo-driver-popover .driver-popover-next-btn:hover,
+.playwigo-driver-popover .driver-popover-next-btn:focus {
+  background-color: var(--primary);
+  filter: brightness(1.05);
+}
+
+.playwigo-driver-popover .driver-popover-arrow-side-left,
+.playwigo-driver-popover .driver-popover-arrow-side-right,
+.playwigo-driver-popover .driver-popover-arrow-side-top,
+.playwigo-driver-popover .driver-popover-arrow-side-bottom {
+  border-color: var(--popover);
+}
+
+.playwigo-driver-popover .driver-popover-arrow-side-left {
+  border-right-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.playwigo-driver-popover .driver-popover-arrow-side-right {
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.playwigo-driver-popover .driver-popover-arrow-side-top {
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.playwigo-driver-popover .driver-popover-arrow-side-bottom {
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}

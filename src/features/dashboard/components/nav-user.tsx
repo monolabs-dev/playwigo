@@ -4,6 +4,7 @@ import {
   LogOut,
   Monitor,
   Moon,
+  Route,
   Settings,
   Sun,
   UserRound,
@@ -30,15 +31,17 @@ import {
 } from '#/components/ui/sidebar.tsx'
 import { useTheme } from '#/components/theme-provider.tsx'
 import { authClient } from '#/lib/auth-client.ts'
+import { useProductTour } from '#/features/dashboard/hooks/product-tour.tsx'
 import { comingSoon } from '#/features/dashboard/utils/coming-soon.ts'
 
 export function NavUser({
   user,
 }: {
-  user: { name: string; email: string; image?: string | null }
+  user: { id: string; name: string; email: string; image?: string | null }
 }) {
   const { isMobile } = useSidebar()
   const { setTheme } = useTheme()
+  const { startTour } = useProductTour()
   const navigate = useNavigate()
   const initial = user.name.charAt(0).toUpperCase() || 'U'
 
@@ -92,6 +95,10 @@ export function NavUser({
               >
                 <Settings />
                 Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => startTour()}>
+                <Route />
+                Replay tour
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>

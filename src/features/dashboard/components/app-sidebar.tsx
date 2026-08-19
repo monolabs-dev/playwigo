@@ -26,20 +26,36 @@ import { NavUser } from '#/features/dashboard/components/nav-user.tsx'
 import { ProjectSwitcher } from '#/features/dashboard/components/project-switcher.tsx'
 
 const primaryNav = [
-  { title: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' as const },
-  { title: 'Features', icon: FolderKanban, href: '/features' as const },
+  {
+    title: 'Dashboard',
+    icon: LayoutDashboard,
+    href: '/dashboard' as const,
+    tour: 'nav-dashboard',
+  },
+  {
+    title: 'Features',
+    icon: FolderKanban,
+    href: '/features' as const,
+    tour: 'nav-features',
+  },
   {
     title: 'Authentication',
     icon: KeyRound,
     href: '/authentication/accounts' as const,
+    tour: 'nav-authentication',
   },
-  { title: 'Test runs', icon: CirclePlay, href: '/test-runs' as const },
+  {
+    title: 'Test runs',
+    icon: CirclePlay,
+    href: '/test-runs' as const,
+    tour: 'nav-test-runs',
+  },
 ] as const
 
 export function AppSidebar({
   user,
 }: {
-  user: { name: string; email: string; image?: string | null }
+  user: { id: string; name: string; email: string; image?: string | null }
 }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
 
@@ -73,7 +89,7 @@ export function AppSidebar({
                     }
                     tooltip={item.title}
                   >
-                    <Link to={item.href}>
+                    <Link to={item.href} data-tour={item.tour}>
                       <item.icon />
                       <span>{item.title}</span>
                     </Link>

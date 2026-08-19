@@ -1,0 +1,50 @@
+src/features/dashboard/utils/product-tour.ts
+  s_08e55b1d38619e::t_298cd20674fcb3 1-15
+src/features/dashboard/hooks/product-tour.tsx
+  s_08e55b1d38619e::t_b031cb79c50550 1-38
+src/features/dashboard/components/app-sidebar.tsx
+  s_08e55b1d38619e::t_9639b450bbb758 29-40,45-51,58,92
+src/styles.css
+  s_08e55b1d38619e::t_9ac0baf11c98c6 187-287
+package.json
+  s_08e55b1d38619e::t_bddb649c2f6d0d 54
+src/features/dashboard/components/app-shell.tsx
+  s_08e55b1d38619e::t_c095bb4e0fde70 25,27
+  s_08e55b1d38619e::t_437d0c3deeb709 49,57-64
+  s_08e55b1d38619e::t_4f6de088e1e0ac 151
+src/features/dashboard/components/project-switcher.tsx
+  s_08e55b1d38619e::t_4edc2a4ba7f36b 37
+src/features/dashboard/components/nav-user.tsx
+  s_08e55b1d38619e::t_bc81dcaf47f984 7,34,40,44
+  s_08e55b1d38619e::t_ae38e101ea847a 99-102
+src/features/dashboard/components/product-tour.tsx
+  s_08e55b1d38619e::t_1f67ee65ed359e 1-15,17-145,147-182
+  s_08e55b1d38619e::t_0a6fa556c81fa4 16
+  s_08e55b1d38619e::t_9f7ca2787ed373 146
+pnpm-lock.yaml
+  s_08e55b1d38619e::t_fbcc4950ce4500 17,65,74,77,80,83,89,99-101,2957-2958,2964-2965,2971-2972,2988-2989,2995-2996,3039-3042,3057-3062,3066,3093-3094,3101-3102,3113-3114,3117-3118,3776-3778,5978,5982,8040,8046,8061,8063-8064,8068,8072,8076-8077,8083,8087,8092,8094-8096,8100,8102-8103,8105,8107-8108,8126,8128-8130,8136,8138-8141,8143-8145,8202,8204-8211,8230-8243,8248-8249,8255,8267,8270,8285,8287,8289,8294,8299-8301,8303,8332,8335-8337,8344,8346,8635,8655,8904-8905
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "b05f3da9d287274c718716769e633dea5469abe7",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_08e55b1d38619e": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a9d988c5-a7f5-4ae7-b0e5-add1f066ea81",
+        "model": "grok-4.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

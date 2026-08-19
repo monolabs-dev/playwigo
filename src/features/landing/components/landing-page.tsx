@@ -5,12 +5,13 @@ import { ModeToggle } from '#/components/mode-toggle.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { cn } from '#/lib/utils.ts'
 import { features, steps } from '#/features/landing/content.ts'
-import { TestRunnerPreview } from '#/features/landing/components/test-runner-preview.tsx'
+import { ProductPreview } from '#/features/landing/components/product-preview.tsx'
 import { PageShell } from '#/components/page-shell.tsx'
 import {
-  AuthHeaderActions,
-  type HeaderSession,
+  AuthHeaderActions
+
 } from '#/integrations/better-auth/header-user.tsx'
+import type {HeaderSession} from '#/integrations/better-auth/header-user.tsx';
 
 const ctaClass =
   'h-11 rounded-full px-5 text-[15px] transition-[transform,background-color,box-shadow,color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:translate-y-0 active:scale-[0.97]'
@@ -108,7 +109,7 @@ function Hero() {
       </div>
 
       <div className="mx-auto mt-16 max-w-5xl md:mt-20">
-        <TestRunnerPreview />
+        <ProductPreview />
       </div>
     </section>
   )

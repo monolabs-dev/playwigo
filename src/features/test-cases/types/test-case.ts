@@ -50,6 +50,8 @@ export type TestCaseStepsPayload = {
   loginPrelude: TestCaseLoginPrelude | null
 }
 
+import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
+
 export type TestCaseStep = {
   id: string
   testCaseId: string
@@ -58,9 +60,12 @@ export type TestCaseStep = {
   selector: string | null
   selectorType: string | null
   value: string | null
+  config: StepConfigJson
+  outputVariable: string | null
   screenshotUrl: string | null
   runStatus: TestRunStepStatus | null
   errorMessage: string | null
+  resolvedValue?: string | null
   createdAt: Date
   updatedAt: Date
 }

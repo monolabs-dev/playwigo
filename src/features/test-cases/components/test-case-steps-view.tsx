@@ -21,6 +21,8 @@ export type TestCaseStepViewItem = {
   selector: string | null
   selectorType: string | null
   value: string | null
+  resolvedValue?: string | null
+  outputVariable?: string | null
   screenshotUrl: string | null
   runStatus: TestRunStepStatus | null
   errorMessage: string | null
@@ -313,7 +315,24 @@ export function TestCaseStepsView({
                       value={displayText(selector)}
                       mono
                     />
-                    <StepMeta label="Value" value={displayText(step.value)} />
+                    <StepMeta
+                      label={
+                        step.resolvedValue &&
+                        step.resolvedValue !== step.value
+                          ? 'Value → resolved'
+                          : 'Value'
+                      }
+                      value={
+                        step.resolvedValue &&
+                        step.resolvedValue !== step.value
+                          ? `${displayText(step.value)} → ${step.resolvedValue}`
+                          : displayText(
+                              step.outputVariable
+                                ? `→ {{${step.outputVariable}}}`
+                                : step.value,
+                            )
+                      }
+                    />
                     <div>
                       {showScreenshot ? (
                         <StepScreenshot

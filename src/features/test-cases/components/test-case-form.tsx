@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react'
+import { useState  } from 'react'
+import type {ReactNode} from 'react';
 import { useForm } from '@tanstack/react-form'
 import { useRouter } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
@@ -139,7 +140,6 @@ export function TestCaseForm({
               onBlur={field.handleBlur}
               onChange={field.handleChange}
               errors={field.state.meta.errors}
-              hint="Describe the scenario this test covers."
             />
           )}
         </form.Field>
@@ -155,7 +155,6 @@ export function TestCaseForm({
               onBlur={field.handleBlur}
               onChange={field.handleChange}
               errors={field.state.meta.errors}
-              hint="Where Playwright should start this test."
             />
           )}
         </form.Field>
@@ -185,10 +184,6 @@ export function TestCaseForm({
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground">
-                Runs the project login flow with this account's credentials
-                before test steps.
-              </p>
             </div>
           )}
         </form.Field>

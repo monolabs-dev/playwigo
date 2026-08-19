@@ -12,10 +12,7 @@ import type {
   LoginFlowStep,
   LoginFlowSummary,
 } from '#/features/login-flows/types/login-flow.ts'
-import {
-  substituteLoginFlowStep,
-  type LoginFlowVariableValues,
-} from '#/features/login-flows/utils/login-flow-variables.ts'
+import { asStepConfigJson } from '#/features/test-cases/types/step-config.ts'
 import { requireUserProject } from '#/features/projects/server/projects.server.ts'
 
 const loginFlowColumns = {
@@ -35,6 +32,8 @@ const loginFlowStepColumns = {
   selector: loginFlowSteps.selector,
   selectorType: loginFlowSteps.selectorType,
   value: loginFlowSteps.value,
+  config: loginFlowSteps.config,
+  outputVariable: loginFlowSteps.outputVariable,
   createdAt: loginFlowSteps.createdAt,
   updatedAt: loginFlowSteps.updatedAt,
 } as const
@@ -101,11 +100,16 @@ export async function getProjectLoginFlowSummary(projectId: string) {
 export async function listOwnedLoginFlowSteps(loginFlowId: string) {
   await requireOwnedLoginFlow(loginFlowId)
 
-  return db
+  const rows = await db
     .select(loginFlowStepColumns)
     .from(loginFlowSteps)
     .where(eq(loginFlowSteps.loginFlowId, loginFlowId))
-    .orderBy(asc(loginFlowSteps.sortOrder)) satisfies Promise<LoginFlowStep[]>
+    .orderBy(asc(loginFlowSteps.sortOrder))
+
+  return rows.map((row) => ({
+    ...row,
+    config: asStepConfigJson(row.config),
+  })) satisfies LoginFlowStep[]
 }
 
 export async function replaceOwnedLoginFlowSteps(
@@ -152,6 +156,8 @@ export async function replaceOwnedLoginFlowSteps(
     const selector = step.selector ?? null
     const value = step.value ?? null
     const selectorType = selector ? (step.selectorType ?? 'css') : null
+    const config = step.config ?? null
+    const outputVariable = step.outputVariable ?? null
 
     if (step.id && existingIds.has(step.id)) {
       await db
@@ -161,6 +167,8 @@ export async function replaceOwnedLoginFlowSteps(
           selector,
           selectorType,
           value,
+          config,
+          outputVariable,
           sortOrder: index,
         })
         .where(
@@ -176,6 +184,8 @@ export async function replaceOwnedLoginFlowSteps(
         selector,
         selectorType,
         value,
+        config,
+        outputVariable,
         sortOrder: index,
       })
     }
@@ -198,6 +208,8 @@ export async function replaceOwnedLoginFlowSteps(
   return { steps, loginFlow }
 }
 
+import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
+
 export type ResolvedLoginPreludeStep = {
   id: string
   sortOrder: number
@@ -205,6 +217,8 @@ export type ResolvedLoginPreludeStep = {
   selector: string | null
   selectorType: string | null
   value: string | null
+  config: StepConfigJson
+  outputVariable: string | null
 }
 
 export async function resolveLoginPreludeSteps(input: {
@@ -215,7 +229,63 @@ export async function resolveLoginPreludeSteps(input: {
     return [] satisfies ResolvedLoginPreludeStep[]
   }
 
-  const [account, project, loginFlow] = await Promise.all([
+  const [account, loginFlow] = await Promise.all([
+    db
+      .select({ id: testAccounts.id })
+      .from(testAccounts)
+      .where(
+        and(
+          eq(testAccounts.id, input.testAccountId),
+          eq(testAccounts.projectId, input.projectId),
+        ),
+      )
+      .limit(1)
+      .then((rows) => rows.at(0)),
+    db
+      .select({ id: loginFlows.id })
+      .from(loginFlows)
+      .where(eq(loginFlows.projectId, input.projectId))
+      .limit(1)
+      .then((rows) => rows.at(0)),
+  ])
+
+  if (!account || !loginFlow) {
+    return [] satisfies ResolvedLoginPreludeStep[]
+  }
+
+  const steps = await db
+    .select(loginFlowStepColumns)
+    .from(loginFlowSteps)
+    .where(eq(loginFlowSteps.loginFlowId, loginFlow.id))
+    .orderBy(asc(loginFlowSteps.sortOrder))
+
+  // Keep templates unresolved so credentials are not burned into test_run_steps.
+  // RunVariableContext seeds email/password/loginUrl at execution time.
+  return steps.map((step, index) => ({
+    id: step.id,
+    sortOrder: index,
+    action: step.action,
+    selector: step.selector,
+    selectorType: step.selectorType,
+    value: step.value,
+    config: asStepConfigJson(step.config),
+    outputVariable: step.outputVariable ?? null,
+  })) satisfies ResolvedLoginPreludeStep[]
+}
+
+export async function resolveTestAccountVariables(input: {
+  projectId: string
+  testAccountId: string | null
+}) {
+  if (!input.testAccountId) {
+    return {
+      email: '',
+      password: '',
+      loginUrl: '',
+    }
+  }
+
+  const [account, project] = await Promise.all([
     db
       .select({
         email: testAccounts.email,
@@ -237,44 +307,11 @@ export async function resolveLoginPreludeSteps(input: {
       .where(eq(projects.id, input.projectId))
       .limit(1)
       .then((rows) => rows.at(0)),
-    db
-      .select({ id: loginFlows.id })
-      .from(loginFlows)
-      .where(eq(loginFlows.projectId, input.projectId))
-      .limit(1)
-      .then((rows) => rows.at(0)),
   ])
 
-  if (!account || !loginFlow) {
-    return [] satisfies ResolvedLoginPreludeStep[]
+  return {
+    email: account?.email ?? '',
+    password: account?.password ?? '',
+    loginUrl: account?.url ?? project?.website ?? '',
   }
-
-  const steps = await db
-    .select(loginFlowStepColumns)
-    .from(loginFlowSteps)
-    .where(eq(loginFlowSteps.loginFlowId, loginFlow.id))
-    .orderBy(asc(loginFlowSteps.sortOrder))
-
-  if (steps.length === 0) {
-    return [] satisfies ResolvedLoginPreludeStep[]
-  }
-
-  const variables = {
-    email: account.email ?? '',
-    password: account.password ?? '',
-    loginUrl: account.url ?? project?.website ?? '',
-  } satisfies LoginFlowVariableValues
-
-  return steps.map((step, index) => {
-    const resolved = substituteLoginFlowStep(step, variables)
-
-    return {
-      id: step.id,
-      sortOrder: index,
-      action: resolved.action,
-      selector: resolved.selector,
-      selectorType: resolved.selectorType,
-      value: resolved.value,
-    }
-  }) satisfies ResolvedLoginPreludeStep[]
 }

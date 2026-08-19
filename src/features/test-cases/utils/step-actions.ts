@@ -13,6 +13,9 @@ export const TEST_CASE_STEP_ACTIONS = [
   'expectToHaveTitle',
   'expectToHaveText',
   'expectToContainText',
+  'setVariable',
+  'extractText',
+  'httpRequest',
 ] as const
 
 export const TEST_CASE_SELECTOR_TYPES = [
@@ -41,6 +44,9 @@ export const STEP_ACTION_LABELS: Record<TestCaseStepAction, string> = {
   expectToHaveTitle: 'Expect (toHaveTitle)',
   expectToHaveText: 'Expect (toHaveText)',
   expectToContainText: 'Expect (toContainText)',
+  setVariable: 'Set Variable',
+  extractText: 'Extract Text',
+  httpRequest: 'HTTP Request',
 }
 
 const LEGACY_STEP_ACTIONS: Record<string, TestCaseStepAction> = {
@@ -101,23 +107,78 @@ export function normalizeSelectorType(
 export type StepActionFields = {
   selector: boolean
   value: boolean
+  outputVariable: boolean
+  config: boolean
 }
 
 export const stepActionFields: Record<TestCaseStepAction, StepActionFields> = {
-  goto: { selector: false, value: true },
-  click: { selector: true, value: false },
-  fill: { selector: true, value: true },
-  select: { selector: true, value: true },
-  check: { selector: true, value: false },
-  uncheck: { selector: true, value: false },
-  hover: { selector: true, value: false },
-  wait: { selector: true, value: false },
-  waitTimeout: { selector: false, value: true },
-  pressKey: { selector: false, value: true },
-  expectToHaveUrl: { selector: false, value: true },
-  expectToHaveTitle: { selector: false, value: true },
-  expectToHaveText: { selector: true, value: true },
-  expectToContainText: { selector: true, value: true },
+  goto: { selector: false, value: true, outputVariable: false, config: false },
+  click: { selector: true, value: false, outputVariable: false, config: false },
+  fill: { selector: true, value: true, outputVariable: false, config: false },
+  select: { selector: true, value: true, outputVariable: false, config: false },
+  check: { selector: true, value: false, outputVariable: false, config: false },
+  uncheck: {
+    selector: true,
+    value: false,
+    outputVariable: false,
+    config: false,
+  },
+  hover: { selector: true, value: false, outputVariable: false, config: false },
+  wait: { selector: true, value: false, outputVariable: false, config: false },
+  waitTimeout: {
+    selector: false,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  pressKey: {
+    selector: false,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  expectToHaveUrl: {
+    selector: false,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  expectToHaveTitle: {
+    selector: false,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  expectToHaveText: {
+    selector: true,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  expectToContainText: {
+    selector: true,
+    value: true,
+    outputVariable: false,
+    config: false,
+  },
+  setVariable: {
+    selector: false,
+    value: false,
+    outputVariable: false,
+    config: true,
+  },
+  extractText: {
+    selector: true,
+    value: false,
+    outputVariable: true,
+    config: true,
+  },
+  httpRequest: {
+    selector: false,
+    value: false,
+    outputVariable: true,
+    config: true,
+  },
 }
 
 export function fieldsForAction(action: TestCaseStepAction): StepActionFields {
@@ -128,7 +189,7 @@ export function valuePlaceholderForAction(action: TestCaseStepAction) {
   switch (action) {
     case 'goto':
     case 'expectToHaveUrl':
-      return 'https://app.example.com'
+      return 'https://app.example.com or {{loginUrl}}'
     case 'pressKey':
       return 'Enter'
     case 'waitTimeout':
@@ -140,6 +201,8 @@ export function valuePlaceholderForAction(action: TestCaseStepAction) {
       return 'Welcome back'
     case 'select':
       return 'Option value'
+    case 'fill':
+      return '{{email}} or {{$email}}'
     default:
       return 'Value'
   }
@@ -190,3 +253,34 @@ export function formatSelectorSummary(
 
   return `${SELECTOR_TYPE_LABELS[type]}: ${formatSelectorQuery(type, trimmed)}`
 }
+
+export type SetVariableConfig = {
+  name: string
+  value: string
+}
+
+export type ExtractTextConfig = {
+  attribute?: string | null
+  regex?: string | null
+}
+
+export type HttpRequestConfig = {
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  url: string
+  headers?: Record<string, string> | null
+  body?: string | null
+  jsonPath?: string | null
+  regex?: string | null
+  expectStatus?: number | null
+  retry?: {
+    attempts: number
+    intervalMs: number
+  } | null
+}
+
+export type StepConfig =
+  | SetVariableConfig
+  | ExtractTextConfig
+  | HttpRequestConfig
+  | Record<string, unknown>
+  | null

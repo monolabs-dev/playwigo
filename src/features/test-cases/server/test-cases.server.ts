@@ -20,6 +20,7 @@ import type {
 } from '#/features/test-cases/schemas/test-case.ts'
 import type { ReplaceTestCaseStepsValues } from '#/features/test-cases/schemas/test-case-step.ts'
 import { normalizeScreenshotUrl } from '#/features/test-cases/server/test-run-screenshots.server.ts'
+import { asStepConfigJson } from '#/features/test-cases/types/step-config.ts'
 import type {
   TestCaseLoginPrelude,
   TestCaseStep,
@@ -260,6 +261,8 @@ export async function duplicateOwnedTestCase(id: string) {
         selector: step.selector,
         selectorType: step.selectorType,
         value: step.value,
+        config: step.config ?? null,
+        outputVariable: step.outputVariable ?? null,
       })),
     )
   }
@@ -289,6 +292,8 @@ const testCaseStepColumns = {
   selector: testCaseSteps.selector,
   selectorType: testCaseSteps.selectorType,
   value: testCaseSteps.value,
+  config: testCaseSteps.config,
+  outputVariable: testCaseSteps.outputVariable,
   createdAt: testCaseSteps.createdAt,
   updatedAt: testCaseSteps.updatedAt,
 } as const
@@ -296,11 +301,16 @@ const testCaseStepColumns = {
 export async function listOwnedTestCaseStepDefinitions(testCaseId: string) {
   await requireOwnedTestCase(testCaseId)
 
-  return db
+  const rows = await db
     .select(testCaseStepColumns)
     .from(testCaseSteps)
     .where(eq(testCaseSteps.testCaseId, testCaseId))
     .orderBy(asc(testCaseSteps.sortOrder))
+
+  return rows.map((row) => ({
+    ...row,
+    config: asStepConfigJson(row.config),
+  }))
 }
 
 function aggregateLoginPreludeRunStatus(
@@ -448,6 +458,8 @@ export async function listOwnedTestCaseSteps(
     selector: row.selector,
     selectorType: row.selectorType,
     value: row.value,
+    config: asStepConfigJson(row.config),
+    outputVariable: row.outputVariable ?? null,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     screenshotUrl: normalizeScreenshotUrl(row.screenshotUrl ?? null),
@@ -500,6 +512,8 @@ export async function replaceOwnedTestCaseSteps(
     const selector = step.selector ?? null
     const value = step.value ?? null
     const selectorType = selector ? (step.selectorType ?? 'css') : null
+    const outputVariable = step.outputVariable ?? null
+    const config = step.config ?? null
 
     if (step.id && existingIds.has(step.id)) {
       await db
@@ -509,6 +523,8 @@ export async function replaceOwnedTestCaseSteps(
           selector,
           selectorType,
           value,
+          config,
+          outputVariable,
           sortOrder: index,
         })
         .where(
@@ -524,6 +540,8 @@ export async function replaceOwnedTestCaseSteps(
         selector,
         selectorType,
         value,
+        config,
+        outputVariable,
         sortOrder: index,
       })
     }

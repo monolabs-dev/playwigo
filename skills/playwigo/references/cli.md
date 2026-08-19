@@ -61,14 +61,17 @@ playwigo steps set --test-case <id> --file steps.json --json
 ## run
 
 ```bash
-playwigo run --test-case <id> --json          # start; prints { testRunId, status }
-playwigo run --test-case <id> --wait --json   # start and poll until terminal
-playwigo run wait --run <id> --json           # poll an existing run
+playwigo run --test-case <id> --json
+playwigo run --test-case <id> --wait --json
+playwigo run --test-case <id> --var otpEndpoint=https://… --var apiKey=… --wait --json
+playwigo run wait --run <id> --json
 ```
+
+`--var key=value` is repeatable (max 50). Values are available as `{{key}}` during the run. Prefer this for OTP endpoints, mailbox API keys, and other secrets — do not hardcode them in steps.
 
 Terminal statuses: `passed`, `failed`, `error`. `--wait` / `run wait` exit `1` when status is not `passed`.
 
-Wait payload includes `testRunId`, `status`, `errorMessage`, `durationMs`, `steps[]` (each with `status`, `action`, `errorMessage`, `screenshotUrl`).
+Wait payload includes `testRunId`, `status`, `errorMessage`, `durationMs`, masked `variables` / `resolvedVariables`, and `steps[]` (each with `status`, `action`, `value`, `resolvedValue`, `errorMessage`, `screenshotUrl`).
 
 Do not start a second run while one is already `pending` / `queued` / `running` for that case.
 

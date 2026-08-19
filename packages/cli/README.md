@@ -67,10 +67,13 @@ playwigo steps set --test-case <id> --file steps.json --json
 
 playwigo run --test-case <id> --json
 playwigo run --test-case <id> --wait --json
+playwigo run --test-case <id> --var otpEndpoint=https://staging.example/__test/otp --wait --json
 playwigo run wait --run <id> --json
 
 playwigo runs list --project <id> --json
 ```
+
+`--var key=value` is repeatable. Values are available as `{{key}}` in step templates during that run.
 
 ### Steps file format
 
@@ -81,18 +84,37 @@ playwigo runs list --project <id> --json
   "steps": [
     {
       "action": "goto",
-      "value": "https://example.com"
+      "value": "{{baseUrl}}/register"
     },
     {
-      "action": "click",
-        "selectorType": "css",
-        "selector": "button[type='submit']"
+      "action": "fill",
+      "selectorType": "id",
+      "selector": "email",
+      "value": "{{$email}}"
+    },
+    {
+      "action": "httpRequest",
+      "outputVariable": "otp",
+      "config": {
+        "method": "GET",
+        "url": "{{otpEndpoint}}?email={{$email}}",
+        "jsonPath": "data.code",
+        "retry": { "attempts": 10, "intervalMs": 2000 }
+      }
+    },
+    {
+      "action": "fill",
+      "selectorType": "id",
+      "selector": "otp",
+      "value": "{{otp}}"
     }
   ]
 }
 ```
 
 or a bare array of step objects.
+
+Supported template tokens include `{{email}}`, `{{password}}`, `{{loginUrl}}`, `{{baseUrl}}`, generators like `{{$email}}` / `{{$uuid}}`, and any `--var` you pass. Producer actions: `setVariable`, `extractText`, `httpRequest`.
 
 ## Exit codes
 

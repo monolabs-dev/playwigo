@@ -223,6 +223,8 @@ export const loginFlowSteps = pgTable(
     selector: text("selector"),
     selectorType: text("selector_type"),
     value: text("value"),
+    config: jsonb("config"),
+    outputVariable: text("output_variable"),
     ...timestamps(),
   },
   (table) => [
@@ -269,6 +271,8 @@ export const testCaseSteps = pgTable(
     selector: text("selector"),
     selectorType: text("selector_type"),
     value: text("value"),
+    config: jsonb("config"),
+    outputVariable: text("output_variable"),
     ...timestamps(),
   },
   (table) => [
@@ -298,6 +302,10 @@ export const testRuns = pgTable(
     durationMs: integer("duration_ms"),
     errorMessage: text("error_message"),
     consoleLogs: jsonb("console_logs"),
+    variables: jsonb("variables").$type<Record<string, string>>(),
+    resolvedVariables: jsonb("resolved_variables").$type<
+      Record<string, string>
+    >(),
     ...timestamps(),
   },
   (table) => [
@@ -328,6 +336,9 @@ export const testRunSteps = pgTable(
     selector: text("selector"),
     selectorType: text("selector_type"),
     value: text("value"),
+    config: jsonb("config"),
+    outputVariable: text("output_variable"),
+    resolvedValue: text("resolved_value"),
     status: testRunStepStatus("status").default("pending").notNull(),
     durationMs: integer("duration_ms"),
     errorMessage: text("error_message"),

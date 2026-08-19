@@ -35,6 +35,12 @@ import {
 } from '#/features/test-cases/components/sortable-step-card.tsx'
 import { StepSelectorField } from '#/features/test-cases/components/step-selector-field.tsx'
 import {
+  StepConfigFields,
+  TemplateHint,
+  defaultConfigForAction,
+  type StepConfigValue,
+} from '#/features/test-cases/components/step-config-fields.tsx'
+import {
   testCaseStepFormSchema,
   testCaseStepsFormSchema,
 } from '#/features/test-cases/schemas/test-case-step.ts'
@@ -63,6 +69,8 @@ export type StepFormValue = {
   selectorType: TestCaseSelectorType
   selector: string
   value: string
+  outputVariable: string
+  config: StepConfigValue
 }
 
 function firstError(errors: unknown[]) {
@@ -99,6 +107,8 @@ function createStep(
       selectorType: 'css',
       selector: '',
       value: defaultBaseUrl ?? '',
+      outputVariable: '',
+      config: null,
     }
   }
 
@@ -108,18 +118,27 @@ function createStep(
     selectorType: 'id',
     selector: '',
     value: '',
+    outputVariable: '',
+    config: null,
   }
 }
 
 export function toStepFormValues(steps: TestCaseStep[]): StepFormValue[] {
-  return steps.map((step) => ({
-    clientId: step.id,
-    id: step.id,
-    action: normalizeStepAction(step.action),
-    selectorType: normalizeSelectorType(step.selectorType),
-    selector: step.selector ?? '',
-    value: step.value ?? '',
-  }))
+  return steps.map((step) => {
+    const action = normalizeStepAction(step.action)
+    return {
+      clientId: step.id,
+      id: step.id,
+      action,
+      selectorType: normalizeSelectorType(step.selectorType),
+      selector: step.selector ?? '',
+      value: step.value ?? '',
+      outputVariable: step.outputVariable ?? '',
+      config:
+        (step.config as StepConfigValue | null) ??
+        defaultConfigForAction(action),
+    }
+  })
 }
 
 function FieldError({ id, errors }: { id: string; errors: unknown[] }) {
@@ -156,6 +175,7 @@ export function TestCaseStepsEditor({
       selector: string | null
       selectorType: string | null
       value: string | null
+      outputVariable: string | null
       screenshotUrl: string | null
       runStatus: TestCaseStep['runStatus']
       errorMessage: string | null
@@ -205,6 +225,10 @@ export function TestCaseStepsEditor({
             selectorType: fields.selector ? parsed.selectorType : null,
             selector: fields.selector ? parsed.selector : null,
             value: fields.value ? parsed.value : null,
+            outputVariable: fields.outputVariable
+              ? parsed.outputVariable || null
+              : null,
+            config: fields.config ? (parsed.config ?? null) : null,
           }
         })
 
@@ -347,6 +371,20 @@ export function TestCaseStepsEditor({
                                       onValueChange={(value) => {
                                         if (isStepAction(value)) {
                                           actionField.handleChange(value)
+                                          const nextFields =
+                                            fieldsForAction(value)
+                                          form.setFieldValue(
+                                            `steps[${index}].config`,
+                                            nextFields.config
+                                              ? defaultConfigForAction(value)
+                                              : null,
+                                          )
+                                          if (!nextFields.outputVariable) {
+                                            form.setFieldValue(
+                                              `steps[${index}].outputVariable`,
+                                              '',
+                                            )
+                                          }
                                         }
                                       }}
                                     >
@@ -447,6 +485,7 @@ export function TestCaseStepsEditor({
                                               )}
                                               className="h-8"
                                             />
+                                            <TemplateHint />
                                             <FieldError
                                               id={`${valueField.name}-error`}
                                               errors={
@@ -457,6 +496,38 @@ export function TestCaseStepsEditor({
                                         )}
                                       </form.Field>
                                     </div>
+                                  ) : null}
+
+                                  {fields.config || fields.outputVariable ? (
+                                    <form.Field
+                                      name={`steps[${index}].config`}
+                                    >
+                                      {(configField) => (
+                                        <form.Field
+                                          name={`steps[${index}].outputVariable`}
+                                        >
+                                          {(outputField) => (
+                                            <StepConfigFields
+                                              action={action}
+                                              config={
+                                                (configField.state
+                                                  .value as StepConfigValue) ??
+                                                defaultConfigForAction(action)
+                                              }
+                                              outputVariable={
+                                                outputField.state.value
+                                              }
+                                              onConfigChange={
+                                                configField.handleChange
+                                              }
+                                              onOutputVariableChange={
+                                                outputField.handleChange
+                                              }
+                                            />
+                                          )}
+                                        </form.Field>
+                                      )}
+                                    </form.Field>
                                   ) : null}
                                 </>
                               )
@@ -526,6 +597,9 @@ export function TestCaseStepsEditor({
               selector: fieldsForStep.selector ? step.selector || null : null,
               selectorType: fieldsForStep.selector ? step.selectorType : null,
               value: fieldsForStep.value ? step.value || null : null,
+              outputVariable: fieldsForStep.outputVariable
+                ? step.outputVariable || null
+                : null,
               screenshotUrl: saved?.screenshotUrl ?? null,
               runStatus: saved?.runStatus ?? null,
               errorMessage: saved?.errorMessage ?? null,

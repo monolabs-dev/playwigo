@@ -84,7 +84,7 @@ export const replaceTestCaseSteps = createServerFn({ method: 'POST' })
 export const runTestCase = createServerFn({ method: 'POST' })
   .validator(runTestCaseSchema)
   .handler(async ({ data }) => {
-    return runOwnedTestCase(data.testCaseId)
+    return runOwnedTestCase(data.testCaseId, data.variables)
   })
 
 export const getTestRunStatus = createServerFn({ method: 'GET' })

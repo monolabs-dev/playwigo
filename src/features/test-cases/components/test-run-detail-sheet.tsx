@@ -39,6 +39,8 @@ function toStepViewItems(steps: TestRunDetail['steps']): TestCaseStepViewItem[] 
     selector: step.selector,
     selectorType: step.selectorType,
     value: step.value,
+    resolvedValue: step.resolvedValue,
+    outputVariable: step.outputVariable,
     screenshotUrl: step.screenshotUrl,
     runStatus: step.status,
     errorMessage: step.errorMessage,
@@ -212,11 +214,36 @@ export function TestRunDetailSheet({
           ) : null}
 
           {detail ? (
-            <TestCaseStepsView
-              steps={stepItems}
-              loginPrelude={loginPrelude}
-              hasRun
-            />
+            <div className="space-y-5">
+              {detail.resolvedVariables &&
+              Object.keys(detail.resolvedVariables).length > 0 ? (
+                <div className="rounded-xl border bg-muted/20 px-4 py-3">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    Run variables
+                  </p>
+                  <dl className="mt-2 grid gap-1.5 sm:grid-cols-2">
+                    {Object.entries(detail.resolvedVariables).map(
+                      ([name, value]) => (
+                        <div key={name} className="min-w-0">
+                          <dt className="font-mono text-[11px] text-muted-foreground">
+                            {`{{${name}}}`}
+                          </dt>
+                          <dd className="truncate text-sm" title={value}>
+                            {value}
+                          </dd>
+                        </div>
+                      ),
+                    )}
+                  </dl>
+                </div>
+              ) : null}
+
+              <TestCaseStepsView
+                steps={stepItems}
+                loginPrelude={loginPrelude}
+                hasRun
+              />
+            </div>
           ) : null}
         </div>
       </SheetContent>

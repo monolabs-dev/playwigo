@@ -43,6 +43,7 @@ import type {
   LoginFlowStep,
   LoginFlowSummary,
 } from '#/features/login-flows/types/login-flow.ts'
+import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
 import { loginFlowValuePlaceholder } from '#/features/login-flows/utils/login-flow-variables.ts'
 import {
   STEP_ACTION_LABELS,
@@ -63,6 +64,8 @@ export type LoginFlowStepFormValue = {
   selectorType: TestCaseSelectorType
   selector: string
   value: string
+  outputVariable: string
+  config: StepConfigJson
 }
 
 function firstError(errors: unknown[]) {
@@ -84,8 +87,15 @@ function firstError(errors: unknown[]) {
   return null
 }
 
+const LOGIN_FLOW_STEP_ACTIONS = TEST_CASE_STEP_ACTIONS.filter(
+  (action) =>
+    action !== 'setVariable' &&
+    action !== 'extractText' &&
+    action !== 'httpRequest',
+) as TestCaseStepAction[]
+
 function isStepAction(value: string): value is TestCaseStepAction {
-  return (TEST_CASE_STEP_ACTIONS as readonly string[]).includes(value)
+  return (LOGIN_FLOW_STEP_ACTIONS as readonly string[]).includes(value)
 }
 
 function createStep(index: number): LoginFlowStepFormValue {
@@ -96,6 +106,8 @@ function createStep(index: number): LoginFlowStepFormValue {
       selectorType: 'css',
       selector: '',
       value: '{{loginUrl}}',
+      outputVariable: '',
+      config: null,
     }
   }
 
@@ -105,6 +117,8 @@ function createStep(index: number): LoginFlowStepFormValue {
     selectorType: 'css',
     selector: '',
     value: '',
+    outputVariable: '',
+    config: null,
   }
 }
 
@@ -118,6 +132,8 @@ export function toLoginFlowStepFormValues(
     selectorType: normalizeSelectorType(step.selectorType),
     selector: step.selector ?? '',
     value: step.value ?? '',
+    outputVariable: step.outputVariable ?? '',
+    config: (step.config as StepConfigJson) ?? null,
   }))
 }
 
@@ -195,6 +211,10 @@ export function LoginFlowStepsEditor({
             selectorType: fields.selector ? parsed.selectorType : null,
             selector: fields.selector ? parsed.selector : null,
             value: fields.value ? parsed.value : null,
+            outputVariable: fields.outputVariable
+              ? parsed.outputVariable || null
+              : null,
+            config: fields.config ? (parsed.config ?? null) : null,
           }
         })
 
@@ -344,7 +364,7 @@ export function LoginFlowStepsEditor({
                                         <SelectValue />
                                       </SelectTrigger>
                                       <SelectContent>
-                                        {TEST_CASE_STEP_ACTIONS.map(
+                                        {LOGIN_FLOW_STEP_ACTIONS.map(
                                           (stepAction) => (
                                             <SelectItem
                                               key={stepAction}

@@ -17,6 +17,8 @@ export function toStepViewItems(steps: TestCaseStep[]): TestCaseStepViewItem[] {
       selector: fields.selector ? step.selector : null,
       selectorType: fields.selector ? step.selectorType : null,
       value: fields.value ? step.value : null,
+      resolvedValue: step.resolvedValue ?? null,
+      outputVariable: fields.outputVariable ? step.outputVariable : null,
       screenshotUrl: step.screenshotUrl,
       runStatus: step.runStatus,
       errorMessage: step.errorMessage,

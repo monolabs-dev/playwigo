@@ -12,6 +12,11 @@ import {
   executeTestCaseSteps,
 } from '#/features/test-cases/server/execute-test-case-steps.ts'
 import type { ExecutedStepResult } from '#/features/test-cases/server/execute-test-case-steps.ts'
+import { asStepConfigJson } from '#/features/test-cases/types/step-config.ts'
+import {
+  maskRunVariables,
+  RunVariableContext,
+} from '#/features/test-cases/server/run-variables.ts'
 import {
   getTestCaseSummary,
   listOwnedTestCaseStepDefinitions,
@@ -22,7 +27,10 @@ import type {
   TestRunSummary,
 } from '#/features/test-cases/types/test-case.ts'
 import { requireUserProject } from '#/features/projects/server/projects.server.ts'
-import { resolveLoginPreludeSteps } from '#/features/login-flows/server/login-flows.server.ts'
+import {
+  resolveLoginPreludeSteps,
+  resolveTestAccountVariables,
+} from '#/features/login-flows/server/login-flows.server.ts'
 import { scheduleBackgroundWork } from '#/server/cloudflare/execution-context.ts'
 
 async function findActiveTestRun(testCaseId: string) {
@@ -48,6 +56,7 @@ async function updateTestRunStep(
     durationMs?: number
     errorMessage?: string | null
     screenshotUrl?: string | null
+    resolvedValue?: string | null
   },
 ) {
   await db
@@ -82,6 +91,8 @@ async function buildRunSteps(testCaseId: string, testAccountId: string | null) {
       selector: step.selector,
       selectorType: step.selectorType,
       value: step.value,
+      config: step.config ?? null,
+      outputVariable: step.outputVariable ?? null,
     })),
     ...testCaseStepsList.map((step) => ({
       testCaseStepId: step.id,
@@ -89,6 +100,8 @@ async function buildRunSteps(testCaseId: string, testAccountId: string | null) {
       selector: step.selector,
       selectorType: step.selectorType,
       value: step.value,
+      config: step.config ?? null,
+      outputVariable: step.outputVariable ?? null,
     })),
   ]
 
@@ -101,6 +114,7 @@ async function finalizeOwnedTestRun(
     status: TestRunStatus
     durationMs: number
     errorMessage?: string | null
+    resolvedVariables?: Record<string, string> | null
   },
 ) {
   await db
@@ -110,6 +124,7 @@ async function finalizeOwnedTestRun(
       completedAt: new Date(),
       durationMs: values.durationMs,
       errorMessage: values.errorMessage ?? null,
+      resolvedVariables: values.resolvedVariables ?? null,
     })
     .where(eq(testRuns.id, testRunId))
 }
@@ -120,7 +135,9 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
       .select({
         id: testRuns.id,
         testCaseId: testRuns.testCaseId,
+        testAccountId: testRuns.testAccountId,
         startedAt: testRuns.startedAt,
+        variables: testRuns.variables,
       })
       .from(testRuns)
       .where(eq(testRuns.id, testRunId))
@@ -136,6 +153,22 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
   try {
     const owned = await requireOwnedTestCase(testRun.testCaseId)
 
+    const accountVariables = await resolveTestAccountVariables({
+      projectId: owned.projectId,
+      testAccountId: testRun.testAccountId,
+    })
+
+    const seed: Record<string, string> = {
+      ...accountVariables,
+      ...(testRun.variables ?? {}),
+    }
+
+    if (owned.baseUrl) {
+      seed.baseUrl = owned.baseUrl
+    }
+
+    const variables = new RunVariableContext(seed)
+
     const runSteps = await db
       .select({
         id: testRunSteps.id,
@@ -145,6 +178,8 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
         selector: testRunSteps.selector,
         selectorType: testRunSteps.selectorType,
         value: testRunSteps.value,
+        config: testRunSteps.config,
+        outputVariable: testRunSteps.outputVariable,
       })
       .from(testRunSteps)
       .where(eq(testRunSteps.testRunId, testRunId))
@@ -172,6 +207,8 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
         selector: step.selector,
         selectorType: step.selectorType,
         value: step.value,
+        config: asStepConfigJson(step.config),
+        outputVariable: step.outputVariable ?? null,
         screenshotUrl: null,
         runStatus: null,
         errorMessage: null,
@@ -180,6 +217,7 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
       })),
       baseUrl: owned.baseUrl,
       testRunId,
+      variables,
       loginPreludeStepCount,
       progress: {
         onStepStart: async (_step, index) => {
@@ -191,6 +229,7 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
             durationMs: stepResult.durationMs,
             errorMessage: stepResult.errorMessage,
             screenshotUrl: stepResult.screenshotUrl,
+            resolvedValue: stepResult.resolvedValue,
           })
 
           if (stepResult.status === 'failed') {
@@ -198,6 +237,7 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
               status: 'failed',
               durationMs: Date.now() - runStartedAtMs,
               errorMessage: stepResult.errorMessage,
+              resolvedVariables: variables.snapshot(),
             })
           }
         },
@@ -208,6 +248,7 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
       status: result.status,
       durationMs: result.durationMs,
       errorMessage: result.errorMessage,
+      resolvedVariables: result.resolvedVariables,
     })
   } catch (error) {
     const message =
@@ -221,7 +262,10 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
   }
 }
 
-export async function startOwnedTestCaseRun(testCaseId: string) {
+export async function startOwnedTestCaseRun(
+  testCaseId: string,
+  variables?: Record<string, string>,
+) {
   const owned = await requireOwnedTestCase(testCaseId)
 
   const activeRun = await findActiveTestRun(testCaseId)
@@ -239,6 +283,7 @@ export async function startOwnedTestCaseRun(testCaseId: string) {
       status: 'running',
       queuedAt: new Date(),
       startedAt: new Date(),
+      variables: variables && Object.keys(variables).length > 0 ? variables : null,
     })
     .returning({ id: testRuns.id })
 
@@ -251,6 +296,8 @@ export async function startOwnedTestCaseRun(testCaseId: string) {
       selector: step.selector,
       selectorType: step.selectorType,
       value: step.value,
+      config: step.config ?? null,
+      outputVariable: step.outputVariable ?? null,
       status: 'pending' as const,
     })),
   )
@@ -276,6 +323,8 @@ export async function getOwnedTestRunStatus(testRunId: string) {
         durationMs: testRuns.durationMs,
         errorMessage: testRuns.errorMessage,
         completedAt: testRuns.completedAt,
+        variables: testRuns.variables,
+        resolvedVariables: testRuns.resolvedVariables,
       })
       .from(testRuns)
       .where(eq(testRuns.id, testRunId))
@@ -296,6 +345,9 @@ export async function getOwnedTestRunStatus(testRunId: string) {
       selector: testRunSteps.selector,
       selectorType: testRunSteps.selectorType,
       value: testRunSteps.value,
+      config: testRunSteps.config,
+      outputVariable: testRunSteps.outputVariable,
+      resolvedValue: testRunSteps.resolvedValue,
       status: testRunSteps.status,
       durationMs: testRunSteps.durationMs,
       errorMessage: testRunSteps.errorMessage,
@@ -314,13 +366,21 @@ export async function getOwnedTestRunStatus(testRunId: string) {
     durationMs: testRun.durationMs,
     errorMessage: testRun.errorMessage,
     completedAt: testRun.completedAt,
+    variables: maskRunVariables(testRun.variables),
+    resolvedVariables: testRun.resolvedVariables,
     testCase,
-    steps,
+    steps: steps.map((step) => ({
+      ...step,
+      config: asStepConfigJson(step.config),
+    })),
   }
 }
 
-export async function runOwnedTestCase(testCaseId: string) {
-  return startOwnedTestCaseRun(testCaseId)
+export async function runOwnedTestCase(
+  testCaseId: string,
+  variables?: Record<string, string>,
+) {
+  return startOwnedTestCaseRun(testCaseId, variables)
 }
 
 export async function listProjectTestRuns(

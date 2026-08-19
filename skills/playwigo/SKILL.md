@@ -47,7 +47,7 @@ project → feature → test case → ordered steps
 3. `playwigo test-cases create --feature <id> --name "…" --test-account <id> --json` when the user has an account id; omit `--test-account` only for unauthenticated flows.
 4. Write `steps.json` (see [references/steps.md](references/steps.md)).
 5. `playwigo steps set --test-case <id> --file steps.json --json`
-6. `playwigo run --test-case <id> --wait --json` — exit `1` means the run failed.
+6. `playwigo run --test-case <id> --wait --json` — exit `1` means the run failed. Pass `--var key=value` for dynamic data (OTP endpoint, mailbox key, etc.).
 
 ```bash
 PROJECT_ID=$(playwigo projects list --json | jq -r '.data[0].id')
@@ -57,7 +57,14 @@ playwigo steps set --test-case "$CASE_ID" --file ./steps.json --json
 playwigo run --test-case "$CASE_ID" --wait --json
 ```
 
-## Conventions
+## Dynamic data
+
+- Prefer `{{$email}}` / `{{$uuid}}` for unique per-run values (registration).
+- Prefer `httpRequest` / `extractText` steps to produce OTP and similar values inside the run.
+- Prefer `--var` when the agent already has a value (or a secret) before starting the browser.
+- Do **not** invent mid-run interactive pauses; Playwigo runs are non-interactive today.
+
+See [references/steps.md](references/steps.md) for the full template and action reference.
 
 - Use `--json` on every command. Human output is not a stable contract.
 - Do not invent CSS selectors, test-account IDs, or URLs the user did not provide. Ask, or list existing cases/features first.

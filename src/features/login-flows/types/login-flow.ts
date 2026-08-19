@@ -8,6 +8,8 @@ export type LoginFlowSummary = {
   updatedAt: Date
 }
 
+import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
+
 export type LoginFlowStep = {
   id: string
   loginFlowId: string
@@ -16,6 +18,8 @@ export type LoginFlowStep = {
   selector: string | null
   selectorType: string | null
   value: string | null
+  config: StepConfigJson
+  outputVariable: string | null
   createdAt: Date
   updatedAt: Date
 }

@@ -251,6 +251,20 @@ function applyRegexCapture(raw: string, pattern: string) {
   return match[1] ?? match[0]
 }
 
+async function waitForPageSettled(page: Page) {
+  await page
+    .waitForLoadState('networkidle', { timeout: NAVIGATION_TIMEOUT_MS })
+    .catch(() => {})
+}
+
+async function navigateToPage(page: Page, url: string) {
+  await page.goto(url, {
+    waitUntil: 'domcontentloaded',
+    timeout: NAVIGATION_TIMEOUT_MS,
+  })
+  await waitForPageSettled(page)
+}
+
 async function executeStep(
   page: Page,
   step: TestCaseStep,
@@ -269,10 +283,7 @@ async function executeStep(
 
   switch (action) {
     case 'goto':
-      await page.goto(value, {
-        waitUntil: 'domcontentloaded',
-        timeout: NAVIGATION_TIMEOUT_MS,
-      })
+      await navigateToPage(page, value)
       break
     case 'click':
       await resolveLocator(page, step.selectorType, selector).click({
@@ -505,10 +516,7 @@ export async function executeTestCaseSteps(input: {
 
     const firstAction = normalizeStepAction(steps[0]?.action)
     if (baseUrl && loginPreludeStepCount === 0 && firstAction !== 'goto') {
-      await page.goto(baseUrl, {
-        waitUntil: 'domcontentloaded',
-        timeout: NAVIGATION_TIMEOUT_MS,
-      })
+      await navigateToPage(page, baseUrl)
     }
 
     for (const [index, step] of steps.entries()) {
@@ -538,9 +546,7 @@ export async function executeTestCaseSteps(input: {
         )
 
         if (loginPreludeStepCount > 0 && index === loginPreludeStepCount - 1) {
-          await page
-            .waitForLoadState('networkidle', { timeout: NAVIGATION_TIMEOUT_MS })
-            .catch(() => {})
+          await waitForPageSettled(page)
         }
 
         const screenshotUrl = await storeStepScreenshot(

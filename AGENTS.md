@@ -923,7 +923,7 @@ tanstackIntent:
 
 - Playwigo is a Playwright test-automation product: users organize projects, features, and test cases.
 - Auth is Better Auth with Google OAuth, email/password sign-in, and the apiKey plugin (`sk-pwg-` prefix, `x-api-key` header for agents/CLI); API keys are managed from Settings → API Keys.
-- Domain model is projects containing features, test accounts, and reusable login flows; features containing test cases with ordered steps; test runs recording each execution. Runs accept named variables; steps can produce values (`setVariable`, `extractText`, `httpRequest`) for later steps (e.g. OTP).
+- Domain model is projects containing features, test accounts, and reusable login flows; features containing test cases with ordered steps; test runs recording each execution. Runs accept named variables; steps can produce values (`setVariable`, `extractText`, `httpRequest`) for later steps (e.g. OTP). Projects clone from Settings → Project with optional URL replace (features, accounts, login flows, test cases; not run history).
 - Database is Neon Postgres (aws-ap-southeast-1); production Workers use Cloudflare Hyperdrive, local dev uses the Neon HTTP driver.
 - The `@playwigo/cli` npm package (`playwigo` binary) lets AI agents manage projects, features, test cases, steps, and runs via REST `/api/v1` using `PLAYWIGO_API_KEY`; `PLAYWIGO_API_URL` is optional and defaults to `https://playwigo.monolabs.workers.dev`. The companion agent skill lives at `skills/playwigo/` (SKILL.md + references) and installs via `npx skills add monolabs-dev/playwigo`; skills.sh listing is install telemetry, not a registry submission.
 - Project avatars use the project's website favicon.
@@ -931,5 +931,5 @@ tanstackIntent:
 - Test accounts and login flows share one sidebar page with tabs.
 - New test account login URL defaults to the project's website URL.
 - Test cases authenticate via an assigned test account's login flow, not generic login-field guessing.
-- Test runs use Cloudflare Browser Run (headless Chrome via CDP); screenshots are stored in Cloudflare R2.
+- Test runs use Cloudflare Browser Run (headless Chrome via CDP); screenshots in R2; cancellable via UI/API/CLI; goto steps wait for networkidle after domcontentloaded; waitTimeout values are milliseconds (max 60s); per-step timeout 30s and max run 10m with stale-run reaping.
 - Element picking is only available in the browser extension; duplicating a test case adds a "Copy of " prefix and copies all steps; test runs execute server-side with live status updates across page refresh.

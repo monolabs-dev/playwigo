@@ -1,0 +1,42 @@
+src/features/projects/utils/replace-url.ts
+  s_4dcfd256c900fb::t_2729fe8da737d2 1-108
+src/features/projects/components/project-settings-page.tsx
+  s_4dcfd256c900fb::t_6f9d474bcc585a 62-76
+  s_4dcfd256c900fb::t_2616bdc72d79c7 96-107
+  s_4dcfd256c900fb::t_6832878b24b323 15,21
+src/features/projects/server/projects.server.ts
+  s_4dcfd256c900fb::t_6fe77593463547 111-370
+  s_4dcfd256c900fb::t_10a58962d383dd 1,4-12,14-19
+src/features/projects/schemas/project.ts
+  s_4dcfd256c900fb::t_c0b52a91a184ec 34-39,44-45
+src/features/projects/server/projects.ts
+  s_4dcfd256c900fb::t_69e2ee768d1133 40-45
+  s_4dcfd256c900fb::t_0cbceb3f31744d 4,10
+src/features/projects/components/clone-project-dialog.tsx
+  s_4dcfd256c900fb::t_d0722eae6cb846 1-106,108-178
+  h_c8a1da106d576c 107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e915ada0b83566afa1c9a8a7a97aba2ec14a7cd7",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_4dcfd256c900fb": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "150c1589-2f5b-4f80-b072-cbeffa51d4c5",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

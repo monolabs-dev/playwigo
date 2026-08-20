@@ -1,6 +1,6 @@
 {
   "name": "@playwigo/cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Playwigo CLI for AI agents — manage projects, features, test cases, steps, and runs",
   "type": "module",
   "bin": {

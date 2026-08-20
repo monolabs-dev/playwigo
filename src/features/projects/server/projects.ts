@@ -1,11 +1,13 @@
 import { createServerFn } from '@tanstack/react-start'
 
 import {
+  cloneProjectSchema,
   createProjectSchema,
   deleteProjectSchema,
   updateProjectSchema,
 } from '#/features/projects/schemas/project.ts'
 import {
+  cloneOwnedProject,
   insertProject,
   listUserProjects,
   removeProject,
@@ -34,4 +36,10 @@ export const deleteProject = createServerFn({ method: 'POST' })
   .validator(deleteProjectSchema)
   .handler(async ({ data }) => {
     return removeProject(data.id)
+  })
+
+export const cloneProject = createServerFn({ method: 'POST' })
+  .validator(cloneProjectSchema)
+  .handler(async ({ data }) => {
+    return cloneOwnedProject(data)
   })

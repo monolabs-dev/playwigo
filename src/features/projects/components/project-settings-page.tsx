@@ -12,11 +12,13 @@ import {
 import { useActiveProject } from '#/features/dashboard/hooks/active-project.tsx'
 import { ProjectMark } from '#/features/dashboard/components/project-mark.tsx'
 import { websiteHost } from '#/features/dashboard/utils/project-display.ts'
+import { CloneProjectDialog } from '#/features/projects/components/clone-project-dialog.tsx'
 import { DeleteProjectDialog } from '#/features/projects/components/delete-project-dialog.tsx'
 import { ProjectSettingsForm } from '#/features/projects/components/project-settings-form.tsx'
 
 export function ProjectSettingsPage() {
   const { project, projects, selectProject } = useActiveProject()
+  const [cloneOpen, setCloneOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
   return (
@@ -57,6 +59,21 @@ export function ProjectSettingsPage() {
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle>Clone project</CardTitle>
+          <CardDescription>
+            Duplicate features, test accounts, login flow, and test cases into a
+            new project. Useful for staging-to-production setups.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button type="button" variant="outline" onClick={() => setCloneOpen(true)}>
+            Clone project
+          </Button>
+        </CardContent>
+      </Card>
+
       <Card className="border-destructive/30">
         <CardHeader>
           <CardTitle className="text-destructive">Danger zone</CardTitle>
@@ -75,6 +92,18 @@ export function ProjectSettingsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      <CloneProjectDialog
+        project={project}
+        open={cloneOpen}
+        onOpenChange={setCloneOpen}
+        onCloned={(cloned) => {
+          selectProject(cloned.id)
+          toast.success('Project cloned', {
+            description: cloned.name,
+          })
+        }}
+      />
 
       <DeleteProjectDialog
         project={project}

@@ -31,7 +31,15 @@ export const deleteProjectSchema = z.object({
   id: z.string().min(1),
 })
 
+export const cloneProjectSchema = z.object({
+  sourceId: z.string().min(1),
+  ...projectFields,
+  replaceUrls: z.boolean(),
+})
+
 export type CreateProjectInput = z.input<typeof createProjectSchema>
 export type CreateProjectValues = z.output<typeof createProjectSchema>
 export type UpdateProjectInput = z.input<typeof updateProjectSchema>
 export type UpdateProjectValues = z.output<typeof updateProjectSchema>
+export type CloneProjectInput = z.input<typeof cloneProjectSchema>
+export type CloneProjectValues = z.output<typeof cloneProjectSchema>

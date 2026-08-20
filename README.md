@@ -70,7 +70,7 @@ pnpm cli:build
 4. Configure env and run commands:
 
 ```bash
-export PLAYWIGO_API_URL="http://localhost:3000"   # or your deployed Worker URL
+export PLAYWIGO_API_URL="http://localhost:3000"   # override hosted default for local testing
 export PLAYWIGO_API_KEY="sk-pwg-..."
 
 pnpm cli:build

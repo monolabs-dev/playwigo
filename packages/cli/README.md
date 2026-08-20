@@ -17,17 +17,16 @@ npx @playwigo/cli --help
 Then configure:
 
 ```bash
-export PLAYWIGO_API_URL="https://your-playwigo-deployment.example"
 export PLAYWIGO_API_KEY="sk-pwg-..."
 ```
 
 Create an API key in the Playwigo web app under **Settings → API Keys**. Keys use the `sk-pwg-` prefix.
 
+The CLI talks to `https://playwigo.monolabs.workers.dev` by default. Set `PLAYWIGO_API_URL` only to point at a local or custom deployment (for example `http://localhost:3000`).
+
 ```bash
 playwigo projects list --json
 ```
-
-Local development default URL is `http://localhost:3000` when `PLAYWIGO_API_URL` is unset.
 
 ## Agent skill
 
@@ -37,7 +36,7 @@ Coding agents (Cursor, Claude Code, Codex, Copilot, and others) can install Play
 npx skills add monolabs-dev/playwigo
 ```
 
-The skill teaches the agent when to use this CLI, the project → feature → test case model, and how to write `steps.json`. Users still need `PLAYWIGO_API_URL` and `PLAYWIGO_API_KEY` in the environment.
+The skill teaches the agent when to use this CLI, the project → feature → test case model, and how to write `steps.json`. Users still need `PLAYWIGO_API_KEY` in the environment.
 
 ## Authentication
 
@@ -127,7 +126,6 @@ Supported template tokens include `{{email}}`, `{{password}}`, `{{loginUrl}}`, `
 ## Agent workflow example
 
 ```bash
-export PLAYWIGO_API_URL="https://your-playwigo-deployment.example"
 export PLAYWIGO_API_KEY="sk-pwg-..."
 
 PROJECT_ID=$(playwigo projects list --json | jq -r '.data[0].id')
@@ -204,4 +202,4 @@ Use `minor` / `major` for breaking or feature releases.
 
 - Root app `package.json` stays `"private": true` — only this package is published.
 - Never put secrets in the package; API keys belong in the user’s env.
-- Users still need a running Playwigo deployment (`PLAYWIGO_API_URL`) and their own API key.
+- Users still need their own API key. The CLI defaults to the hosted Playwigo API; set `PLAYWIGO_API_URL` only to override it.

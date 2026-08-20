@@ -925,7 +925,7 @@ tanstackIntent:
 - Auth is Better Auth with Google OAuth, email/password sign-in, and the apiKey plugin (`sk-pwg-` prefix, `x-api-key` header for agents/CLI); API keys are managed from Settings → API Keys.
 - Domain model is projects containing features, test accounts, and reusable login flows; features containing test cases with ordered steps; test runs recording each execution.
 - Database is Neon Postgres (aws-ap-southeast-1); production Workers use Cloudflare Hyperdrive, local dev uses the Neon HTTP driver.
-- The `@playwigo/cli` npm package (`playwigo` binary) lets AI agents manage projects, features, test cases, steps, and runs via REST `/api/v1` using `PLAYWIGO_API_URL` and `PLAYWIGO_API_KEY`.
+- The `@playwigo/cli` npm package (`playwigo` binary) lets AI agents manage projects, features, test cases, steps, and runs via REST `/api/v1` using `PLAYWIGO_API_KEY`; `PLAYWIGO_API_URL` is optional and defaults to `https://playwigo.monolabs.workers.dev`.
 - Project avatars use the project's website favicon.
 - Test cases are accessed from feature detail pages; sidebar includes Test runs and Project settings, not a Test Cases item.
 - Test accounts and login flows share one sidebar page with tabs.

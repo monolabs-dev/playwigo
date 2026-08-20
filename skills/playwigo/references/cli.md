@@ -1,6 +1,6 @@
 # Playwigo CLI reference
 
-Binary: `playwigo` (`npx @playwigo/cli`). Env: `PLAYWIGO_API_URL`, `PLAYWIGO_API_KEY`.
+Binary: `playwigo` (`npx @playwigo/cli`). Env: `PLAYWIGO_API_KEY` (required). `PLAYWIGO_API_URL` is optional and defaults to `https://playwigo.monolabs.workers.dev`.
 
 Success stdout (with `--json`):
 

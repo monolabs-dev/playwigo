@@ -16,12 +16,11 @@ Need Node.js 20+, `@playwigo/cli`, and the user’s own credentials:
 ```bash
 npm install -g @playwigo/cli   # or: npx @playwigo/cli …
 
-export PLAYWIGO_API_URL="http://playwigo.monolabs.workers.dev"
 export PLAYWIGO_API_KEY="sk-pwg-..."
 ```
 
 - API keys come from **Settings → API Keys** in the Playwigo app. Prefix is `sk-pwg-`.
-- If `PLAYWIGO_API_URL` is unset, the CLI defaults to `http://localhost:3000`.
+- The CLI defaults to `https://playwigo.monolabs.workers.dev`. Do not set `PLAYWIGO_API_URL` unless the user asks to target a different deployment.
 - Never invent, print, or commit an API key. If `PLAYWIGO_API_KEY` is missing, stop and ask the user to export one.
 - A key is a full session. Treat it like a password.
 

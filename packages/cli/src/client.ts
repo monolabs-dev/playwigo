@@ -12,12 +12,14 @@ export type ApiErrorBody = {
   }
 }
 
+const DEFAULT_API_URL = 'https://playwigo.monolabs.workers.dev'
+
 function normalizeBaseUrl(url: string) {
   return url.replace(/\/+$/, '')
 }
 
 export function createClientFromEnv(): ApiClientOptions {
-  const baseUrl = process.env.PLAYWIGO_API_URL ?? 'http://localhost:3000'
+  const baseUrl = process.env.PLAYWIGO_API_URL ?? DEFAULT_API_URL
   const apiKey = process.env.PLAYWIGO_API_KEY
 
   if (!apiKey) {

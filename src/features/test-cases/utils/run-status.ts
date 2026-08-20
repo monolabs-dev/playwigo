@@ -12,6 +12,7 @@ export function isTerminalTestRunStatus(
   return (
     status === 'passed' ||
     status === 'failed' ||
-    status === 'error'
+    status === 'error' ||
+    status === 'cancelled'
   )
 }

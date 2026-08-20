@@ -50,6 +50,7 @@ function computePassRate(runs: TestRunSummary[]) {
     const parsed = at instanceof Date ? at : new Date(at)
     return (
       isTerminalTestRunStatus(run.status) &&
+      run.status !== 'cancelled' &&
       !Number.isNaN(parsed.getTime()) &&
       parsed.getTime() >= weekAgo
     )

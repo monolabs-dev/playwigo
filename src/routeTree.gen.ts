@@ -39,6 +39,7 @@ import { Route as ApiV1ProjectsProjectIdFeaturesRouteImport } from './routes/api
 import { Route as ApiV1ProjectsProjectIdTestRunsRouteImport } from './routes/api/v1/projects/$projectId/test-runs'
 import { Route as ApiV1TestCasesTestCaseIdRunRouteImport } from './routes/api/v1/test-cases/$testCaseId/run'
 import { Route as ApiV1TestCasesTestCaseIdStepsRouteImport } from './routes/api/v1/test-cases/$testCaseId/steps'
+import { Route as ApiV1TestRunsTestRunIdCancelRouteImport } from './routes/api/v1/test-runs/$testRunId.cancel'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -199,6 +200,12 @@ const ApiV1TestCasesTestCaseIdStepsRoute =
     path: '/api/v1/test-cases/$testCaseId/steps',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiV1TestRunsTestRunIdCancelRoute =
+  ApiV1TestRunsTestRunIdCancelRouteImport.update({
+    id: '/cancel',
+    path: '/cancel',
+    getParentRoute: () => ApiV1TestRunsTestRunIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -219,7 +226,7 @@ export interface FileRoutesByFullPath {
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/settings/api-keys': typeof AppShellSettingsApiKeysRoute
   '/settings/project': typeof AppShellSettingsProjectRoute
-  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRouteWithChildren
   '/authentication/': typeof AppShellAuthenticationIndexRoute
   '/features/': typeof AppShellFeaturesIndexRoute
   '/settings/': typeof AppShellSettingsIndexRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
   '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
   '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
+  '/api/v1/test-runs/$testRunId/cancel': typeof ApiV1TestRunsTestRunIdCancelRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -246,7 +254,7 @@ export interface FileRoutesByTo {
   '/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/settings/api-keys': typeof AppShellSettingsApiKeysRoute
   '/settings/project': typeof AppShellSettingsProjectRoute
-  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRouteWithChildren
   '/authentication': typeof AppShellAuthenticationIndexRoute
   '/features': typeof AppShellFeaturesIndexRoute
   '/settings': typeof AppShellSettingsIndexRoute
@@ -256,6 +264,7 @@ export interface FileRoutesByTo {
   '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
   '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
   '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
+  '/api/v1/test-runs/$testRunId/cancel': typeof ApiV1TestRunsTestRunIdCancelRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -279,7 +288,7 @@ export interface FileRoutesById {
   '/_app/_shell/features/$featureId': typeof AppShellFeaturesFeatureIdRoute
   '/_app/_shell/settings/api-keys': typeof AppShellSettingsApiKeysRoute
   '/_app/_shell/settings/project': typeof AppShellSettingsProjectRoute
-  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRoute
+  '/api/v1/test-runs/$testRunId': typeof ApiV1TestRunsTestRunIdRouteWithChildren
   '/_app/_shell/authentication/': typeof AppShellAuthenticationIndexRoute
   '/_app/_shell/features/': typeof AppShellFeaturesIndexRoute
   '/_app/_shell/settings/': typeof AppShellSettingsIndexRoute
@@ -289,6 +298,7 @@ export interface FileRoutesById {
   '/api/v1/projects/$projectId/test-runs': typeof ApiV1ProjectsProjectIdTestRunsRoute
   '/api/v1/test-cases/$testCaseId/run': typeof ApiV1TestCasesTestCaseIdRunRoute
   '/api/v1/test-cases/$testCaseId/steps': typeof ApiV1TestCasesTestCaseIdStepsRoute
+  '/api/v1/test-runs/$testRunId/cancel': typeof ApiV1TestRunsTestRunIdCancelRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -321,6 +331,7 @@ export interface FileRouteTypes {
     | '/api/v1/projects/$projectId/test-runs'
     | '/api/v1/test-cases/$testCaseId/run'
     | '/api/v1/test-cases/$testCaseId/steps'
+    | '/api/v1/test-runs/$testRunId/cancel'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -348,6 +359,7 @@ export interface FileRouteTypes {
     | '/api/v1/projects/$projectId/test-runs'
     | '/api/v1/test-cases/$testCaseId/run'
     | '/api/v1/test-cases/$testCaseId/steps'
+    | '/api/v1/test-runs/$testRunId/cancel'
   id:
     | '__root__'
     | '/'
@@ -380,6 +392,7 @@ export interface FileRouteTypes {
     | '/api/v1/projects/$projectId/test-runs'
     | '/api/v1/test-cases/$testCaseId/run'
     | '/api/v1/test-cases/$testCaseId/steps'
+    | '/api/v1/test-runs/$testRunId/cancel'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -389,7 +402,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiV1ProjectsRoute: typeof ApiV1ProjectsRouteWithChildren
-  ApiV1TestRunsTestRunIdRoute: typeof ApiV1TestRunsTestRunIdRoute
+  ApiV1TestRunsTestRunIdRoute: typeof ApiV1TestRunsTestRunIdRouteWithChildren
   ApiScreenshotsTestRunsTestRunIdStepIdRoute: typeof ApiScreenshotsTestRunsTestRunIdStepIdRoute
   ApiV1FeaturesFeatureIdTestCasesRoute: typeof ApiV1FeaturesFeatureIdTestCasesRoute
   ApiV1TestCasesTestCaseIdRunRoute: typeof ApiV1TestCasesTestCaseIdRunRoute
@@ -608,6 +621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1TestCasesTestCaseIdStepsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/v1/test-runs/$testRunId/cancel': {
+      id: '/api/v1/test-runs/$testRunId/cancel'
+      path: '/cancel'
+      fullPath: '/api/v1/test-runs/$testRunId/cancel'
+      preLoaderRoute: typeof ApiV1TestRunsTestRunIdCancelRouteImport
+      parentRoute: typeof ApiV1TestRunsTestRunIdRoute
+    }
   }
 }
 
@@ -714,6 +734,20 @@ const ApiV1ProjectsRouteWithChildren = ApiV1ProjectsRoute._addFileChildren(
   ApiV1ProjectsRouteChildren,
 )
 
+interface ApiV1TestRunsTestRunIdRouteChildren {
+  ApiV1TestRunsTestRunIdCancelRoute: typeof ApiV1TestRunsTestRunIdCancelRoute
+}
+
+const ApiV1TestRunsTestRunIdRouteChildren: ApiV1TestRunsTestRunIdRouteChildren =
+  {
+    ApiV1TestRunsTestRunIdCancelRoute: ApiV1TestRunsTestRunIdCancelRoute,
+  }
+
+const ApiV1TestRunsTestRunIdRouteWithChildren =
+  ApiV1TestRunsTestRunIdRoute._addFileChildren(
+    ApiV1TestRunsTestRunIdRouteChildren,
+  )
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
@@ -721,7 +755,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiV1ProjectsRoute: ApiV1ProjectsRouteWithChildren,
-  ApiV1TestRunsTestRunIdRoute: ApiV1TestRunsTestRunIdRoute,
+  ApiV1TestRunsTestRunIdRoute: ApiV1TestRunsTestRunIdRouteWithChildren,
   ApiScreenshotsTestRunsTestRunIdStepIdRoute:
     ApiScreenshotsTestRunsTestRunIdStepIdRoute,
   ApiV1FeaturesFeatureIdTestCasesRoute: ApiV1FeaturesFeatureIdTestCasesRoute,

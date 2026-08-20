@@ -80,7 +80,7 @@ See [references/steps.md](references/steps.md) for the full template and action 
 | 1 | API / business error, including a failed `--wait` run |
 | 2 | Usage (missing env, bad args) |
 
-On a failed run, read `data.status`, `data.errorMessage`, and failed `data.steps[]`. Fix the steps (or the missing test account), `steps set` again, re-run. Do not loop more than twice without asking.
+On a failed run, read `data.status`, `data.errorMessage`, and failed `data.steps[]`. Fix the steps (or the missing test account), `steps set` again, re-run. Do not loop more than twice without asking. If a run is stuck `running`, cancel it with `playwigo runs cancel --run <id> --json` then fix the hanging step.
 
 ## References
 

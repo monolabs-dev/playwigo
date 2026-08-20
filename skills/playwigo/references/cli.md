@@ -65,11 +65,12 @@ playwigo run --test-case <id> --json
 playwigo run --test-case <id> --wait --json
 playwigo run --test-case <id> --var otpEndpoint=https://… --var apiKey=… --wait --json
 playwigo run wait --run <id> --json
+playwigo runs cancel --run <id> --json
 ```
 
 `--var key=value` is repeatable (max 50). Values are available as `{{key}}` during the run. Prefer this for OTP endpoints, mailbox API keys, and other secrets — do not hardcode them in steps.
 
-Terminal statuses: `passed`, `failed`, `error`. `--wait` / `run wait` exit `1` when status is not `passed`.
+Terminal statuses: `passed`, `failed`, `error`, `cancelled`. `--wait` / `run wait` exit `1` when status is not `passed`.
 
 Wait payload includes `testRunId`, `status`, `errorMessage`, `durationMs`, masked `variables` / `resolvedVariables`, and `steps[]` (each with `status`, `action`, `value`, `resolvedValue`, `errorMessage`, `screenshotUrl`).
 
@@ -80,9 +81,10 @@ Do not start a second run while one is already `pending` / `queued` / `running` 
 ```bash
 playwigo runs list --project <id> --json
 playwigo runs list --project <id> --limit 20 --json
+playwigo runs cancel --run <id> --json
 ```
 
-Recent runs for a project (default limit 50).
+Recent runs for a project (default limit 50). `runs cancel` stops a `queued` or `running` run.
 
 ## Not in the CLI
 

@@ -1,6 +1,8 @@
 import { z } from 'zod'
 
-const runVariableValueSchema = z.string().max(2000, 'Variable value is too long')
+const runVariableValueSchema = z
+  .string()
+  .max(2000, 'Variable value is too long')
 
 export const runVariablesSchema = z
   .record(
@@ -29,6 +31,14 @@ export const getTestRunStatusSchema = z.object({
   testRunId: z.string().min(1),
 })
 
+export const cancelTestRunSchema = z.object({
+  testRunId: z.string().min(1),
+})
+
+export const cancelTestCaseRunSchema = z.object({
+  testCaseId: z.string().min(1),
+})
+
 export const listProjectTestRunsSchema = z.object({
   projectId: z.string().min(1),
   limit: z.number().int().min(1).max(200).optional(),
@@ -36,4 +46,6 @@ export const listProjectTestRunsSchema = z.object({
 
 export type RunTestCaseInput = z.input<typeof runTestCaseSchema>
 export type GetTestRunStatusInput = z.input<typeof getTestRunStatusSchema>
+export type CancelTestRunInput = z.input<typeof cancelTestRunSchema>
+export type CancelTestCaseRunInput = z.input<typeof cancelTestCaseRunSchema>
 export type ListProjectTestRunsInput = z.input<typeof listProjectTestRunsSchema>

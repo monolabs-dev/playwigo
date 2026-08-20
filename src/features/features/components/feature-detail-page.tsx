@@ -20,6 +20,7 @@ import { TestCaseDialog } from '#/features/test-cases/components/test-case-dialo
 import { TestCaseStepsSheet } from '#/features/test-cases/components/test-case-steps-sheet.tsx'
 import { TestCasesTable } from '#/features/test-cases/components/test-cases-table.tsx'
 import {
+  cancelTestCaseRun,
   duplicateTestCase,
   listTestCases,
   runTestCase,
@@ -29,9 +30,7 @@ import type {
   TestCaseSummary,
   TestRunStatus,
 } from '#/features/test-cases/types/test-case.ts'
-import {
-  isActiveTestRunStatus,
-} from '#/features/test-cases/utils/run-status.ts'
+import { isActiveTestRunStatus } from '#/features/test-cases/utils/run-status.ts'
 import { listTestAccounts } from '#/features/test-accounts/server/test-accounts.ts'
 import type { TestAccountSummary } from '#/features/test-accounts/types/test-account.ts'
 
@@ -44,6 +43,7 @@ export function FeatureDetailPage() {
   const listCasesFn = useServerFn(listTestCases)
   const duplicateCaseFn = useServerFn(duplicateTestCase)
   const runCaseFn = useServerFn(runTestCase)
+  const cancelCaseFn = useServerFn(cancelTestCaseRun)
   const listAccountsFn = useServerFn(listTestAccounts)
   const [feature, setFeature] = useState<FeatureSummary | null>(null)
   const [testCases, setTestCases] = useState<TestCaseSummary[]>([])
@@ -90,7 +90,11 @@ export function FeatureDetailPage() {
     prevStatusesRef.current.set(testCase.id, testCase.latestRunStatus)
   }, [])
 
-  const { runningAll, runAll, runTestCase: runSingleTestCase } = useRunAllTestCases({
+  const {
+    runningAll,
+    runAll,
+    runTestCase: runSingleTestCase,
+  } = useRunAllTestCases({
     runCaseFn: runCaseFn,
     refreshTestCases,
     onTestCaseUpdated: handleTestCaseUpdated,
@@ -154,12 +158,16 @@ export function FeatureDetailPage() {
       const previousStatus = prevStatusesRef.current.get(testCase.id)
       const currentStatus = testCase.latestRunStatus
 
-      if (
-        isActiveTestRunStatus(previousStatus) &&
-        currentStatus === 'passed'
-      ) {
+      if (isActiveTestRunStatus(previousStatus) && currentStatus === 'passed') {
         toast.success('Test passed', {
           description: `${testCase.name} finished in ${((testCase.latestRunDurationMs ?? 0) / 1000).toLocaleString(undefined, { maximumFractionDigits: 1 })} s`,
+        })
+      } else if (
+        isActiveTestRunStatus(previousStatus) &&
+        currentStatus === 'cancelled'
+      ) {
+        toast.message('Run cancelled', {
+          description: testCase.name,
         })
       } else if (
         isActiveTestRunStatus(previousStatus) &&
@@ -200,6 +208,21 @@ export function FeatureDetailPage() {
     const result = await runSingleTestCase(testCase)
     if (result) {
       prevStatusesRef.current.set(testCase.id, 'running')
+    }
+  }
+
+  async function handleCancelTestCase(testCase: TestCaseSummary) {
+    try {
+      const result = await cancelCaseFn({ data: { testCaseId: testCase.id } })
+      handleTestCaseUpdated(result.testCase)
+      toast.success('Run cancelled', {
+        description: result.testCase.name,
+      })
+    } catch (error) {
+      toast.error('Unable to cancel run', {
+        description:
+          error instanceof Error ? error.message : 'Try again in a moment.',
+      })
     }
   }
 
@@ -289,7 +312,11 @@ export function FeatureDetailPage() {
               disabled={!canRunAll || runningAll || hasActiveRuns}
               onClick={() => void handleRunAll()}
             >
-              {runningAll ? <Loader2 className="animate-spin" /> : <CirclePlay />}
+              {runningAll ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <CirclePlay />
+              )}
               Run all
             </Button>
             <Button
@@ -331,6 +358,7 @@ export function FeatureDetailPage() {
         <TestCasesTable
           testCases={testCases}
           onRun={(testCase) => void handleRunTestCase(testCase)}
+          onCancelRun={(testCase) => void handleCancelTestCase(testCase)}
           onRename={openEditDialog}
           onViewSteps={openStepsSheet}
           onDuplicate={(testCase) => void handleDuplicateTestCase(testCase)}
@@ -368,12 +396,7 @@ export function FeatureDetailPage() {
         testCase={stepsTestCase}
         open={stepsOpen}
         onOpenChange={setStepsOpen}
-        onSaved={(saved) => {
-          setTestCases((current) =>
-            current.map((item) => (item.id === saved.id ? saved : item)),
-          )
-          setStepsTestCase(saved)
-        }}
+        onSaved={handleTestCaseUpdated}
       />
 
       <DeleteTestCaseDialog

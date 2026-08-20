@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import {
+  Ban,
   Check,
   Circle,
   CirclePlay,
@@ -47,6 +48,10 @@ function displayStatus(status: TestRunStatus | null) {
     return 'failed' as const
   }
 
+  if (status === 'cancelled') {
+    return 'cancelled' as const
+  }
+
   if (status === 'running') {
     return 'running' as const
   }
@@ -64,6 +69,8 @@ function statusLabel(status: TestRunStatus | null) {
       return 'Passed'
     case 'failed':
       return 'Failed'
+    case 'cancelled':
+      return 'Cancelled'
     case 'running':
       return 'Running'
     case 'queued':
@@ -142,6 +149,10 @@ function DefaultStatusIcon({ status }: { status: TestRunStatus | null }) {
     )
   }
 
+  if (kind === 'cancelled') {
+    return <Ban className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+  }
+
   return (
     <Circle className="size-4 shrink-0 text-muted-foreground/50" aria-hidden />
   )
@@ -160,6 +171,7 @@ function StatusBadge({ status }: { status: TestRunStatus | null }) {
           'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
         kind === 'failed' &&
           'border-destructive/30 bg-destructive/10 text-destructive',
+        kind === 'cancelled' && 'text-muted-foreground',
         kind === 'pending' && 'text-muted-foreground',
       )}
     >
@@ -167,6 +179,8 @@ function StatusBadge({ status }: { status: TestRunStatus | null }) {
         <Check className="size-3" />
       ) : kind === 'failed' ? (
         <X className="size-3" />
+      ) : kind === 'cancelled' ? (
+        <Ban className="size-3" />
       ) : (
         <Circle className="size-2.5 fill-current stroke-none" />
       )}
@@ -223,41 +237,45 @@ function TestCaseNameCell({
         ) : (
           <AnimatePresence mode="popLayout" initial={false}>
             {showRun ? (
-            <motion.span
-              key="play"
-              className="absolute inset-0 flex items-center justify-center"
-              initial={
-                reduceMotion ? false : { opacity: 0, transform: 'scale(0.92)' }
-              }
-              animate={{ opacity: 1, transform: 'scale(1)' }}
-              exit={
-                reduceMotion
-                  ? undefined
-                  : { opacity: 0, transform: 'scale(0.92)' }
-              }
-              transition={transition}
-            >
-              <CirclePlay className="size-4 text-emerald-500" aria-hidden />
-            </motion.span>
-          ) : (
-            <motion.span
-              key="status"
-              className="absolute inset-0 flex items-center justify-center"
-              initial={
-                reduceMotion ? false : { opacity: 0, transform: 'scale(0.92)' }
-              }
-              animate={{ opacity: 1, transform: 'scale(1)' }}
-              exit={
-                reduceMotion
-                  ? undefined
-                  : { opacity: 0, transform: 'scale(0.92)' }
-              }
-              transition={transition}
-            >
-              <DefaultStatusIcon status={testCase.latestRunStatus} />
-            </motion.span>
-          )}
-        </AnimatePresence>
+              <motion.span
+                key="play"
+                className="absolute inset-0 flex items-center justify-center"
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, transform: 'scale(0.92)' }
+                }
+                animate={{ opacity: 1, transform: 'scale(1)' }}
+                exit={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 0, transform: 'scale(0.92)' }
+                }
+                transition={transition}
+              >
+                <CirclePlay className="size-4 text-emerald-500" aria-hidden />
+              </motion.span>
+            ) : (
+              <motion.span
+                key="status"
+                className="absolute inset-0 flex items-center justify-center"
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, transform: 'scale(0.92)' }
+                }
+                animate={{ opacity: 1, transform: 'scale(1)' }}
+                exit={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 0, transform: 'scale(0.92)' }
+                }
+                transition={transition}
+              >
+                <DefaultStatusIcon status={testCase.latestRunStatus} />
+              </motion.span>
+            )}
+          </AnimatePresence>
         )}
       </span>
 
@@ -269,46 +287,46 @@ function TestCaseNameCell({
         ) : (
           <AnimatePresence mode="popLayout" initial={false}>
             {showRun ? (
-            <motion.span
-              key="run-label"
-              className="block truncate"
-              initial={
-                reduceMotion
-                  ? false
-                  : { opacity: 0, transform: 'translateX(-4px)' }
-              }
-              animate={{ opacity: 1, transform: 'translateX(0)' }}
-              exit={
-                reduceMotion
-                  ? undefined
-                  : { opacity: 0, transform: 'translateX(-4px)' }
-              }
-              transition={transition}
-            >
-              <span className="text-foreground">Run:</span>{' '}
-              <span className="text-muted-foreground">{testCase.name}</span>
-            </motion.span>
-          ) : (
-            <motion.span
-              key="name"
-              className="block truncate"
-              initial={
-                reduceMotion
-                  ? false
-                  : { opacity: 0, transform: 'translateX(4px)' }
-              }
-              animate={{ opacity: 1, transform: 'translateX(0)' }}
-              exit={
-                reduceMotion
-                  ? undefined
-                  : { opacity: 0, transform: 'translateX(4px)' }
-              }
-              transition={transition}
-            >
-              {testCase.name}
-            </motion.span>
-          )}
-        </AnimatePresence>
+              <motion.span
+                key="run-label"
+                className="block truncate"
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, transform: 'translateX(-4px)' }
+                }
+                animate={{ opacity: 1, transform: 'translateX(0)' }}
+                exit={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 0, transform: 'translateX(-4px)' }
+                }
+                transition={transition}
+              >
+                <span className="text-foreground">Run:</span>{' '}
+                <span className="text-muted-foreground">{testCase.name}</span>
+              </motion.span>
+            ) : (
+              <motion.span
+                key="name"
+                className="block truncate"
+                initial={
+                  reduceMotion
+                    ? false
+                    : { opacity: 0, transform: 'translateX(4px)' }
+                }
+                animate={{ opacity: 1, transform: 'translateX(0)' }}
+                exit={
+                  reduceMotion
+                    ? undefined
+                    : { opacity: 0, transform: 'translateX(4px)' }
+                }
+                transition={transition}
+              >
+                {testCase.name}
+              </motion.span>
+            )}
+          </AnimatePresence>
         )}
       </span>
     </button>
@@ -318,6 +336,7 @@ function TestCaseNameCell({
 export function TestCasesTable({
   testCases,
   onRun,
+  onCancelRun,
   onRename,
   onViewSteps,
   onDuplicate,
@@ -325,6 +344,7 @@ export function TestCasesTable({
 }: {
   testCases: TestCaseSummary[]
   onRun: (testCase: TestCaseSummary) => void
+  onCancelRun: (testCase: TestCaseSummary) => void
   onRename: (testCase: TestCaseSummary) => void
   onViewSteps: (testCase: TestCaseSummary) => void
   onDuplicate: (testCase: TestCaseSummary) => void
@@ -350,65 +370,71 @@ export function TestCasesTable({
             const running = isActiveTestRunStatus(testCase.latestRunStatus)
 
             return (
-            <TableRow key={testCase.id}>
-              <TableCell className="max-w-0 pl-4 font-medium">
-                <TestCaseNameCell
-                  testCase={testCase}
-                  running={running}
-                  onRun={onRun}
-                />
-              </TableCell>
-              <TableCell className="tabular-nums text-muted-foreground">
-                {testCase.stepCount}
-              </TableCell>
-              <TableCell>
-                <StatusBadge
-                  status={running ? 'running' : testCase.latestRunStatus}
-                />
-              </TableCell>
-              <TableCell className="tabular-nums text-muted-foreground">
-                {formatDuration(testCase.latestRunDurationMs)}
-              </TableCell>
-              <TableCell className="text-muted-foreground">
-                {formatLastRun(testCase.latestRunAt)}
-              </TableCell>
-              <TableCell className="pr-4 text-right">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={`Actions for ${testCase.name}`}
-                      className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
-                    >
-                      <MoreHorizontal />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={() => onRename(testCase)}>
-                      <Pencil />
-                      Rename
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onViewSteps(testCase)}>
-                      <ListTree />
-                      View & edit steps
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onDuplicate(testCase)}>
-                      <Copy />
-                      Duplicate
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      variant="destructive"
-                      onClick={() => onDelete(testCase)}
-                    >
-                      <Trash2 />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
-            </TableRow>
+              <TableRow key={testCase.id}>
+                <TableCell className="max-w-0 pl-4 font-medium">
+                  <TestCaseNameCell
+                    testCase={testCase}
+                    running={running}
+                    onRun={onRun}
+                  />
+                </TableCell>
+                <TableCell className="tabular-nums text-muted-foreground">
+                  {testCase.stepCount}
+                </TableCell>
+                <TableCell>
+                  <StatusBadge
+                    status={running ? 'running' : testCase.latestRunStatus}
+                  />
+                </TableCell>
+                <TableCell className="tabular-nums text-muted-foreground">
+                  {formatDuration(testCase.latestRunDurationMs)}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {formatLastRun(testCase.latestRunAt)}
+                </TableCell>
+                <TableCell className="pr-4 text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={`Actions for ${testCase.name}`}
+                        className="transition-transform duration-150 ease-out-strong active:scale-[0.97]"
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem onClick={() => onRename(testCase)}>
+                        <Pencil />
+                        Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onViewSteps(testCase)}>
+                        <ListTree />
+                        View & edit steps
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onDuplicate(testCase)}>
+                        <Copy />
+                        Duplicate
+                      </DropdownMenuItem>
+                      {running ? (
+                        <DropdownMenuItem onClick={() => onCancelRun(testCase)}>
+                          <Ban />
+                          Cancel run
+                        </DropdownMenuItem>
+                      ) : null}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => onDelete(testCase)}
+                      >
+                        <Trash2 />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
             )
           })}
         </TableBody>

@@ -8,15 +8,16 @@ import {
   testRunSteps,
   testRuns,
 } from '#/db/schema.ts'
-import {
-  executeTestCaseSteps,
-} from '#/features/test-cases/server/execute-test-case-steps.ts'
+import { executeTestCaseSteps } from '#/features/test-cases/server/execute-test-case-steps.ts'
 import type { ExecutedStepResult } from '#/features/test-cases/server/execute-test-case-steps.ts'
 import { asStepConfigJson } from '#/features/test-cases/types/step-config.ts'
+import { CANCELLED_RUN_ERROR } from '#/features/test-cases/server/run-limits.ts'
+import { reapStaleTestRuns } from '#/features/test-cases/server/reap-stale-test-runs.ts'
 import {
   maskRunVariables,
   RunVariableContext,
 } from '#/features/test-cases/server/run-variables.ts'
+import { isActiveTestRunStatus } from '#/features/test-cases/utils/run-status.ts'
 import {
   getTestCaseSummary,
   listOwnedTestCaseStepDefinitions,
@@ -52,7 +53,7 @@ async function updateTestRunStep(
   testRunId: string,
   sortOrder: number,
   values: {
-    status: 'running' | 'passed' | 'failed'
+    status: 'running' | 'passed' | 'failed' | 'cancelled'
     durationMs?: number
     errorMessage?: string | null
     screenshotUrl?: string | null
@@ -126,7 +127,24 @@ async function finalizeOwnedTestRun(
       errorMessage: values.errorMessage ?? null,
       resolvedVariables: values.resolvedVariables ?? null,
     })
-    .where(eq(testRuns.id, testRunId))
+    .where(
+      and(
+        eq(testRuns.id, testRunId),
+        inArray(testRuns.status, ['queued', 'running']),
+      ),
+    )
+}
+
+async function isOwnedTestRunCancelled(testRunId: string) {
+  const row = (
+    await db
+      .select({ status: testRuns.status })
+      .from(testRuns)
+      .where(eq(testRuns.id, testRunId))
+      .limit(1)
+  ).at(0)
+
+  return row?.status === 'cancelled'
 }
 
 export async function executeOwnedTestCaseRun(testRunId: string) {
@@ -149,6 +167,11 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
   }
 
   const runStartedAtMs = testRun.startedAt?.getTime() ?? Date.now()
+
+  const alreadyCancelled = await isOwnedTestRunCancelled(testRunId)
+  if (alreadyCancelled) {
+    return
+  }
 
   try {
     const owned = await requireOwnedTestCase(testRun.testCaseId)
@@ -223,7 +246,11 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
         onStepStart: async (_step, index) => {
           await updateTestRunStep(testRunId, index, { status: 'running' })
         },
-        onStepComplete: async (_step, index, stepResult: ExecutedStepResult) => {
+        onStepComplete: async (
+          _step,
+          index,
+          stepResult: ExecutedStepResult,
+        ) => {
           await updateTestRunStep(testRunId, index, {
             status: stepResult.status,
             durationMs: stepResult.durationMs,
@@ -241,6 +268,7 @@ export async function executeOwnedTestCaseRun(testRunId: string) {
             })
           }
         },
+        shouldAbort: () => isOwnedTestRunCancelled(testRunId),
       },
     })
 
@@ -267,6 +295,7 @@ export async function startOwnedTestCaseRun(
   variables?: Record<string, string>,
 ) {
   const owned = await requireOwnedTestCase(testCaseId)
+  await reapStaleTestRuns()
 
   const activeRun = await findActiveTestRun(testCaseId)
   if (activeRun) {
@@ -283,7 +312,8 @@ export async function startOwnedTestCaseRun(
       status: 'running',
       queuedAt: new Date(),
       startedAt: new Date(),
-      variables: variables && Object.keys(variables).length > 0 ? variables : null,
+      variables:
+        variables && Object.keys(variables).length > 0 ? variables : null,
     })
     .returning({ id: testRuns.id })
 
@@ -314,6 +344,8 @@ export async function startOwnedTestCaseRun(
 }
 
 export async function getOwnedTestRunStatus(testRunId: string) {
+  await reapStaleTestRuns()
+
   const testRun = (
     await db
       .select({
@@ -376,6 +408,86 @@ export async function getOwnedTestRunStatus(testRunId: string) {
   }
 }
 
+export async function cancelOwnedTestRun(testRunId: string) {
+  const testRun = (
+    await db
+      .select({
+        id: testRuns.id,
+        testCaseId: testRuns.testCaseId,
+        status: testRuns.status,
+        startedAt: testRuns.startedAt,
+        queuedAt: testRuns.queuedAt,
+        createdAt: testRuns.createdAt,
+      })
+      .from(testRuns)
+      .where(eq(testRuns.id, testRunId))
+      .limit(1)
+  ).at(0)
+
+  if (!testRun) {
+    throw new Error('Test run not found')
+  }
+
+  await requireOwnedTestCase(testRun.testCaseId)
+
+  if (!isActiveTestRunStatus(testRun.status)) {
+    throw new Error('This test run is no longer running.')
+  }
+
+  const startedAtMs =
+    testRun.startedAt?.getTime() ??
+    testRun.queuedAt?.getTime() ??
+    testRun.createdAt.getTime()
+
+  await db
+    .update(testRuns)
+    .set({
+      status: 'cancelled',
+      completedAt: new Date(),
+      durationMs: Date.now() - startedAtMs,
+      errorMessage: CANCELLED_RUN_ERROR,
+    })
+    .where(
+      and(
+        eq(testRuns.id, testRunId),
+        inArray(testRuns.status, ['queued', 'running']),
+      ),
+    )
+
+  await db
+    .update(testRunSteps)
+    .set({
+      status: 'cancelled',
+      errorMessage: CANCELLED_RUN_ERROR,
+    })
+    .where(
+      and(
+        eq(testRunSteps.testRunId, testRunId),
+        eq(testRunSteps.status, 'running'),
+      ),
+    )
+
+  return getOwnedTestRunStatus(testRunId)
+}
+
+export async function cancelOwnedTestCaseRun(testCaseId: string) {
+  await requireOwnedTestCase(testCaseId)
+
+  const activeRun = await findActiveTestRun(testCaseId)
+  if (!activeRun) {
+    throw new Error('This test case is not running.')
+  }
+
+  const cancelled = await cancelOwnedTestRun(activeRun.id)
+  const testCase = await getTestCaseSummary(testCaseId)
+
+  return {
+    testCase,
+    testRunId: cancelled.testRunId,
+    status: cancelled.status,
+  }
+}
+
 export async function runOwnedTestCase(
   testCaseId: string,
   variables?: Record<string, string>,
@@ -388,6 +500,7 @@ export async function listProjectTestRuns(
   limit?: number,
 ): Promise<TestRunSummary[]> {
   await requireUserProject(projectId)
+  await reapStaleTestRuns()
 
   const query = db
     .select({

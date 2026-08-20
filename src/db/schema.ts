@@ -26,6 +26,7 @@ export const testRunStatus = pgEnum("test_run_status", [
   "passed",
   "failed",
   "error",
+  "cancelled",
 ]);
 
 export const testRunStepStatus = pgEnum("test_run_step_status", [
@@ -33,6 +34,7 @@ export const testRunStepStatus = pgEnum("test_run_step_status", [
   "running",
   "passed",
   "failed",
+  "cancelled",
 ]);
 
 export const users = pgTable("users", {

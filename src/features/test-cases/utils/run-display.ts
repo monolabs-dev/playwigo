@@ -9,6 +9,10 @@ export function displayRunStatus(status: TestRunStatus | null) {
     return 'failed' as const
   }
 
+  if (status === 'cancelled') {
+    return 'cancelled' as const
+  }
+
   if (status === 'running') {
     return 'running' as const
   }
@@ -26,6 +30,8 @@ export function runStatusLabel(status: TestRunStatus | null) {
       return 'Passed'
     case 'failed':
       return status === 'error' ? 'Error' : 'Failed'
+    case 'cancelled':
+      return 'Cancelled'
     case 'running':
       return 'Running'
     case 'queued':

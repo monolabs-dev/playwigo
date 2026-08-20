@@ -19,8 +19,9 @@ import type {
   UpdateTestCaseValues,
 } from '#/features/test-cases/schemas/test-case.ts'
 import type { ReplaceTestCaseStepsValues } from '#/features/test-cases/schemas/test-case-step.ts'
-import { normalizeScreenshotUrl } from '#/features/test-cases/server/test-run-screenshots.server.ts'
 import { asStepConfigJson } from '#/features/test-cases/types/step-config.ts'
+import { normalizeScreenshotUrl } from '#/features/test-cases/server/test-run-screenshots.server.ts'
+import { reapStaleTestRuns } from '#/features/test-cases/server/reap-stale-test-runs.ts'
 import type {
   TestCaseLoginPrelude,
   TestCaseStep,
@@ -142,6 +143,8 @@ async function resolveTestAccountId(
 }
 
 export async function getTestCaseSummary(id: string) {
+  await reapStaleTestRuns()
+
   const testCase = (
     await db
       .select(testCaseSummarySelect())
@@ -160,6 +163,7 @@ export async function getTestCaseSummary(id: string) {
 
 export async function listFeatureTestCases(featureId: string) {
   await requireOwnedFeature(featureId)
+  await reapStaleTestRuns()
 
   return db
     .select(testCaseSummarySelect())
@@ -171,6 +175,7 @@ export async function listFeatureTestCases(featureId: string) {
 
 export async function listProjectTestCases(projectId: string) {
   await requireUserProject(projectId)
+  await reapStaleTestRuns()
 
   return db
     .select({
@@ -181,9 +186,10 @@ export async function listProjectTestCases(projectId: string) {
     .innerJoin(features, eq(testCases.featureId, features.id))
     .leftJoin(testAccounts, eq(testCases.testAccountId, testAccounts.id))
     .where(eq(features.projectId, projectId))
-    .orderBy(desc(features.createdAt), desc(testCases.createdAt)) satisfies Promise<
-    ProjectTestCaseSummary[]
-  >
+    .orderBy(
+      desc(features.createdAt),
+      desc(testCases.createdAt),
+    ) satisfies Promise<ProjectTestCaseSummary[]>
 }
 
 export async function insertTestCase(input: CreateTestCaseValues) {
@@ -324,6 +330,10 @@ function aggregateLoginPreludeRunStatus(
     return 'running'
   }
 
+  if (statuses.some((status) => status === 'cancelled')) {
+    return 'cancelled'
+  }
+
   if (statuses.some((status) => status === 'failed')) {
     return 'failed'
   }
@@ -384,8 +394,9 @@ async function buildLoginPreludeView(input: {
         preludeRunSteps.map((step) => step.status),
       )
       errorMessage =
-        preludeRunSteps.find((step) => step.status === 'failed')
-          ?.errorMessage ?? null
+        preludeRunSteps.find(
+          (step) => step.status === 'failed' || step.status === 'cancelled',
+        )?.errorMessage ?? null
     }
   }
 
@@ -402,6 +413,7 @@ export async function listOwnedTestCaseSteps(
   testCaseId: string,
 ): Promise<TestCaseStepsPayload> {
   const owned = await requireOwnedTestCase(testCaseId)
+  await reapStaleTestRuns()
 
   const testAccount = owned.testAccountId
     ? (
@@ -435,9 +447,7 @@ export async function listOwnedTestCaseSteps(
         testRunSteps,
         and(
           eq(testRunSteps.testCaseStepId, testCaseSteps.id),
-          latestRun
-            ? eq(testRunSteps.testRunId, latestRun.id)
-            : sql`1 = 0`,
+          latestRun ? eq(testRunSteps.testRunId, latestRun.id) : sql`1 = 0`,
         ),
       )
       .where(eq(testCaseSteps.testCaseId, testCaseId))

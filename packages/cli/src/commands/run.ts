@@ -5,7 +5,7 @@ import { Command } from 'commander'
 import { apiRequest, createClientFromEnv } from '../client.js'
 import { CliError, printData, UsageError, type OutputMode } from '../output.js'
 
-const TERMINAL_STATUSES = new Set(['passed', 'failed', 'error'])
+const TERMINAL_STATUSES = new Set(['passed', 'failed', 'error', 'cancelled'])
 const POLL_INTERVAL_MS = 1500
 
 type RunStartResult = {
@@ -124,7 +124,7 @@ export function registerRunCommand(program: Command) {
 }
 
 export function registerRunsCommand(program: Command) {
-  const runs = program.command('runs').description('List test runs')
+  const runs = program.command('runs').description('List or cancel test runs')
 
   runs
     .command('list')
@@ -148,6 +148,21 @@ export function registerRunsCommand(program: Command) {
         printData(data, options)
       },
     )
+
+  runs
+    .command('cancel')
+    .description('Cancel a running test run')
+    .requiredOption('--run <id>', 'Test run ID')
+    .option('--json', 'Output JSON', false)
+    .action(async (options: OutputMode & { run: string }) => {
+      const client = createClientFromEnv()
+      const data = await apiRequest(
+        client,
+        'POST',
+        `/api/v1/test-runs/${encodeURIComponent(options.run)}/cancel`,
+      )
+      printData(data, options)
+    })
 }
 
 async function waitForRun(

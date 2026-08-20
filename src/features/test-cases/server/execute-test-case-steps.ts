@@ -15,11 +15,19 @@ import {
   normalizeSelectorType,
   normalizeStepAction,
 } from '#/features/test-cases/utils/step-actions.ts'
+import { maskResolvedStepValue } from '#/features/test-cases/server/run-variables.ts'
+import type { RunVariableContext } from '#/features/test-cases/server/run-variables.ts'
 import {
-  maskResolvedStepValue
-
-} from '#/features/test-cases/server/run-variables.ts'
-import type {RunVariableContext} from '#/features/test-cases/server/run-variables.ts';
+  CANCEL_POLL_MS,
+  CANCELLED_RUN_ERROR,
+  HTTP_STEP_TIMEOUT_MS,
+  MAX_RUN_DURATION_MS,
+  MAX_WAIT_TIMEOUT_MS,
+  NAVIGATION_TIMEOUT_MS,
+  RunCancelledError,
+  STEP_TIMEOUT_GRACE_MS,
+  STEP_TIMEOUT_MS,
+} from '#/features/test-cases/server/run-limits.ts'
 import { putTestRunScreenshot } from '#/server/integrations/r2/screenshots.ts'
 import { executeStepHttpRequest } from '#/server/integrations/http/step-request.ts'
 
@@ -31,14 +39,14 @@ export type ExecutedStepResult = {
   selectorType: string | null
   value: string | null
   resolvedValue: string | null
-  status: 'passed' | 'failed'
+  status: 'passed' | 'failed' | 'cancelled'
   durationMs: number
   errorMessage: string | null
   screenshotUrl: string | null
 }
 
 export type ExecuteTestCaseResult = {
-  status: 'passed' | 'failed' | 'error'
+  status: 'passed' | 'failed' | 'error' | 'cancelled'
   durationMs: number
   errorMessage: string | null
   steps: ExecutedStepResult[]
@@ -52,9 +60,79 @@ export type ExecuteTestCaseProgress = {
     index: number,
     result: ExecutedStepResult,
   ) => Promise<void>
+  shouldAbort?: () => Promise<boolean>
 }
 
-function resolveLocator(page: Page, selectorType: string | null, selector: string) {
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+function stepBudgetMs(action: TestCaseStepAction) {
+  if (action === 'httpRequest') {
+    return HTTP_STEP_TIMEOUT_MS
+  }
+
+  if (action === 'waitTimeout' || action === 'wait') {
+    return MAX_WAIT_TIMEOUT_MS
+  }
+
+  return STEP_TIMEOUT_MS
+}
+
+async function raceStep<T>(
+  work: Promise<T>,
+  options: {
+    timeoutMs: number
+    timeoutMessage: string
+    shouldAbort?: () => Promise<boolean>
+    onAbort?: () => Promise<void>
+  },
+) {
+  let settled = false
+  void work.catch(() => {})
+
+  const timeoutPromise = delay(options.timeoutMs).then(async () => {
+    if (settled) {
+      return undefined as T
+    }
+
+    await options.onAbort?.()
+    throw new Error(options.timeoutMessage)
+  })
+
+  const abortPromise = (async () => {
+    if (!options.shouldAbort) {
+      await new Promise<never>(() => {})
+    }
+
+    // settled is written when Promise.race completes in the outer try/finally.
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    while (!settled) {
+      if (await options.shouldAbort?.()) {
+        await options.onAbort?.()
+        throw new RunCancelledError()
+      }
+
+      await delay(CANCEL_POLL_MS)
+    }
+
+    return undefined as T
+  })()
+
+  try {
+    return await Promise.race([work, timeoutPromise, abortPromise])
+  } finally {
+    settled = true
+  }
+}
+
+function resolveLocator(
+  page: Page,
+  selectorType: string | null,
+  selector: string,
+) {
   const type = normalizeSelectorType(selectorType)
   const query = formatSelectorQuery(type, selector)
 
@@ -74,6 +152,7 @@ async function captureStepScreenshot(page: Page) {
     type: 'jpeg',
     quality: 65,
     fullPage: false,
+    timeout: 10_000,
   })
 
   return bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
@@ -116,8 +195,7 @@ function asExtractTextConfig(config: unknown): ExtractTextConfig {
 
   const record = config as Record<string, unknown>
   return {
-    attribute:
-      typeof record.attribute === 'string' ? record.attribute : null,
+    attribute: typeof record.attribute === 'string' ? record.attribute : null,
     regex: typeof record.regex === 'string' ? record.regex : null,
   }
 }
@@ -191,56 +269,79 @@ async function executeStep(
 
   switch (action) {
     case 'goto':
-      await page.goto(value, { waitUntil: 'domcontentloaded' })
+      await page.goto(value, {
+        waitUntil: 'domcontentloaded',
+        timeout: NAVIGATION_TIMEOUT_MS,
+      })
       break
     case 'click':
-      await resolveLocator(page, step.selectorType, selector).click()
+      await resolveLocator(page, step.selectorType, selector).click({
+        timeout: STEP_TIMEOUT_MS,
+      })
       break
     case 'fill':
-      await resolveLocator(page, step.selectorType, selector).fill(value)
+      await resolveLocator(page, step.selectorType, selector).fill(value, {
+        timeout: STEP_TIMEOUT_MS,
+      })
       break
     case 'select':
-      await resolveLocator(page, step.selectorType, selector).selectOption(value)
+      await resolveLocator(page, step.selectorType, selector).selectOption(
+        value,
+        { timeout: STEP_TIMEOUT_MS },
+      )
       break
     case 'check':
-      await resolveLocator(page, step.selectorType, selector).check()
+      await resolveLocator(page, step.selectorType, selector).check({
+        timeout: STEP_TIMEOUT_MS,
+      })
       break
     case 'uncheck':
-      await resolveLocator(page, step.selectorType, selector).uncheck()
+      await resolveLocator(page, step.selectorType, selector).uncheck({
+        timeout: STEP_TIMEOUT_MS,
+      })
       break
     case 'hover':
-      await resolveLocator(page, step.selectorType, selector).hover()
+      await resolveLocator(page, step.selectorType, selector).hover({
+        timeout: STEP_TIMEOUT_MS,
+      })
       break
     case 'wait':
-      await resolveLocator(page, step.selectorType, selector).waitFor()
+      await resolveLocator(page, step.selectorType, selector).waitFor({
+        timeout: MAX_WAIT_TIMEOUT_MS,
+      })
       break
-    case 'waitTimeout':
-      await page.waitForTimeout(Number(value))
+    case 'waitTimeout': {
+      const requestedMs = Number(value)
+      if (!Number.isFinite(requestedMs) || requestedMs < 0) {
+        throw new Error('waitTimeout requires a duration in milliseconds')
+      }
+
+      await page.waitForTimeout(Math.min(requestedMs, MAX_WAIT_TIMEOUT_MS))
       break
+    }
     case 'pressKey':
       await page.keyboard.press(value)
       break
     case 'expectToHaveUrl':
-      await expect(page).toHaveURL(value)
+      await expect(page).toHaveURL(value, { timeout: STEP_TIMEOUT_MS })
       break
     case 'expectToHaveTitle':
-      await expect(page).toHaveTitle(value)
+      await expect(page).toHaveTitle(value, { timeout: STEP_TIMEOUT_MS })
       break
     case 'expectToHaveText':
       await expect(
         resolveLocator(page, step.selectorType, selector),
-      ).toHaveText(value)
+      ).toHaveText(value, { timeout: STEP_TIMEOUT_MS })
       break
     case 'expectToContainText':
       await expect(
         resolveLocator(page, step.selectorType, selector),
-      ).toContainText(value)
+      ).toContainText(value, { timeout: STEP_TIMEOUT_MS })
       break
     case 'setVariable': {
       const config = asSetVariableConfig(step.config)
       const resolvedName = variables.resolve(config.name, { stepIndex })
-      const resolvedValue =
-        variables.resolve(config.value, { stepIndex }) ?? ''
+      const resolvedValue = variables.resolve(config.value, { stepIndex }) ?? ''
       if (!resolvedName) {
         throw new Error('setVariable name resolved to an empty string')
       }
@@ -258,15 +359,19 @@ async function executeStep(
       const locator = resolveLocator(page, step.selectorType, selector)
       let raw =
         config.attribute && config.attribute.trim().length > 0
-          ? ((await locator.getAttribute(config.attribute.trim())) ?? '')
-          : await locator.innerText()
+          ? ((await locator.getAttribute(config.attribute.trim(), {
+              timeout: STEP_TIMEOUT_MS,
+            })) ?? '')
+          : await locator.innerText({ timeout: STEP_TIMEOUT_MS })
 
       raw = raw.trim()
       if (!raw) {
         throw new Error('extractText found an empty value')
       }
 
-      const extracted = config.regex ? applyRegexCapture(raw, config.regex) : raw
+      const extracted = config.regex
+        ? applyRegexCapture(raw, config.regex)
+        : raw
       variables.set(outputVariable, extracted)
       producedValue = extracted
       break
@@ -296,7 +401,8 @@ async function executeStep(
         ...config,
         url: resolvedUrl,
         body: resolvedBody,
-        headers: Object.keys(resolvedHeaders).length > 0 ? resolvedHeaders : null,
+        headers:
+          Object.keys(resolvedHeaders).length > 0 ? resolvedHeaders : null,
       })
 
       variables.set(outputVariable, extracted)
@@ -309,12 +415,16 @@ async function executeStep(
 
   const displayResolved =
     producedValue ??
-    (valueTemplate.length > 0 ? value : selectorTemplate.length > 0 ? selector : null)
+    (valueTemplate.length > 0
+      ? value
+      : selectorTemplate.length > 0
+        ? selector
+        : null)
 
   return {
     resolvedValue: maskResolvedStepValue(
       producedValue != null
-        ? step.outputVariable ?? valueTemplate
+        ? (step.outputVariable ?? valueTemplate)
         : valueTemplate || selectorTemplate,
       displayResolved,
     ),
@@ -370,38 +480,67 @@ export async function executeTestCaseSteps(input: {
   const startedAt = Date.now()
   const executedSteps: ExecutedStepResult[] = []
   let browser: Awaited<ReturnType<typeof launch>> | null = null
+  let browserClosed = false
+
+  async function closeBrowser() {
+    if (!browser || browserClosed) {
+      return
+    }
+
+    browserClosed = true
+    await browser.close().catch(() => {})
+  }
+
+  async function throwIfAborted() {
+    if (await progress?.shouldAbort?.()) {
+      throw new RunCancelledError()
+    }
+  }
 
   try {
     browser = await launch(env.BROWSER)
     const page = await browser.newPage()
+    page.setDefaultTimeout(STEP_TIMEOUT_MS)
+    page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT_MS)
 
     const firstAction = normalizeStepAction(steps[0]?.action)
-    if (
-      baseUrl &&
-      loginPreludeStepCount === 0 &&
-      firstAction !== 'goto'
-    ) {
-      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' })
+    if (baseUrl && loginPreludeStepCount === 0 && firstAction !== 'goto') {
+      await page.goto(baseUrl, {
+        waitUntil: 'domcontentloaded',
+        timeout: NAVIGATION_TIMEOUT_MS,
+      })
     }
 
     for (const [index, step] of steps.entries()) {
+      if (Date.now() - startedAt > MAX_RUN_DURATION_MS) {
+        throw new Error(
+          `Run exceeded the ${MAX_RUN_DURATION_MS / 60_000} minute limit.`,
+        )
+      }
+
+      await throwIfAborted()
+
       const stepStartedAt = Date.now()
+      const action = normalizeStepAction(step.action)
+      const budgetMs = stepBudgetMs(action)
 
       await progress?.onStepStart?.(step, index)
 
       try {
-        const { resolvedValue } = await executeStep(
-          page,
-          step,
-          variables,
-          index,
+        const { resolvedValue } = await raceStep(
+          executeStep(page, step, variables, index),
+          {
+            timeoutMs: budgetMs + STEP_TIMEOUT_GRACE_MS,
+            timeoutMessage: `Step timed out after ${Math.round(budgetMs / 1000)}s (${step.action}).`,
+            shouldAbort: progress?.shouldAbort,
+            onAbort: closeBrowser,
+          },
         )
 
-        if (
-          loginPreludeStepCount > 0 &&
-          index === loginPreludeStepCount - 1
-        ) {
-          await page.waitForLoadState('networkidle').catch(() => {})
+        if (loginPreludeStepCount > 0 && index === loginPreludeStepCount - 1) {
+          await page
+            .waitForLoadState('networkidle', { timeout: NAVIGATION_TIMEOUT_MS })
+            .catch(() => {})
         }
 
         const screenshotUrl = await storeStepScreenshot(
@@ -418,7 +557,7 @@ export async function executeTestCaseSteps(input: {
           selectorType: step.selectorType,
           value: step.value,
           resolvedValue,
-          status: 'passed',
+          status: 'passed' as const,
           durationMs: Date.now() - stepStartedAt,
           errorMessage: null,
           screenshotUrl,
@@ -427,21 +566,25 @@ export async function executeTestCaseSteps(input: {
         executedSteps.push(passedStep)
         await progress?.onStepComplete?.(step, index, passedStep)
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Step execution failed'
+        const cancelled = error instanceof RunCancelledError
+        const message = cancelled
+          ? CANCELLED_RUN_ERROR
+          : error instanceof Error
+            ? error.message
+            : 'Step execution failed'
 
         let screenshotUrl: string | null = null
-        try {
-          screenshotUrl = await storeStepScreenshot(
-            testRunId,
-            step.id,
-            page,
-          )
-        } catch {
-          screenshotUrl = null
+        // browserClosed is set by closeBrowser() if the step was aborted.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (!cancelled && !browserClosed) {
+          try {
+            screenshotUrl = await storeStepScreenshot(testRunId, step.id, page)
+          } catch {
+            screenshotUrl = null
+          }
         }
 
-        const failedStep = {
+        const finishedStep = {
           testCaseStepId: step.id,
           sortOrder: index,
           action: step.action,
@@ -449,17 +592,17 @@ export async function executeTestCaseSteps(input: {
           selectorType: step.selectorType,
           value: step.value,
           resolvedValue: null,
-          status: 'failed',
+          status: cancelled ? ('cancelled' as const) : ('failed' as const),
           durationMs: Date.now() - stepStartedAt,
           errorMessage: message,
           screenshotUrl,
         } satisfies ExecutedStepResult
 
-        executedSteps.push(failedStep)
-        await progress?.onStepComplete?.(step, index, failedStep)
+        executedSteps.push(finishedStep)
+        await progress?.onStepComplete?.(step, index, finishedStep)
 
         return {
-          status: 'failed',
+          status: cancelled ? 'cancelled' : 'failed',
           durationMs: Date.now() - startedAt,
           errorMessage: message,
           steps: executedSteps,
@@ -476,6 +619,16 @@ export async function executeTestCaseSteps(input: {
       resolvedVariables: variables.snapshot(),
     } satisfies ExecuteTestCaseResult
   } catch (error) {
+    if (error instanceof RunCancelledError) {
+      return {
+        status: 'cancelled',
+        durationMs: Date.now() - startedAt,
+        errorMessage: CANCELLED_RUN_ERROR,
+        steps: executedSteps,
+        resolvedVariables: variables.snapshot(),
+      } satisfies ExecuteTestCaseResult
+    }
+
     return {
       status: 'error',
       durationMs: Date.now() - startedAt,
@@ -484,8 +637,6 @@ export async function executeTestCaseSteps(input: {
       resolvedVariables: variables.snapshot(),
     } satisfies ExecuteTestCaseResult
   } finally {
-    if (browser) {
-      await browser.close().catch(() => {})
-    }
+    await closeBrowser()
   }
 }

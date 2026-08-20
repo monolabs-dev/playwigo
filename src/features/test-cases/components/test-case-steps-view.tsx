@@ -1,12 +1,9 @@
-import { useState, type ReactNode } from 'react'
-import { Check, ImageOff, Loader2, LogIn, X } from 'lucide-react'
+import { useState } from 'react'
+import type { ReactNode } from 'react'
+import { Ban, Check, ImageOff, Loader2, LogIn, X } from 'lucide-react'
 
 import { Badge } from '#/components/ui/badge.tsx'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '#/components/ui/dialog.tsx'
+import { Dialog, DialogContent, DialogTitle } from '#/components/ui/dialog.tsx'
 import { formatSelector } from '#/features/test-cases/utils/step-actions.ts'
 import type {
   TestCaseLoginPrelude,
@@ -65,6 +62,8 @@ function loginPreludeStatusLabel(status: TestRunStepStatus | null) {
       return 'Login complete'
     case 'failed':
       return 'Login failed'
+    case 'cancelled':
+      return 'Login cancelled'
     case 'pending':
       return 'Login pending'
     default:
@@ -95,8 +94,13 @@ function LoginPreludeRow({
         <div className="flex flex-wrap items-start justify-between gap-2 px-3 py-2.5">
           <div className="min-w-0 space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-medium">{loginPrelude.loginFlowName}</p>
-              <Badge variant="secondary" className="text-[10px] uppercase tracking-wide">
+              <p className="text-sm font-medium">
+                {loginPrelude.loginFlowName}
+              </p>
+              <Badge
+                variant="secondary"
+                className="text-[10px] uppercase tracking-wide"
+              >
                 Login
               </Badge>
             </div>
@@ -115,6 +119,8 @@ function LoginPreludeRow({
                 loginPrelude.runStatus === 'passed' &&
                   'text-emerald-600 dark:text-emerald-400',
                 loginPrelude.runStatus === 'failed' && 'text-destructive',
+                loginPrelude.runStatus === 'cancelled' &&
+                  'text-muted-foreground',
                 loginPrelude.runStatus === 'pending' && 'text-muted-foreground',
               )}
             >
@@ -124,10 +130,13 @@ function LoginPreludeRow({
         </div>
 
         {showStatus &&
-        loginPrelude.runStatus === 'failed' &&
+        (loginPrelude.runStatus === 'failed' ||
+          loginPrelude.runStatus === 'cancelled') &&
         loginPrelude.errorMessage ? (
           <div className="border-t bg-destructive/5 px-3 py-2.5">
-            <p className="text-[11px] font-medium text-destructive">Error</p>
+            <p className="text-[11px] font-medium text-destructive">
+              {loginPrelude.runStatus === 'cancelled' ? 'Cancelled' : 'Error'}
+            </p>
             <p className="mt-0.5 text-sm text-destructive/90">
               {loginPrelude.errorMessage}
             </p>
@@ -177,6 +186,14 @@ function StepIndicator({
     return (
       <span className="relative z-10 mt-3 flex size-5 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
         <X className="size-3" strokeWidth={2.5} aria-hidden />
+      </span>
+    )
+  }
+
+  if (runStatus === 'cancelled') {
+    return (
+      <span className="relative z-10 mt-3 flex size-5 shrink-0 items-center justify-center rounded-full border bg-muted text-muted-foreground">
+        <Ban className="size-3" aria-hidden />
       </span>
     )
   }
@@ -297,7 +314,7 @@ export function TestCaseStepsView({
             const showScreenshot = Boolean(step.screenshotUrl)
             const showError =
               hasRun &&
-              step.runStatus === 'failed' &&
+              (step.runStatus === 'failed' || step.runStatus === 'cancelled') &&
               Boolean(step.errorMessage)
 
             return (
@@ -317,14 +334,12 @@ export function TestCaseStepsView({
                     />
                     <StepMeta
                       label={
-                        step.resolvedValue &&
-                        step.resolvedValue !== step.value
+                        step.resolvedValue && step.resolvedValue !== step.value
                           ? 'Value → resolved'
                           : 'Value'
                       }
                       value={
-                        step.resolvedValue &&
-                        step.resolvedValue !== step.value
+                        step.resolvedValue && step.resolvedValue !== step.value
                           ? `${displayText(step.value)} → ${step.resolvedValue}`
                           : displayText(
                               step.outputVariable
@@ -357,7 +372,7 @@ export function TestCaseStepsView({
                   {showError ? (
                     <div className="border-t bg-destructive/5 px-3 py-2.5">
                       <p className="text-[11px] font-medium text-destructive">
-                        Error
+                        {step.runStatus === 'cancelled' ? 'Cancelled' : 'Error'}
                       </p>
                       <p className="mt-0.5 text-sm text-destructive/90">
                         {step.errorMessage}

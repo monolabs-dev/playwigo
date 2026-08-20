@@ -1,5 +1,7 @@
+import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
+
 export type TestRunStatus =
-  'pending' | 'queued' | 'running' | 'passed' | 'failed' | 'error'
+  'pending' | 'queued' | 'running' | 'passed' | 'failed' | 'error' | 'cancelled'
 
 export type TestCaseSummary = {
   id: string
@@ -20,7 +22,8 @@ export type ProjectTestCaseSummary = TestCaseSummary & {
   featureName: string
 }
 
-export type TestRunStepStatus = 'pending' | 'running' | 'passed' | 'failed'
+export type TestRunStepStatus =
+  'pending' | 'running' | 'passed' | 'failed' | 'cancelled'
 
 export type TestRunSummary = {
   id: string
@@ -49,8 +52,6 @@ export type TestCaseStepsPayload = {
   steps: TestCaseStep[]
   loginPrelude: TestCaseLoginPrelude | null
 }
-
-import type { StepConfigJson } from '#/features/test-cases/types/step-config.ts'
 
 export type TestCaseStep = {
   id: string

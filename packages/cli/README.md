@@ -68,8 +68,8 @@ playwigo run --test-case <id> --json
 playwigo run --test-case <id> --wait --json
 playwigo run --test-case <id> --var otpEndpoint=https://staging.example/__test/otp --wait --json
 playwigo run wait --run <id> --json
-
 playwigo runs list --project <id> --json
+playwigo runs cancel --run <id> --json
 ```
 
 `--var key=value` is repeatable. Values are available as `{{key}}` in step templates during that run.

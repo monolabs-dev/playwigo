@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { Ban } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useServerFn } from '@tanstack/react-start'
 import { toast } from 'sonner'
@@ -7,16 +8,18 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '#/components/ui/sheet.tsx'
+import { Button } from '#/components/ui/button.tsx'
 import { Skeleton } from '#/components/ui/skeleton.tsx'
 import { TestCaseStepsView } from '#/features/test-cases/components/test-case-steps-view.tsx'
-import { getTestRunStatus } from '#/features/test-cases/server/test-cases.ts'
-import type {
-  TestRunStatus,
-  TestRunSummary,
-} from '#/features/test-cases/types/test-case.ts'
+import {
+  cancelTestRun,
+  getTestRunStatus,
+} from '#/features/test-cases/server/test-cases.ts'
+import type { TestRunSummary } from '#/features/test-cases/types/test-case.ts'
 import { RunStatusBadge } from '#/features/test-cases/components/run-status-badge.tsx'
 import {
   formatRunDuration,
@@ -29,7 +32,9 @@ const POLL_INTERVAL_MS = 1500
 
 type TestRunDetail = Awaited<ReturnType<typeof getTestRunStatus>>
 
-function toStepViewItems(steps: TestRunDetail['steps']): TestCaseStepViewItem[] {
+function toStepViewItems(
+  steps: TestRunDetail['steps'],
+): TestCaseStepViewItem[] {
   const testCaseSteps = steps.filter((step) => step.testCaseStepId !== null)
 
   return testCaseSteps.map((step, index) => ({
@@ -57,6 +62,7 @@ function buildLoginPrelude(
   }
 
   const failedStep = preludeSteps.find((step) => step.status === 'failed')
+  const cancelledStep = preludeSteps.find((step) => step.status === 'cancelled')
   const runningStep = preludeSteps.find((step) => step.status === 'running')
   const allPassed = preludeSteps.every((step) => step.status === 'passed')
 
@@ -65,6 +71,8 @@ function buildLoginPrelude(
     runStatus = 'running'
   } else if (failedStep) {
     runStatus = 'failed'
+  } else if (cancelledStep) {
+    runStatus = 'cancelled'
   } else if (allPassed) {
     runStatus = 'passed'
   } else if (preludeSteps.some((step) => step.status === 'pending')) {
@@ -76,7 +84,8 @@ function buildLoginPrelude(
     testAccountName: testCase.testAccountName,
     loginFlowName: 'Login flow',
     runStatus,
-    errorMessage: failedStep?.errorMessage ?? null,
+    errorMessage:
+      failedStep?.errorMessage ?? cancelledStep?.errorMessage ?? null,
   }
 }
 
@@ -89,14 +98,18 @@ export function TestRunDetailSheet({
   run: TestRunSummary | null
   open: boolean
   onOpenChange: (open: boolean) => void
-  onRunUpdated: (patch: Pick<
-    TestRunSummary,
-    'id' | 'status' | 'durationMs' | 'errorMessage' | 'completedAt'
-  >) => void
+  onRunUpdated: (
+    patch: Pick<
+      TestRunSummary,
+      'id' | 'status' | 'durationMs' | 'errorMessage' | 'completedAt'
+    >,
+  ) => void
 }) {
   const getStatusFn = useServerFn(getTestRunStatus)
+  const cancelRunFn = useServerFn(cancelTestRun)
   const [detail, setDetail] = useState<TestRunDetail | null>(null)
   const [loading, setLoading] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
 
   const loadDetail = useCallback(async () => {
     if (!run) {
@@ -154,7 +167,35 @@ export function TestRunDetailSheet({
     return () => window.clearInterval(interval)
   }, [active, loadDetail, open])
 
-  const status = (detail?.status ?? run?.status ?? null) as TestRunStatus | null
+  async function handleCancelRun() {
+    if (!run || cancelling) {
+      return
+    }
+
+    setCancelling(true)
+
+    try {
+      const next = await cancelRunFn({ data: { testRunId: run.id } })
+      setDetail(next)
+      onRunUpdated({
+        id: run.id,
+        status: next.status,
+        durationMs: next.durationMs,
+        errorMessage: next.errorMessage,
+        completedAt: next.completedAt,
+      })
+      toast.success('Run cancelled')
+    } catch (error) {
+      toast.error('Unable to cancel run', {
+        description:
+          error instanceof Error ? error.message : 'Try again in a moment.',
+      })
+    } finally {
+      setCancelling(false)
+    }
+  }
+
+  const status = detail?.status ?? run?.status ?? null
   const stepItems = detail ? toStepViewItems(detail.steps) : []
   const loginPrelude = detail
     ? buildLoginPrelude(detail.steps, detail.testCase)
@@ -204,6 +245,13 @@ export function TestRunDetailSheet({
                 <Skeleton key={index} className="h-16 rounded-xl" />
               ))}
             </div>
+          ) : status === 'cancelled' && detail?.errorMessage ? (
+            <div className="mb-4 rounded-xl border bg-muted/20 px-4 py-3">
+              <p className="text-sm font-medium">Run cancelled</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {detail.errorMessage}
+              </p>
+            </div>
           ) : detail?.errorMessage && !active ? (
             <div className="mb-4 rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3">
               <p className="text-sm font-medium text-destructive">Run failed</p>
@@ -246,6 +294,21 @@ export function TestRunDetailSheet({
             </div>
           ) : null}
         </div>
+
+        {active ? (
+          <SheetFooter className="border-t">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={cancelling}
+              onClick={() => void handleCancelRun()}
+            >
+              <Ban />
+              {cancelling ? 'Cancelling…' : 'Cancel run'}
+            </Button>
+          </SheetFooter>
+        ) : null}
       </SheetContent>
     </Sheet>
   )

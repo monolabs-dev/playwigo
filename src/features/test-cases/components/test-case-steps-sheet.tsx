@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Save } from 'lucide-react'
+import { Ban, Plus, Save } from 'lucide-react'
 import { useServerFn } from '@tanstack/react-start'
 import { toast } from 'sonner'
 
@@ -22,7 +22,10 @@ import {
 } from '#/components/ui/tabs.tsx'
 import { TestCaseStepsEditor } from '#/features/test-cases/components/test-case-steps-editor.tsx'
 import { TestCaseStepsView } from '#/features/test-cases/components/test-case-steps-view.tsx'
-import { listTestCaseSteps } from '#/features/test-cases/server/test-cases.ts'
+import {
+  listTestCaseSteps,
+  cancelTestCaseRun,
+} from '#/features/test-cases/server/test-cases.ts'
 import type {
   TestCaseLoginPrelude,
   TestCaseStep,
@@ -48,12 +51,14 @@ export function TestCaseStepsSheet({
   onSaved: (testCase: TestCaseSummary) => void
 }) {
   const listFn = useServerFn(listTestCaseSteps)
+  const cancelRunFn = useServerFn(cancelTestCaseRun)
   const [tab, setTab] = useState('steps')
   const [steps, setSteps] = useState<TestCaseStep[]>([])
   const [loginPrelude, setLoginPrelude] = useState<TestCaseLoginPrelude | null>(
     null,
   )
   const [loadingSteps, setLoadingSteps] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
 
   const testCaseId = testCase?.id
   const isRunning = isActiveTestRunStatus(testCase?.latestRunStatus)
@@ -119,6 +124,29 @@ export function TestCaseStepsSheet({
     return () => window.clearInterval(interval)
   }, [isRunning, listFn, open, testCaseId])
 
+  async function handleCancelRun() {
+    if (!testCaseId || cancelling) {
+      return
+    }
+
+    setCancelling(true)
+
+    try {
+      const result = await cancelRunFn({ data: { testCaseId } })
+      onSaved(result.testCase)
+      toast.success('Run cancelled', {
+        description: result.testCase.name,
+      })
+    } catch (error) {
+      toast.error('Unable to cancel run', {
+        description:
+          error instanceof Error ? error.message : 'Try again in a moment.',
+      })
+    } finally {
+      setCancelling(false)
+    }
+  }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="gap-0 overflow-hidden p-0 data-[side=right]:w-2/5 data-[side=right]:max-w-none data-[side=right]:sm:max-w-none">
@@ -167,15 +195,29 @@ export function TestCaseStepsSheet({
                   </TabsContent>
                 </div>
                 <SheetFooter className="border-t">
-                  <SheetClose asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Close
-                    </Button>
-                  </SheetClose>
+                  <div className="flex w-full items-center gap-2">
+                    {isRunning ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1"
+                        disabled={cancelling}
+                        onClick={() => void handleCancelRun()}
+                      >
+                        <Ban />
+                        {cancelling ? 'Cancelling…' : 'Cancel run'}
+                      </Button>
+                    ) : null}
+                    <SheetClose asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className={isRunning ? 'flex-1' : 'w-full'}
+                      >
+                        Close
+                      </Button>
+                    </SheetClose>
+                  </div>
                 </SheetFooter>
               </>
             ) : (
@@ -195,11 +237,7 @@ export function TestCaseStepsSheet({
                 {({ fields, isSubmitting, isDirty, addStep, formId }) => (
                   <>
                     <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-                      <TabsContent
-                        value="editor"
-                        forceMount
-                        className="mt-0"
-                      >
+                      <TabsContent value="editor" forceMount className="mt-0">
                         {fields}
                       </TabsContent>
                     </div>

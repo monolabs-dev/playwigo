@@ -1,6 +1,6 @@
 {
   "name": "@playwigo/extension",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Playwigo browser extension — record test case steps from the side panel",
   "type": "module",

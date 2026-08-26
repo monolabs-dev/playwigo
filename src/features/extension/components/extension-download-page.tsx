@@ -17,11 +17,8 @@ import {
   extensionReleases,
   getLatestExtensionRelease,
 } from '#/features/extension/data/releases.ts'
-import {
-  AuthHeaderActions
-
-} from '#/integrations/better-auth/header-user.tsx'
-import type {HeaderSession} from '#/integrations/better-auth/header-user.tsx';
+import { AuthHeaderActions } from '#/integrations/better-auth/header-user.tsx'
+import type { HeaderSession } from '#/integrations/better-auth/header-user.tsx'
 import { cn } from '#/lib/utils.ts'
 
 const ctaClass =

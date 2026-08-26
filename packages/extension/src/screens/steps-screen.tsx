@@ -1,12 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import {
   DndContext,
   KeyboardSensor,
   PointerSensor,
   closestCenter,
-  type DragEndEvent,
   useSensor,
   useSensors,
 } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
 import {
   SortableContext,
   arrayMove,
@@ -32,9 +33,11 @@ import {
   TEST_CASE_SELECTOR_TYPES,
   TEST_CASE_STEP_ACTIONS,
   fieldsForAction,
-  type BufferedStep,
-  type TestCaseLoginPrelude,
-  type TestCaseStepAction,
+} from '@/api/types'
+import type {
+  BufferedStep,
+  TestCaseLoginPrelude,
+  TestCaseStepAction,
 } from '@/api/types'
 import { AppHeader } from '@/components/app-header'
 import { Badge } from '@/components/ui/badge'
@@ -42,11 +45,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
-import {
-  sendMessage,
-  type ExtensionResponse,
-  type SessionSnapshot,
-} from '@/lib/messaging'
+import { sendMessage } from '@/lib/messaging'
+import type { ExtensionResponse, SessionSnapshot } from '@/lib/messaging'
 import { createEmptyStep } from '@/lib/validate-steps'
 import { cn } from '@/lib/utils'
 
@@ -60,6 +60,7 @@ type StepsScreenProps = {
 
 function SortableStepCard({
   step,
+  index,
   expanded,
   picking,
   onToggle,
@@ -68,6 +69,7 @@ function SortableStepCard({
   onPick,
 }: {
   step: BufferedStep
+  index: number
   expanded: boolean
   picking: boolean
   onToggle: () => void
@@ -75,8 +77,14 @@ function SortableStepCard({
   onRemove: () => void
   onPick: () => void
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: step.clientId })
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: step.clientId })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -99,19 +107,28 @@ function SortableStepCard({
         <button
           type="button"
           className="cursor-grab touch-none rounded p-1 text-muted-foreground hover:bg-muted"
-          aria-label="Drag to reorder"
+          aria-label={`Reorder step ${index + 1}`}
           {...attributes}
           {...listeners}
         >
           <GripVertical className="size-3.5" />
         </button>
+        <span
+          className="w-5 shrink-0 text-center text-[11px] font-medium tabular-nums text-muted-foreground"
+          aria-hidden="true"
+        >
+          {index + 1}
+        </span>
         <button
           type="button"
           className="min-w-0 flex-1 text-left"
+          aria-label={`Step ${index + 1}, ${STEP_ACTION_LABELS[step.action]}`}
           onClick={onToggle}
         >
           <div className="flex items-center gap-1.5">
-            <Badge className="shrink-0">{STEP_ACTION_LABELS[step.action]}</Badge>
+            <Badge className="shrink-0">
+              {STEP_ACTION_LABELS[step.action]}
+            </Badge>
             <span className="truncate font-mono text-[11px] text-muted-foreground">
               {fields.selector
                 ? step.selector || '—'
@@ -131,7 +148,7 @@ function SortableStepCard({
           variant="ghost"
           size="icon-sm"
           onClick={onRemove}
-          aria-label="Delete step"
+          aria-label={`Delete step ${index + 1}`}
         >
           <Trash2 className="size-3.5" />
         </Button>
@@ -243,9 +260,7 @@ function SortableStepCard({
               <div className="space-y-1">
                 <Label>Name</Label>
                 <Input
-                  value={
-                    (step.config as { name?: string } | null)?.name ?? ''
-                  }
+                  value={(step.config as { name?: string } | null)?.name ?? ''}
                   onChange={(e) =>
                     onChange({
                       ...step,
@@ -270,8 +285,7 @@ function SortableStepCard({
                       ...step,
                       config: {
                         name:
-                          (step.config as { name?: string } | null)?.name ??
-                          '',
+                          (step.config as { name?: string } | null)?.name ?? '',
                         value: e.target.value,
                       },
                     })
@@ -334,8 +348,7 @@ function SortableStepCard({
                 <Select
                   className="w-[96px] shrink-0"
                   value={
-                    (step.config as { method?: string } | null)?.method ??
-                    'GET'
+                    (step.config as { method?: string } | null)?.method ?? 'GET'
                   }
                   onChange={(e) =>
                     onChange({
@@ -343,11 +356,7 @@ function SortableStepCard({
                       config: {
                         ...(step.config as object),
                         method: e.target.value as
-                          | 'GET'
-                          | 'POST'
-                          | 'PUT'
-                          | 'PATCH'
-                          | 'DELETE',
+                          'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
                         url:
                           (step.config as { url?: string } | null)?.url ?? '',
                       },
@@ -392,8 +401,7 @@ export function StepsScreen({
   onUnauthorized,
 }: StepsScreenProps) {
   const [session, setSession] = useState<SessionSnapshot | null>(null)
-  const [loginPrelude, setLoginPrelude] =
-    useState<TestCaseLoginPrelude>(null)
+  const [loginPrelude, setLoginPrelude] = useState<TestCaseLoginPrelude>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -490,14 +498,18 @@ export function StepsScreen({
       toast.error(result.error ?? 'Failed to start recording')
       return
     }
-    toast.message('Recording — interact with the active tab · Alt/⌥+click = hover')
+    toast.message(
+      'Recording — interact with the active tab · Alt/⌥+click = hover',
+    )
     await refresh()
   }
 
   async function handleSave() {
     setSaving(true)
     try {
-      const result = await sendMessage<ExtensionResponse>({ type: 'SAVE_STEPS' })
+      const result = await sendMessage<ExtensionResponse>({
+        type: 'SAVE_STEPS',
+      })
       if (!result.ok) {
         if (result.code === 'unauthorized') {
           onUnauthorized()
@@ -514,7 +526,9 @@ export function StepsScreen({
   }
 
   async function handleDiscard() {
-    const result = await sendMessage<ExtensionResponse>({ type: 'DISCARD_STEPS' })
+    const result = await sendMessage<ExtensionResponse>({
+      type: 'DISCARD_STEPS',
+    })
     if (!result.ok) {
       toast.error(result.error ?? 'Discard failed')
       return
@@ -538,7 +552,9 @@ export function StepsScreen({
       toast.error(result.error ?? 'Pick failed')
       return
     }
-    toast.message('Click an element · hold Alt/⌥ + click for Hover · Esc to cancel')
+    toast.message(
+      'Click an element · hold Alt/⌥ + click for Hover · Esc to cancel',
+    )
     await refresh()
   }
 
@@ -673,10 +689,11 @@ export function StepsScreen({
               strategy={verticalListSortingStrategy}
             >
               <ul className="space-y-1.5">
-                {session.steps.map((step) => (
+                {session.steps.map((step, index) => (
                   <SortableStepCard
                     key={step.clientId}
                     step={step}
+                    index={index}
                     expanded={expandedId === step.clientId}
                     picking={
                       Boolean(session.picking) &&

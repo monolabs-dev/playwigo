@@ -1,0 +1,41 @@
+packages/extension/src/screens/steps-screen.tsx
+  s_aac7c161e3ff53::t_99c8ac20b9ca2d 151
+  h_c8a1da106d576c 1,10,37-40,48-49,86,502,511,530,556
+  s_aac7c161e3ff53::t_5f72f6c750b3a1 63,72
+  s_aac7c161e3ff53::t_e334ce1236ecda 110,116,118-121
+  s_aac7c161e3ff53::t_88e3bf688e5209 117,125
+  s_aac7c161e3ff53::t_cf770df0d9ef19 692,696
+  h_c8a1da106d576c 36,80-85,87,129-131,263,288,351,359,404,501,503,510,512,529,531,555,557
+src/features/extension/components/extension-download-page.tsx
+  h_c8a1da106d576c 21
+  h_c8a1da106d576c 20
+packages/extension/package.json
+  h_c8a1da106d576c 3
+src/features/extension/data/releases.ts
+  s_aac7c161e3ff53::t_0cc005ade8cfd1 12-18,22-23
+  s_aac7c161e3ff53::t_71a545778814b6 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "7bf324f9ede8047ef5a6230bff5dc96031713624",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_aac7c161e3ff53": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "a174dbb2-48b2-47a8-bb61-6d63b96cf51f",
+        "model": "grok-4.6"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

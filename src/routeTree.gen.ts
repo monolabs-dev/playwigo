@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as ExtensionRouteImport } from './routes/extension'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AppShellRouteRouteImport } from './routes/_app/_shell/route'
@@ -49,6 +50,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtensionRoute = ExtensionRouteImport.update({
+  id: '/extension',
+  path: '/extension',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -215,6 +221,7 @@ const ApiV1TestRunsTestRunIdCancelRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/extension': typeof ExtensionRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/onboard': typeof AppOnboardRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/extension': typeof ExtensionRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/onboard': typeof AppOnboardRoute
@@ -278,6 +286,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteRouteWithChildren
+  '/extension': typeof ExtensionRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/_app/_shell': typeof AppShellRouteRouteWithChildren
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/extension'
     | '/login'
     | '/register'
     | '/onboard'
@@ -345,6 +355,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/extension'
     | '/login'
     | '/register'
     | '/onboard'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
+    | '/extension'
     | '/login'
     | '/register'
     | '/_app/_shell'
@@ -410,6 +422,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  ExtensionRoute: typeof ExtensionRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -435,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AppRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extension': {
+      id: '/extension'
+      path: '/extension'
+      fullPath: '/extension'
+      preLoaderRoute: typeof ExtensionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -772,6 +792,7 @@ const ApiV1TestRunsTestRunIdRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
+  ExtensionRoute: ExtensionRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

@@ -22,6 +22,7 @@ import { Route as AppShellLoginFlowsRouteImport } from './routes/_app/_shell/log
 import { Route as AppShellSettingsRouteRouteImport } from './routes/_app/_shell/settings/route'
 import { Route as AppShellTestAccountsRouteImport } from './routes/_app/_shell/test-accounts'
 import { Route as AppShellTestRunsRouteImport } from './routes/_app/_shell/test-runs'
+import { Route as AppExtensionConnectRouteImport } from './routes/_app/extension/connect'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiV1ProjectsRouteImport } from './routes/api/v1/projects'
 import { Route as AppShellAuthenticationIndexRouteImport } from './routes/_app/_shell/authentication/index'
@@ -104,6 +105,11 @@ const AppShellTestRunsRoute = AppShellTestRunsRouteImport.update({
   id: '/test-runs',
   path: '/test-runs',
   getParentRoute: () => AppShellRouteRoute,
+} as any)
+const AppExtensionConnectRoute = AppExtensionConnectRouteImport.update({
+  id: '/extension/connect',
+  path: '/extension/connect',
+  getParentRoute: () => AppRouteRoute,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/login-flows': typeof AppShellLoginFlowsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/test-runs': typeof AppShellTestRunsRoute
+  '/extension/connect': typeof AppExtensionConnectRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByTo {
   '/login-flows': typeof AppShellLoginFlowsRoute
   '/test-accounts': typeof AppShellTestAccountsRoute
   '/test-runs': typeof AppShellTestRunsRoute
+  '/extension/connect': typeof AppExtensionConnectRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
@@ -281,6 +289,7 @@ export interface FileRoutesById {
   '/_app/_shell/login-flows': typeof AppShellLoginFlowsRoute
   '/_app/_shell/test-accounts': typeof AppShellTestAccountsRoute
   '/_app/_shell/test-runs': typeof AppShellTestRunsRoute
+  '/_app/extension/connect': typeof AppExtensionConnectRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/v1/projects': typeof ApiV1ProjectsRouteWithChildren
   '/_app/_shell/authentication/accounts': typeof AppShellAuthenticationAccountsRoute
@@ -314,6 +323,7 @@ export interface FileRouteTypes {
     | '/login-flows'
     | '/test-accounts'
     | '/test-runs'
+    | '/extension/connect'
     | '/api/auth/$'
     | '/api/v1/projects'
     | '/authentication/accounts'
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/login-flows'
     | '/test-accounts'
     | '/test-runs'
+    | '/extension/connect'
     | '/api/auth/$'
     | '/api/v1/projects'
     | '/authentication/accounts'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '/_app/_shell/login-flows'
     | '/_app/_shell/test-accounts'
     | '/_app/_shell/test-runs'
+    | '/_app/extension/connect'
     | '/api/auth/$'
     | '/api/v1/projects'
     | '/_app/_shell/authentication/accounts'
@@ -501,6 +513,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/test-runs'
       preLoaderRoute: typeof AppShellTestRunsRouteImport
       parentRoute: typeof AppShellRouteRoute
+    }
+    '/_app/extension/connect': {
+      id: '/_app/extension/connect'
+      path: '/extension/connect'
+      fullPath: '/extension/connect'
+      preLoaderRoute: typeof AppExtensionConnectRouteImport
+      parentRoute: typeof AppRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -709,11 +728,13 @@ const AppShellRouteRouteWithChildren = AppShellRouteRoute._addFileChildren(
 interface AppRouteRouteChildren {
   AppShellRouteRoute: typeof AppShellRouteRouteWithChildren
   AppOnboardRoute: typeof AppOnboardRoute
+  AppExtensionConnectRoute: typeof AppExtensionConnectRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppShellRouteRoute: AppShellRouteRouteWithChildren,
   AppOnboardRoute: AppOnboardRoute,
+  AppExtensionConnectRoute: AppExtensionConnectRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(

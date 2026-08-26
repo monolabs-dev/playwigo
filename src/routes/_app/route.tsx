@@ -7,11 +7,20 @@ export const Route = createFileRoute('/_app')({
     const session = await getSession()
 
     if (!session) {
+      const search =
+        typeof location.searchStr === 'string' && location.searchStr.length > 0
+          ? location.searchStr.startsWith('?')
+            ? location.searchStr
+            : `?${location.searchStr}`
+          : ''
+
       throw redirect({
         to: '/login',
         search: {
           redirect:
-            location.pathname === '/dashboard' ? undefined : location.pathname,
+            location.pathname === '/dashboard'
+              ? undefined
+              : `${location.pathname}${search}`,
         },
       })
     }

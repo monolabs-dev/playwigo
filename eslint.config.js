@@ -19,6 +19,8 @@ export default [
       'eslint.config.js',
       'prettier.config.js',
       'packages/cli/dist/**',
+      'packages/extension/.output/**',
+      'packages/extension/.wxt/**',
     ],
   },
 ]

@@ -1,0 +1,51 @@
+src/features/test-cases/server/browser-step-options.ts
+  s_8b792d3fcc238f::t_49854984f5ee89 38-46,49,51-61,63-67,73-78,82-87,92-101,103
+  s_8b792d3fcc238f::t_78930b81e096c1 11-14,17
+  s_8b792d3fcc238f::t_2bfe26cf4d093a 18
+src/features/test-cases/types/step-config.ts
+  s_8b792d3fcc238f::t_3dab701883a18b 17-18
+AGENTS.md
+  s_6f200ca8d3e0f7::t_2bce9e9fa2d815 934
+src/features/test-cases/server/prepare-click.ts
+  s_8b792d3fcc238f::t_cf86405991f40a 1-9,17-23,25-47,54-89
+  s_8b792d3fcc238f::t_bc4a867e8db3b6 48-53
+  s_8b792d3fcc238f::t_2d23926da827ec 10-16,24
+src/features/test-cases/schemas/test-case-step.ts
+  s_8b792d3fcc238f::t_6833e78c8ee927 50-51
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_8b792d3fcc238f::t_2ddbd08eccc5d5 351-360
+  s_8b792d3fcc238f::t_5e0e2a9c186c25 616
+  s_8b792d3fcc238f::t_3b699e6c69f599 36-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3acb18111301dd0b9c65c8fcd7edd143a1fc1eab",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_6f200ca8d3e0f7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f8144c5d-7c94-43d9-95fd-c09a06003237",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    },
+    "s_8b792d3fcc238f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4646761c-1997-4e35-a9e8-e4ff14e6b0a2",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    }
+  }
+}

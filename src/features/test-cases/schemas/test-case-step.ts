@@ -47,6 +47,8 @@ export const browserStepConfigSchema = z.object({
     })
     .optional(),
   forceClick: z.boolean().optional(),
+  scopeToDialog: z.boolean().optional(),
+  settleBeforeMs: z.number().int().min(0).max(3000).optional(),
 })
 
 export const httpRequestConfigSchema = z.object({

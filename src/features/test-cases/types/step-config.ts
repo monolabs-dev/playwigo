@@ -14,6 +14,8 @@ export type BrowserStepConfig = {
     intervalMs: number
   }
   forceClick?: boolean
+  scopeToDialog?: boolean
+  settleBeforeMs?: number
 }
 
 export type HttpRequestStepConfig = {

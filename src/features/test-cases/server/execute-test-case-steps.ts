@@ -33,6 +33,10 @@ import {
 } from '#/features/test-cases/server/run-limits.ts'
 import { putTestRunScreenshot } from '#/server/integrations/r2/screenshots.ts'
 import { readBrowserStepOptions } from '#/features/test-cases/server/browser-step-options.ts'
+import {
+  performClick,
+  resolveClickTarget,
+} from '#/features/test-cases/server/prepare-click.ts'
 import { executeStepHttpRequest } from '#/server/integrations/http/step-request.ts'
 
 export type ExecutedStepResult = {
@@ -344,15 +348,16 @@ async function executeStep(
       await navigateToPage(page, value)
       break
     case 'click': {
-      const { forceClick } = readBrowserStepOptions(step.config)
-      const clickTarget = resolveLocator(page, step.selectorType, selector)
-      await clickTarget.scrollIntoViewIfNeeded({
-        timeout: STEP_TIMEOUT_MS,
-      })
-      await clickTarget.click({
-        timeout: STEP_TIMEOUT_MS,
-        force: forceClick,
-      })
+      const clickOptions = readBrowserStepOptions(step.config, 'click')
+      const baseTarget = resolveLocator(page, step.selectorType, selector)
+      const clickTarget = await resolveClickTarget(
+        page,
+        baseTarget,
+        step.selectorType,
+        selector,
+        clickOptions,
+      )
+      await performClick(page, clickTarget, clickOptions)
       await waitForPageSettled(page)
       break
     }
@@ -608,7 +613,7 @@ export async function executeTestCaseSteps(input: {
 
       await progress?.onStepStart?.(step, index)
 
-      const browserOptions = readBrowserStepOptions(step.config)
+      const browserOptions = readBrowserStepOptions(step.config, action)
       const retry = browserOptions.retry
       const maxAttempts = retry?.attempts ?? 1
 

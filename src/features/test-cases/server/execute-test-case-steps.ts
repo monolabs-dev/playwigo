@@ -273,6 +273,56 @@ async function navigateToPage(page: Page, url: string) {
   await waitForPageSettled(page)
 }
 
+/** Jakarta default — GoWork booking pages call `getCurrentPosition` on load. */
+const DEFAULT_RUN_GEOLOCATION = {
+  latitude: -6.2088,
+  longitude: 106.8456,
+  accuracy: 100,
+}
+
+function resolveRunOrigin(
+  steps: TestCaseStep[],
+  baseUrl: string | null,
+): string | null {
+  if (baseUrl) {
+    try {
+      return new URL(baseUrl).origin
+    } catch {
+      // fall through
+    }
+  }
+
+  for (const step of steps) {
+    if (normalizeStepAction(step.action) !== 'goto') {
+      continue
+    }
+    const url = step.value?.trim()
+    if (!url) {
+      continue
+    }
+    try {
+      return new URL(url).origin
+    } catch {
+      continue
+    }
+  }
+
+  return null
+}
+
+async function grantAutomationPermissions(page: Page, origin: string) {
+  const context = page.context()
+
+  try {
+    await context.grantPermissions(['geolocation', 'notifications'], {
+      origin,
+    })
+    await context.setGeolocation(DEFAULT_RUN_GEOLOCATION)
+  } catch {
+    // Remote Browser Run may not support every permission; runs should continue.
+  }
+}
+
 async function executeStep(
   page: Page,
   step: TestCaseStep,
@@ -532,6 +582,11 @@ export async function executeTestCaseSteps(input: {
     const page = await browser.newPage()
     page.setDefaultTimeout(STEP_TIMEOUT_MS)
     page.setDefaultNavigationTimeout(NAVIGATION_TIMEOUT_MS)
+
+    const runOrigin = resolveRunOrigin(steps, baseUrl)
+    if (runOrigin) {
+      await grantAutomationPermissions(page, runOrigin)
+    }
 
     const firstAction = normalizeStepAction(steps[0]?.action)
     if (baseUrl && loginPreludeStepCount === 0 && firstAction !== 'goto') {

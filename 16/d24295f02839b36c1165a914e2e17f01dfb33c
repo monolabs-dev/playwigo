@@ -1,0 +1,43 @@
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_156e10e56d1e80::t_f87b5d5236781e 80-83
+  s_156e10e56d1e80::t_c27e6c19800551 295-300,304
+  s_156e10e56d1e80::t_618b7e46d1ee2a 263
+  s_156e10e56d1e80::t_631fc69b84e856 21,24,29
+  s_156e10e56d1e80::t_297114334938ca 514-517
+src/features/test-cases/server/run-limits.ts
+  s_156e10e56d1e80::t_9e14d2eca113ff 3-7
+AGENTS.md
+  s_7da67e30b61791::t_7c90d98d13249f 934
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "16d24295f02839b36c1165a914e2e17f01dfb33c",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_156e10e56d1e80": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e132b5e9-6632-4f13-b675-485974a849c9",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    },
+    "s_7da67e30b61791": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "da02270b-70de-48d6-b8e2-e29d0d5f2bf6",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    }
+  }
+}

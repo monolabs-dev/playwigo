@@ -78,7 +78,7 @@ function delay(ms: number) {
   })
 }
 
-function stepBudgetMs(action: TestCaseStepAction) {
+function stepBudgetMs(action: TestCaseStepAction, value?: string | null) {
   if (action === 'httpRequest') {
     return HTTP_STEP_TIMEOUT_MS
   }
@@ -87,7 +87,15 @@ function stepBudgetMs(action: TestCaseStepAction) {
     return GOTO_STEP_TIMEOUT_MS
   }
 
-  if (action === 'waitTimeout' || action === 'wait') {
+  if (action === 'waitTimeout') {
+    const requestedMs = Number(value?.trim())
+    if (Number.isFinite(requestedMs) && requestedMs >= 0) {
+      return Math.min(requestedMs, MAX_WAIT_TIMEOUT_MS) + 2_000
+    }
+    return MAX_WAIT_TIMEOUT_MS
+  }
+
+  if (action === 'wait') {
     return MAX_WAIT_TIMEOUT_MS
   }
 
@@ -415,7 +423,8 @@ async function executeStep(
         throw new Error('waitTimeout requires a duration in milliseconds')
       }
 
-      await page.waitForTimeout(Math.min(requestedMs, MAX_WAIT_TIMEOUT_MS))
+      // `page.waitForTimeout` can hang on Browser Run; wall-clock delay is reliable.
+      await delay(Math.min(requestedMs, MAX_WAIT_TIMEOUT_MS))
       break
     }
     case 'pressKey':
@@ -626,7 +635,7 @@ export async function executeTestCaseSteps(input: {
 
       const stepStartedAt = Date.now()
       const action = normalizeStepAction(step.action)
-      const budgetMs = stepBudgetMs(action)
+      const budgetMs = stepBudgetMs(action, step.value)
 
       await progress?.onStepStart?.(step, index)
 

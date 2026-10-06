@@ -10,6 +10,12 @@ import {
   STEP_TIMEOUT_MS,
 } from '#/features/test-cases/server/run-limits.ts'
 
+function delay(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 function visibleDialogs(page: Page) {
   return page
     .locator('[role="dialog"], [aria-modal="true"]')
@@ -81,7 +87,7 @@ export async function performClick(
   })
 
   if (options.settleBeforeMs > 0) {
-    await page.waitForTimeout(options.settleBeforeMs)
+    await delay(options.settleBeforeMs)
   }
 
   if (options.forceClick) {
@@ -116,17 +122,9 @@ export async function checkOrClickInput(
     timeout: STEP_TIMEOUT_MS,
   })
 
-  try {
-    await input.check({
-      timeout: STEP_TIMEOUT_MS,
-      force: options.forceClick,
-    })
-    return
-  } catch {
-    // Fall through — label click matches what users do in the UI.
-  }
-
   const inputId = await input.getAttribute('id')
+
+  // Browser Run can hang inside `check()` without rejecting — prefer DOM click.
   if (inputId) {
     await page.evaluate((id) => {
       const label = document.querySelector(`label[for="${id}"]`)
@@ -134,13 +132,20 @@ export async function checkOrClickInput(
         label.click()
         return
       }
-      document.getElementById(id)?.click()
+      const el = document.getElementById(id)
+      if (el instanceof HTMLElement) {
+        el.click()
+      }
     }, inputId)
-    return
+
+    const checked = await input.isChecked().catch(() => false)
+    if (checked) {
+      return
+    }
   }
 
   await input.check({
     timeout: STEP_TIMEOUT_MS,
-    force: true,
+    force: options.forceClick || true,
   })
 }

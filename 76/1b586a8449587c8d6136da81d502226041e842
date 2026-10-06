@@ -1,0 +1,42 @@
+src/features/test-cases/types/step-config.ts
+  s_8b792d3fcc238f::t_7641698bfa821f 11-18
+  s_8b792d3fcc238f::t_e52bf2dc5e55c8 37
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_8b792d3fcc238f::t_1db6dd1413dd7d 556-559,561-590
+  s_8b792d3fcc238f::t_cbf5067437d731 297,304,306
+  s_8b792d3fcc238f::t_7e64c0da891717 35
+src/features/test-cases/server/browser-step-options.ts
+  s_8b792d3fcc238f::t_5643d1ed7c3c77 1-54
+src/features/test-cases/schemas/test-case-step.ts
+  s_8b792d3fcc238f::t_f96e225532ae20 42-51
+  s_8b792d3fcc238f::t_bea9eb899db8b2 85
+src/features/test-cases/server/reap-stale-test-runs.ts
+  s_8b792d3fcc238f::t_92d228a37d9b71 7-8,12-84,86-87
+src/features/test-cases/server/run-limits.ts
+  s_8b792d3fcc238f::t_914e6969fb9222 11-13,20-21
+  s_8b792d3fcc238f::t_ea3bff6be3af33 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "761b586a8449587c8d6136da81d502226041e842",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_8b792d3fcc238f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4646761c-1997-4e35-a9e8-e4ff14e6b0a2",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    }
+  }
+}

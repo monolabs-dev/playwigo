@@ -70,10 +70,13 @@ export async function performClick(
   clickTarget: ReturnType<Page['locator']>,
   options: BrowserStepOptions,
 ) {
-  const target = clickTarget.filter({ visible: true }).first()
+  // Styled radios/checkboxes are often opacity:0; forceClick must not wait for visible.
+  const target = options.forceClick
+    ? clickTarget.first()
+    : clickTarget.filter({ visible: true }).first()
 
   await target.waitFor({
-    state: 'visible',
+    state: options.forceClick ? 'attached' : 'visible',
     timeout: STEP_TIMEOUT_MS,
   })
 

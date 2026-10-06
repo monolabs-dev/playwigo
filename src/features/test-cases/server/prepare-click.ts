@@ -5,13 +5,15 @@ import {
   normalizeSelectorType,
 } from '#/features/test-cases/utils/step-actions.ts'
 import type { BrowserStepOptions } from '#/features/test-cases/server/browser-step-options.ts'
-import { STEP_TIMEOUT_MS } from '#/features/test-cases/server/run-limits.ts'
+import {
+  DIALOG_SCOPE_WAIT_MS,
+  STEP_TIMEOUT_MS,
+} from '#/features/test-cases/server/run-limits.ts'
 
-function openDialogLocator(page: Page) {
+function visibleDialogs(page: Page) {
   return page
     .locator('[role="dialog"], [aria-modal="true"]')
     .filter({ visible: true })
-    .last()
 }
 
 function locatorInsideDialog(
@@ -21,7 +23,7 @@ function locatorInsideDialog(
 ) {
   const type = normalizeSelectorType(selectorType)
   const query = formatSelectorQuery(type, selector)
-  const dialog = openDialogLocator(page)
+  const dialog = visibleDialogs(page).last()
 
   if (type === 'xpath') {
     return dialog.locator(`xpath=${query}`)
@@ -45,14 +47,15 @@ export async function resolveClickTarget(
     return baseTarget
   }
 
-  const openDialog = openDialogLocator(page)
-  await openDialog
-    .waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
-    .catch(() => {})
-
-  if ((await openDialog.count()) === 0) {
+  const dialogs = visibleDialogs(page)
+  if ((await dialogs.count()) === 0) {
     return baseTarget
   }
+
+  await dialogs
+    .last()
+    .waitFor({ state: 'visible', timeout: DIALOG_SCOPE_WAIT_MS })
+    .catch(() => {})
 
   const scoped = locatorInsideDialog(page, selectorType, selector)
   if ((await scoped.count()) > 0) {

@@ -14,7 +14,8 @@ export type BrowserStepOptions = {
   settleBeforeMs: number
 }
 
-const DEFAULT_CLICK_SETTLE_MS = 350
+/** Applied only when `scopeToDialog: true` is set on the step config. */
+const DEFAULT_DIALOG_SETTLE_MS = 400
 
 function asRetry(value: unknown): BrowserStepRetry | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -48,16 +49,10 @@ export function readBrowserStepOptions(
   config: StepConfigJson | unknown,
   action?: string,
 ): BrowserStepOptions {
-  const clickDefaults =
-    action === 'click'
-      ? {
-          scopeToDialog: true,
-          settleBeforeMs: DEFAULT_CLICK_SETTLE_MS,
-        }
-      : {
-          scopeToDialog: false,
-          settleBeforeMs: 0,
-        }
+  const clickDefaults = {
+    scopeToDialog: false,
+    settleBeforeMs: 0,
+  }
 
   if (config == null || typeof config !== 'object' || Array.isArray(config)) {
     return {
@@ -89,15 +84,10 @@ export function readBrowserStepOptions(
 
   const retry = asRetry(record.retry)
   const forceClick = record.forceClick === true
-  const scopeToDialog =
-    record.scopeToDialog === false
-      ? false
-      : record.scopeToDialog === true
-        ? true
-        : clickDefaults.scopeToDialog
+  const scopeToDialog = record.scopeToDialog === true
   const settleBeforeMs = asSettleBeforeMs(
     record.settleBeforeMs,
-    clickDefaults.settleBeforeMs,
+    scopeToDialog ? DEFAULT_DIALOG_SETTLE_MS : clickDefaults.settleBeforeMs,
   )
 
   return { retry, forceClick, scopeToDialog, settleBeforeMs }

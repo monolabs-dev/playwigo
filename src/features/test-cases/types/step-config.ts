@@ -8,6 +8,14 @@ export type ExtractTextStepConfig = {
   regex?: string | null
 }
 
+export type BrowserStepConfig = {
+  retry?: {
+    attempts: number
+    intervalMs: number
+  }
+  forceClick?: boolean
+}
+
 export type HttpRequestStepConfig = {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   url: string
@@ -26,6 +34,7 @@ export type StepConfigJson =
   | SetVariableStepConfig
   | ExtractTextStepConfig
   | HttpRequestStepConfig
+  | BrowserStepConfig
   | null
 
 export function asStepConfigJson(value: unknown): StepConfigJson {

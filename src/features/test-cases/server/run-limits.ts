@@ -8,11 +8,17 @@ export const BROWSER_CLOSE_TIMEOUT_MS = 5_000
 export const MAX_WAIT_TIMEOUT_MS = 60_000
 export const HTTP_STEP_TIMEOUT_MS = 180_000
 export const STEP_TIMEOUT_GRACE_MS = 5_000
+/** Max wall time a single step may stay `running` in the DB before reaping. */
+export const MAX_STEP_RUNNING_MS =
+  HTTP_STEP_TIMEOUT_MS + STEP_TIMEOUT_GRACE_MS + 15_000
 export const MAX_RUN_DURATION_MS = 10 * 60 * 1000
 export const CANCEL_POLL_MS = 1_000
 
 export const STALE_RUN_ERROR =
   'Run timed out. The browser session ended before this step finished.'
+
+export const STEP_STALE_ERROR =
+  'Step exceeded the maximum duration. The browser session may have hung or stopped responding.'
 
 export const CANCELLED_RUN_ERROR = 'Cancelled'
 

@@ -32,6 +32,7 @@ import {
   STEP_TIMEOUT_MS,
 } from '#/features/test-cases/server/run-limits.ts'
 import { putTestRunScreenshot } from '#/server/integrations/r2/screenshots.ts'
+import { readBrowserStepOptions } from '#/features/test-cases/server/browser-step-options.ts'
 import { executeStepHttpRequest } from '#/server/integrations/http/step-request.ts'
 
 export type ExecutedStepResult = {
@@ -293,13 +294,16 @@ async function executeStep(
       await navigateToPage(page, value)
       break
     case 'click': {
+      const { forceClick } = readBrowserStepOptions(step.config)
       const clickTarget = resolveLocator(page, step.selectorType, selector)
       await clickTarget.scrollIntoViewIfNeeded({
         timeout: STEP_TIMEOUT_MS,
       })
       await clickTarget.click({
         timeout: STEP_TIMEOUT_MS,
+        force: forceClick,
       })
+      await waitForPageSettled(page)
       break
     }
     case 'fill':
@@ -549,16 +553,41 @@ export async function executeTestCaseSteps(input: {
 
       await progress?.onStepStart?.(step, index)
 
+      const browserOptions = readBrowserStepOptions(step.config)
+      const retry = browserOptions.retry
+      const maxAttempts = retry?.attempts ?? 1
+
       try {
-        const { resolvedValue } = await raceStep(
-          executeStep(page, step, variables, index),
-          {
-            timeoutMs: budgetMs + STEP_TIMEOUT_GRACE_MS,
-            timeoutMessage: `Step timed out after ${Math.round(budgetMs / 1000)}s (${step.action}).`,
-            shouldAbort: progress?.shouldAbort,
-            onAbort: closeBrowser,
-          },
-        )
+        let resolvedValue: string | null = null
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+          await throwIfAborted()
+
+          try {
+            const result = await raceStep(
+              executeStep(page, step, variables, index),
+              {
+                timeoutMs: budgetMs + STEP_TIMEOUT_GRACE_MS,
+                timeoutMessage: `Step timed out after ${Math.round(budgetMs / 1000)}s (${step.action}).`,
+                shouldAbort: progress?.shouldAbort,
+                onAbort: closeBrowser,
+              },
+            )
+            resolvedValue = result.resolvedValue
+            break
+          } catch (error) {
+            const cancelled = error instanceof RunCancelledError
+            if (
+              cancelled ||
+              attempt >= maxAttempts ||
+              maxAttempts <= 1
+            ) {
+              throw error
+            }
+
+            await delay(retry!.intervalMs)
+          }
+        }
 
         if (loginPreludeStepCount > 0 && index === loginPreludeStepCount - 1) {
           await waitForPageSettled(page)

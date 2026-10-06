@@ -39,6 +39,16 @@ export const extractTextConfigSchema = z.object({
   regex: optionalStepText(500, 'Regex is too long'),
 })
 
+export const browserStepConfigSchema = z.object({
+  retry: z
+    .object({
+      attempts: z.number().int().min(1).max(5),
+      intervalMs: z.number().int().min(200).max(10_000),
+    })
+    .optional(),
+  forceClick: z.boolean().optional(),
+})
+
 export const httpRequestConfigSchema = z.object({
   method: z.enum(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
   url: z.string().trim().min(1, 'URL is required').max(4000, 'URL is too long'),
@@ -72,6 +82,7 @@ export const stepConfigValueSchema = z.union([
   setVariableConfigSchema,
   extractTextConfigSchema,
   httpRequestConfigSchema,
+  browserStepConfigSchema,
   z.null(),
 ])
 

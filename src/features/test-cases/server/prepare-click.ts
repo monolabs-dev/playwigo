@@ -84,9 +84,18 @@ export async function performClick(
     await page.waitForTimeout(options.settleBeforeMs)
   }
 
-  await target.scrollIntoViewIfNeeded({
-    timeout: STEP_TIMEOUT_MS,
-  })
+  if (options.forceClick) {
+    // Opacity-0 radios are not "visible"; scrollIntoViewIfNeeded can hang until timeout.
+    await target
+      .evaluate((el) => {
+        el.scrollIntoView({ block: 'center', inline: 'nearest' })
+      })
+      .catch(() => {})
+  } else {
+    await target.scrollIntoViewIfNeeded({
+      timeout: STEP_TIMEOUT_MS,
+    })
+  }
 
   await target.click({
     timeout: STEP_TIMEOUT_MS,

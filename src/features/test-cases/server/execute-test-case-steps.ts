@@ -18,12 +18,15 @@ import {
 import { maskResolvedStepValue } from '#/features/test-cases/server/run-variables.ts'
 import type { RunVariableContext } from '#/features/test-cases/server/run-variables.ts'
 import {
+  BROWSER_CLOSE_TIMEOUT_MS,
   CANCEL_POLL_MS,
   CANCELLED_RUN_ERROR,
+  GOTO_STEP_TIMEOUT_MS,
   HTTP_STEP_TIMEOUT_MS,
   MAX_RUN_DURATION_MS,
   MAX_WAIT_TIMEOUT_MS,
   NAVIGATION_TIMEOUT_MS,
+  PAGE_SETTLE_TIMEOUT_MS,
   RunCancelledError,
   STEP_TIMEOUT_GRACE_MS,
   STEP_TIMEOUT_MS,
@@ -72,6 +75,10 @@ function delay(ms: number) {
 function stepBudgetMs(action: TestCaseStepAction) {
   if (action === 'httpRequest') {
     return HTTP_STEP_TIMEOUT_MS
+  }
+
+  if (action === 'goto') {
+    return GOTO_STEP_TIMEOUT_MS
   }
 
   if (action === 'waitTimeout' || action === 'wait') {
@@ -253,7 +260,7 @@ function applyRegexCapture(raw: string, pattern: string) {
 
 async function waitForPageSettled(page: Page) {
   await page
-    .waitForLoadState('networkidle', { timeout: NAVIGATION_TIMEOUT_MS })
+    .waitForLoadState('load', { timeout: PAGE_SETTLE_TIMEOUT_MS })
     .catch(() => {})
 }
 
@@ -285,11 +292,16 @@ async function executeStep(
     case 'goto':
       await navigateToPage(page, value)
       break
-    case 'click':
-      await resolveLocator(page, step.selectorType, selector).click({
+    case 'click': {
+      const clickTarget = resolveLocator(page, step.selectorType, selector)
+      await clickTarget.scrollIntoViewIfNeeded({
+        timeout: STEP_TIMEOUT_MS,
+      })
+      await clickTarget.click({
         timeout: STEP_TIMEOUT_MS,
       })
       break
+    }
     case 'fill':
       await resolveLocator(page, step.selectorType, selector).fill(value, {
         timeout: STEP_TIMEOUT_MS,
@@ -499,7 +511,10 @@ export async function executeTestCaseSteps(input: {
     }
 
     browserClosed = true
-    await browser.close().catch(() => {})
+    await Promise.race([
+      browser.close().catch(() => {}),
+      delay(BROWSER_CLOSE_TIMEOUT_MS),
+    ])
   }
 
   async function throwIfAborted() {

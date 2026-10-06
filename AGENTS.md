@@ -931,5 +931,5 @@ tanstackIntent:
 - Test accounts and login flows share one sidebar page with tabs.
 - New test account login URL defaults to the project's website URL.
 - Test cases authenticate via an assigned test account's login flow, not generic login-field guessing.
-- Test runs use Cloudflare Browser Run (headless Chrome via CDP); screenshots in R2; cancellable via UI/API/CLI; goto steps wait for networkidle after domcontentloaded; waitTimeout values are milliseconds (max 60s); per-step timeout 30s and max run 10m with stale-run reaping.
+- Test runs use Cloudflare Browser Run (headless Chrome via CDP); screenshots in R2; cancellable via UI/API/CLI; goto steps use `domcontentloaded` then wait for `load` (not `networkidle`) within `GOTO_STEP_TIMEOUT_MS`; click steps scroll into view before clicking; run abort uses bounded `browser.close`; waitTimeout values are milliseconds (max 60s); per-step timeout 30s and max run 10m with stale-run reaping.
 - Element picking is only available in the browser extension; duplicating a test case adds a "Copy of " prefix and copies all steps; test runs execute server-side with live status updates across page refresh.

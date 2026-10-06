@@ -1,5 +1,10 @@
 export const STEP_TIMEOUT_MS = 30_000
 export const NAVIGATION_TIMEOUT_MS = 30_000
+/** Extra wait after domcontentloaded; kept short — networkidle often never fires on SPAs. */
+export const PAGE_SETTLE_TIMEOUT_MS = 10_000
+export const GOTO_STEP_TIMEOUT_MS =
+  NAVIGATION_TIMEOUT_MS + PAGE_SETTLE_TIMEOUT_MS
+export const BROWSER_CLOSE_TIMEOUT_MS = 5_000
 export const MAX_WAIT_TIMEOUT_MS = 60_000
 export const HTTP_STEP_TIMEOUT_MS = 180_000
 export const STEP_TIMEOUT_GRACE_MS = 5_000

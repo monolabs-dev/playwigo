@@ -1,0 +1,28 @@
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_8b792d3fcc238f::t_75e464737d4823 276-325
+  s_8b792d3fcc238f::t_b615be3fdd0a53 586-590
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9aab786d58c3dcbd56c7597cca232da84e2687da",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_8b792d3fcc238f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4646761c-1997-4e35-a9e8-e4ff14e6b0a2",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    }
+  }
+}

@@ -49,6 +49,7 @@ export const browserStepConfigSchema = z.object({
   forceClick: z.boolean().optional(),
   scopeToDialog: z.boolean().optional(),
   settleBeforeMs: z.number().int().min(0).max(3000).optional(),
+  waitState: z.enum(['attached', 'visible', 'hidden']).optional(),
 })
 
 export const httpRequestConfigSchema = z.object({

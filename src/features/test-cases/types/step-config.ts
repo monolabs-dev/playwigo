@@ -16,6 +16,8 @@ export type BrowserStepConfig = {
   forceClick?: boolean
   scopeToDialog?: boolean
   settleBeforeMs?: number
+  /** For `wait` steps — default `visible`. */
+  waitState?: 'attached' | 'visible' | 'hidden'
 }
 
 export type HttpRequestStepConfig = {

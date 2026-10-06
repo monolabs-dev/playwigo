@@ -102,3 +102,45 @@ export async function performClick(
     force: options.forceClick,
   })
 }
+
+/** GoWork-style radios hide the native input (`opacity: 0`). */
+export async function checkOrClickInput(
+  page: Page,
+  locator: ReturnType<Page['locator']>,
+  options: BrowserStepOptions,
+) {
+  const input = locator.first()
+
+  await input.waitFor({
+    state: 'attached',
+    timeout: STEP_TIMEOUT_MS,
+  })
+
+  try {
+    await input.check({
+      timeout: STEP_TIMEOUT_MS,
+      force: options.forceClick,
+    })
+    return
+  } catch {
+    // Fall through — label click matches what users do in the UI.
+  }
+
+  const inputId = await input.getAttribute('id')
+  if (inputId) {
+    await page.evaluate((id) => {
+      const label = document.querySelector(`label[for="${id}"]`)
+      if (label instanceof HTMLElement) {
+        label.click()
+        return
+      }
+      document.getElementById(id)?.click()
+    }, inputId)
+    return
+  }
+
+  await input.check({
+    timeout: STEP_TIMEOUT_MS,
+    force: true,
+  })
+}

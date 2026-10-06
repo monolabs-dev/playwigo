@@ -12,6 +12,7 @@ export type BrowserStepOptions = {
   scopeToDialog: boolean
   /** Extra ms after the target is visible (modal enter animations). */
   settleBeforeMs: number
+  waitState: 'attached' | 'visible' | 'hidden'
 }
 
 /** Applied only when `scopeToDialog: true` is set on the step config. */
@@ -58,6 +59,7 @@ export function readBrowserStepOptions(
     return {
       retry: null,
       forceClick: false,
+      waitState: 'visible',
       ...clickDefaults,
     }
   }
@@ -70,6 +72,7 @@ export function readBrowserStepOptions(
       forceClick: false,
       scopeToDialog: false,
       settleBeforeMs: 0,
+      waitState: 'visible',
     }
   }
 
@@ -79,6 +82,7 @@ export function readBrowserStepOptions(
       forceClick: false,
       scopeToDialog: false,
       settleBeforeMs: 0,
+      waitState: 'visible',
     }
   }
 
@@ -89,6 +93,12 @@ export function readBrowserStepOptions(
     record.settleBeforeMs,
     scopeToDialog ? DEFAULT_DIALOG_SETTLE_MS : clickDefaults.settleBeforeMs,
   )
+  const waitState =
+    record.waitState === 'attached' ||
+    record.waitState === 'hidden' ||
+    record.waitState === 'visible'
+      ? record.waitState
+      : 'visible'
 
-  return { retry, forceClick, scopeToDialog, settleBeforeMs }
+  return { retry, forceClick, scopeToDialog, settleBeforeMs, waitState }
 }

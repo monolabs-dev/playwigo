@@ -34,6 +34,7 @@ import {
 import { putTestRunScreenshot } from '#/server/integrations/r2/screenshots.ts'
 import { readBrowserStepOptions } from '#/features/test-cases/server/browser-step-options.ts'
 import {
+  checkOrClickInput,
   performClick,
   resolveClickTarget,
 } from '#/features/test-cases/server/prepare-click.ts'
@@ -349,7 +350,14 @@ async function executeStep(
       break
     case 'click': {
       const clickOptions = readBrowserStepOptions(step.config, 'click')
-      const baseTarget = resolveLocator(page, step.selectorType, selector)
+      let baseTarget = resolveLocator(page, step.selectorType, selector)
+      const selectorType = normalizeSelectorType(step.selectorType)
+      if (selectorType === 'id' && selector.length > 0) {
+        const label = page.locator(`label[for="${selector}"]`)
+        if ((await label.count()) > 0) {
+          baseTarget = label.first()
+        }
+      }
       const clickTarget = await resolveClickTarget(
         page,
         baseTarget,
@@ -358,7 +366,6 @@ async function executeStep(
         clickOptions,
       )
       await performClick(page, clickTarget, clickOptions)
-      await waitForPageSettled(page)
       break
     }
     case 'fill':
@@ -372,26 +379,36 @@ async function executeStep(
         { timeout: STEP_TIMEOUT_MS },
       )
       break
-    case 'check':
-      await resolveLocator(page, step.selectorType, selector).check({
-        timeout: STEP_TIMEOUT_MS,
-      })
+    case 'check': {
+      const checkOptions = readBrowserStepOptions(step.config, 'check')
+      await checkOrClickInput(
+        page,
+        resolveLocator(page, step.selectorType, selector),
+        checkOptions,
+      )
       break
-    case 'uncheck':
+    }
+    case 'uncheck': {
+      const uncheckOptions = readBrowserStepOptions(step.config, 'uncheck')
       await resolveLocator(page, step.selectorType, selector).uncheck({
         timeout: STEP_TIMEOUT_MS,
+        force: uncheckOptions.forceClick,
       })
       break
+    }
     case 'hover':
       await resolveLocator(page, step.selectorType, selector).hover({
         timeout: STEP_TIMEOUT_MS,
       })
       break
-    case 'wait':
+    case 'wait': {
+      const waitOptions = readBrowserStepOptions(step.config, 'wait')
       await resolveLocator(page, step.selectorType, selector).waitFor({
+        state: waitOptions.waitState,
         timeout: MAX_WAIT_TIMEOUT_MS,
       })
       break
+    }
     case 'waitTimeout': {
       const requestedMs = Number(value)
       if (!Number.isFinite(requestedMs) || requestedMs < 0) {

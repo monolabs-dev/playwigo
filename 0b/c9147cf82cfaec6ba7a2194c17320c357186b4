@@ -1,0 +1,38 @@
+src/features/test-cases/server/browser-step-options.ts
+  s_8b792d3fcc238f::t_c64c351654aac3 17-18
+  s_8b792d3fcc238f::t_fd979daa13d8f0 87,90
+  s_8b792d3fcc238f::t_b4465f0f5e8dc8 52-55
+src/features/test-cases/server/prepare-click.ts
+  s_8b792d3fcc238f::t_f7620e0323fd69 8-11,13
+  s_8b792d3fcc238f::t_3a75e179e1e079 26
+  s_8b792d3fcc238f::t_9473a779639dc1 50-51,55-58
+  s_8b792d3fcc238f::t_9bcd4a1a9d9e56 59
+AGENTS.md
+  s_8b792d3fcc238f::t_9b6d4edf1d1bec 934
+src/features/test-cases/server/run-limits.ts
+  s_8b792d3fcc238f::t_a89690aa363c06 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0bc9147cf82cfaec6ba7a2194c17320c357186b4",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_8b792d3fcc238f": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "4646761c-1997-4e35-a9e8-e4ff14e6b0a2",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadatgowork <ahmad.nurfadilah@go-work.com>"
+    }
+  }
+}

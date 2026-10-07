@@ -36,6 +36,7 @@ import { readBrowserStepOptions } from '#/features/test-cases/server/browser-ste
 import {
   checkOrClickInput,
   performClick,
+  resolveClickBaseLocator,
   resolveClickTarget,
 } from '#/features/test-cases/server/prepare-click.ts'
 import { executeStepHttpRequest } from '#/server/integrations/http/step-request.ts'
@@ -358,7 +359,7 @@ async function executeStep(
       break
     case 'click': {
       const clickOptions = readBrowserStepOptions(step.config, 'click')
-      let baseTarget = resolveLocator(page, step.selectorType, selector)
+      let baseTarget = resolveClickBaseLocator(page, step.selectorType, selector)
       const selectorType = normalizeSelectorType(step.selectorType)
       if (selectorType === 'id' && selector.length > 0) {
         const label = page.locator(`label[for="${selector}"]`)

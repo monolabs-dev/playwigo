@@ -1,0 +1,32 @@
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_edc4dc5c27acfe::t_3c73c980e7954e 39
+  s_edc4dc5c27acfe::t_ec06e4c80f7c94 362
+src/features/test-cases/server/prepare-click.ts
+  s_edc4dc5c27acfe::t_40fad11bfc5fee 1
+  s_edc4dc5c27acfe::t_b3c71a8ad1b68d 75-107,116-121,139-164
+  s_edc4dc5c27acfe::t_98fa1b45dd536a 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c125b99b03c7f823cee99bb3eb690807723ac0b9",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_edc4dc5c27acfe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5c54e0d9-013a-48e4-93ed-f946bcd85430",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

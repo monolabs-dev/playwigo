@@ -1,0 +1,41 @@
+src/features/test-cases/server/perform-fill.ts
+  s_edc4dc5c27acfe::t_204ce3cbaeca3f 1-32,43,54-60
+  s_edc4dc5c27acfe::t_e0032ba5620b50 33-42,44-53
+src/features/test-cases/server/bounded-playwright.ts
+  s_edc4dc5c27acfe::t_58abc661f6fc28 1-36
+src/features/test-cases/server/execute-test-case-steps.ts
+  s_edc4dc5c27acfe::t_d6b230b5eb01ba 390
+  s_edc4dc5c27acfe::t_51f29ea49b46c1 279-283
+  s_edc4dc5c27acfe::t_6883e52f71e79f 439-443
+  s_edc4dc5c27acfe::t_75ccaee15e8ff4 43-44
+  s_edc4dc5c27acfe::t_764691d286ccb2 370-375
+src/features/test-cases/server/prepare-click.ts
+  s_edc4dc5c27acfe::t_780262ea78e4ae 13
+  s_edc4dc5c27acfe::t_fc003faf58e449 4-6,15-17,57-64,68-74,77-84,120-130,140-145,159-160,162-176,178-184,195-199,201-205,226-233
+  s_edc4dc5c27acfe::t_7d1acf96ebbe30 3
+  s_edc4dc5c27acfe::t_e31c6b435b4d2a 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "73a053254856d7b5468ff3c22c60dc5ad4eab67a",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_edc4dc5c27acfe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5c54e0d9-013a-48e4-93ed-f946bcd85430",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

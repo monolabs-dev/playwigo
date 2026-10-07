@@ -1,0 +1,27 @@
+src/features/test-cases/server/prepare-click.ts
+  s_edc4dc5c27acfe::t_90cce088fdb9c7 93-96,98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e042d3b17ad5ee99d1c52ebe195f9b474fda32c9",
+  "prompts": {},
+  "humans": {
+    "h_c8a1da106d576c": {
+      "author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    },
+    "h_e52e9a795f20e8": {
+      "author": "Ahmad Nurfadilah <ahmadnurfadilah@Ahmads-MacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_edc4dc5c27acfe": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "5c54e0d9-013a-48e4-93ed-f946bcd85430",
+        "model": "composer-2.5"
+      },
+      "human_author": "ahmadnurfadilah <ahmadnurfadilah22@gmail.com>"
+    }
+  }
+}

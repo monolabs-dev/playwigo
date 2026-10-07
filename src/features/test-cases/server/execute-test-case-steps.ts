@@ -40,6 +40,8 @@ import {
   resolveClickTarget,
 } from '#/features/test-cases/server/prepare-click.ts'
 import { executeStepHttpRequest } from '#/server/integrations/http/step-request.ts'
+import { withWallClock } from '#/features/test-cases/server/bounded-playwright.ts'
+import { performFill } from '#/features/test-cases/server/perform-fill.ts'
 
 export type ExecutedStepResult = {
   testCaseStepId: string | null
@@ -274,9 +276,11 @@ function applyRegexCapture(raw: string, pattern: string) {
 }
 
 async function waitForPageSettled(page: Page) {
-  await page
-    .waitForLoadState('load', { timeout: PAGE_SETTLE_TIMEOUT_MS })
-    .catch(() => {})
+  await withWallClock(
+    page.waitForLoadState('load', { timeout: PAGE_SETTLE_TIMEOUT_MS }),
+    PAGE_SETTLE_TIMEOUT_MS + 500,
+    'page load settle timed out',
+  ).catch(() => {})
 }
 
 async function navigateToPage(page: Page, url: string) {
@@ -363,7 +367,12 @@ async function executeStep(
       const selectorType = normalizeSelectorType(step.selectorType)
       if (selectorType === 'id' && selector.length > 0) {
         const label = page.locator(`label[for="${selector}"]`)
-        if ((await label.count()) > 0) {
+        const labelCount = await withWallClock(
+          label.count(),
+          5_000,
+          'label lookup timed out',
+        ).catch(() => 0)
+        if (labelCount > 0) {
           baseTarget = label.first()
         }
       }
@@ -378,9 +387,7 @@ async function executeStep(
       break
     }
     case 'fill':
-      await resolveLocator(page, step.selectorType, selector).fill(value, {
-        timeout: STEP_TIMEOUT_MS,
-      })
+      await performFill(resolveLocator(page, step.selectorType, selector), value)
       break
     case 'select':
       await resolveLocator(page, step.selectorType, selector).selectOption(
@@ -429,7 +436,11 @@ async function executeStep(
       break
     }
     case 'pressKey':
-      await page.keyboard.press(value)
+      await withWallClock(
+        page.keyboard.press(value),
+        STEP_TIMEOUT_MS + 500,
+        `pressKey "${value}" timed out`,
+      )
       break
     case 'expectToHaveUrl':
       await expect(page).toHaveURL(value, { timeout: STEP_TIMEOUT_MS })

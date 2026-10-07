@@ -1,21 +1,20 @@
 import type { Locator, Page } from '@cloudflare/playwright'
 
 import {
+  delay,
+  withWallClock,
+} from '#/features/test-cases/server/bounded-playwright.ts'
+import {
   formatSelectorQuery,
   normalizeSelectorType,
 } from '#/features/test-cases/utils/step-actions.ts'
 import type { TestCaseSelectorType } from '#/features/test-cases/utils/step-actions.ts'
 import type { BrowserStepOptions } from '#/features/test-cases/server/browser-step-options.ts'
-import {
-  DIALOG_SCOPE_WAIT_MS,
-  STEP_TIMEOUT_MS,
-} from '#/features/test-cases/server/run-limits.ts'
+import { DIALOG_SCOPE_WAIT_MS } from '#/features/test-cases/server/run-limits.ts'
 
-function delay(ms: number) {
-  return new Promise<void>((resolve) => {
-    setTimeout(resolve, ms)
-  })
-}
+const LOCATOR_WAIT_MS = 10_000
+const DIALOG_SCAN_MS = 3_000
+const POST_CLICK_SETTLE_MS = 5_000
 
 function visibleDialogs(page: Page) {
   return page
@@ -55,38 +54,37 @@ export async function resolveClickTarget(
   }
 
   const dialogs = visibleDialogs(page)
-  if ((await dialogs.count()) === 0) {
+
+  const dialogCount = await withWallClock(
+    dialogs.count(),
+    DIALOG_SCAN_MS,
+    'dialog scan timed out',
+  ).catch(() => 0)
+
+  if (dialogCount === 0) {
     return baseTarget
   }
 
-  await dialogs
-    .last()
-    .waitFor({ state: 'visible', timeout: DIALOG_SCOPE_WAIT_MS })
-    .catch(() => {})
+  await withWallClock(
+    dialogs
+      .last()
+      .waitFor({ state: 'visible', timeout: DIALOG_SCOPE_WAIT_MS }),
+    DIALOG_SCOPE_WAIT_MS + 500,
+    'dialog wait timed out',
+  ).catch(() => {})
 
   const scoped = locatorInsideDialog(page, selectorType, selector)
-  if ((await scoped.count()) > 0) {
-    return scoped.filter({ visible: true }).first()
+  const scopedCount = await withWallClock(
+    scoped.count(),
+    DIALOG_SCAN_MS,
+    'dialog scoped count timed out',
+  ).catch(() => 0)
+
+  if (scopedCount > 0) {
+    return scoped.locator('visible=true').first()
   }
 
   return baseTarget
-}
-
-/** Playwright `locator.waitFor` / `click` can hang without rejecting on Browser Run. */
-const LOCATOR_WAIT_MS = 10_000
-
-async function boundedLocatorWait(
-  target: Locator,
-  state: 'attached' | 'visible',
-) {
-  await Promise.race([
-    target.waitFor({ state, timeout: LOCATOR_WAIT_MS }),
-    delay(LOCATOR_WAIT_MS + 500).then(() => {
-      throw new Error(
-        `Timed out after ${LOCATOR_WAIT_MS / 1000}s waiting for a ${state} click target.`,
-      )
-    }),
-  ])
 }
 
 function locatorForSelectorType(
@@ -119,17 +117,32 @@ export function resolveClickBaseLocator(
   return locatorForSelectorType(page, type, query)
 }
 
+async function boundedLocatorWait(
+  target: Locator,
+  state: 'attached' | 'visible',
+) {
+  await withWallClock(
+    target.waitFor({ state, timeout: LOCATOR_WAIT_MS }),
+    LOCATOR_WAIT_MS + 500,
+    `Timed out after ${LOCATOR_WAIT_MS / 1000}s waiting for a ${state} click target.`,
+  )
+}
+
 export async function performClick(
   page: Page,
   clickTarget: ReturnType<Page['locator']>,
   options: BrowserStepOptions,
 ) {
-  // Styled radios/checkboxes are often opacity:0; forceClick must not wait for visible.
   const target = options.forceClick
     ? clickTarget.first()
     : clickTarget.locator('visible=true').first()
 
-  const matchCount = await clickTarget.count()
+  const matchCount = await withWallClock(
+    clickTarget.count(),
+    LOCATOR_WAIT_MS + 500,
+    'Timed out while resolving click selector matches.',
+  ).catch(() => 0)
+
   if (matchCount === 0) {
     throw new Error('No element matched the click selector.')
   }
@@ -143,23 +156,32 @@ export async function performClick(
     await delay(options.settleBeforeMs)
   }
 
-  await target
-    .evaluate((el) => {
+  await withWallClock(
+    target.evaluate((el) => {
       el.scrollIntoView({ block: 'center', inline: 'nearest' })
-    })
-    .catch(() => {})
+    }),
+    LOCATOR_WAIT_MS + 500,
+    'scroll into view timed out',
+  ).catch(() => {})
 
-  // Never call locator.click() here — Browser Run can hang without rejecting.
-  await target.evaluate((el) => {
-    if (!(el instanceof HTMLElement)) {
-      throw new Error('Click target is not an HTML element')
-    }
-    el.click()
-  })
+  await withWallClock(
+    target.evaluate((el) => {
+      if (!(el instanceof HTMLElement)) {
+        throw new Error('Click target is not an HTML element')
+      }
+      el.click()
+    }),
+    LOCATOR_WAIT_MS + 500,
+    'DOM click timed out',
+  )
 
-  await page
-    .waitForLoadState('domcontentloaded', { timeout: STEP_TIMEOUT_MS })
-    .catch(() => {})
+  await withWallClock(
+    page.waitForLoadState('domcontentloaded', {
+      timeout: POST_CLICK_SETTLE_MS,
+    }),
+    POST_CLICK_SETTLE_MS + 500,
+    'post-click navigation timed out',
+  ).catch(() => {})
 }
 
 /** GoWork-style radios hide the native input (`opacity: 0`). */
@@ -170,14 +192,18 @@ export async function checkOrClickInput(
 ) {
   const input = locator.first()
 
-  await input.waitFor({
-    state: 'attached',
-    timeout: STEP_TIMEOUT_MS,
-  })
+  await withWallClock(
+    input.waitFor({ state: 'attached', timeout: LOCATOR_WAIT_MS }),
+    LOCATOR_WAIT_MS + 500,
+    'check target wait timed out',
+  )
 
-  const inputId = await input.getAttribute('id')
+  const inputId = await withWallClock(
+    input.getAttribute('id'),
+    LOCATOR_WAIT_MS + 500,
+    'check target id read timed out',
+  ).catch(() => null)
 
-  // Browser Run can hang inside `check()` without rejecting — prefer DOM click.
   if (inputId) {
     await page.evaluate((id) => {
       const label = document.querySelector(`label[for="${id}"]`)
@@ -197,8 +223,12 @@ export async function checkOrClickInput(
     }
   }
 
-  await input.check({
-    timeout: STEP_TIMEOUT_MS,
-    force: options.forceClick || true,
-  })
+  await withWallClock(
+    input.check({
+      timeout: LOCATOR_WAIT_MS,
+      force: options.forceClick || true,
+    }),
+    LOCATOR_WAIT_MS + 500,
+    'check timed out',
+  ).catch(() => {})
 }

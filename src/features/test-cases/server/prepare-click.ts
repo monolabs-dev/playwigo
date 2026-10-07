@@ -90,18 +90,12 @@ export async function performClick(
     await delay(options.settleBeforeMs)
   }
 
-  if (options.forceClick) {
-    // Opacity-0 radios are not "visible"; scrollIntoViewIfNeeded can hang until timeout.
-    await target
-      .evaluate((el) => {
-        el.scrollIntoView({ block: 'center', inline: 'nearest' })
-      })
-      .catch(() => {})
-  } else {
-    await target.scrollIntoViewIfNeeded({
-      timeout: STEP_TIMEOUT_MS,
+  // Browser Run can hang inside scrollIntoViewIfNeeded without rejecting — use DOM scroll.
+  await target
+    .evaluate((el) => {
+      el.scrollIntoView({ block: 'center', inline: 'nearest' })
     })
-  }
+    .catch(() => {})
 
   await target.click({
     timeout: STEP_TIMEOUT_MS,

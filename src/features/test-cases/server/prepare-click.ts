@@ -72,8 +72,22 @@ export async function resolveClickTarget(
   return baseTarget
 }
 
-/** Playwright `locator.click()` can hang indefinitely on Browser Run — cap and fall back to DOM click. */
-const PLAYWRIGHT_CLICK_MS = 8_000
+/** Playwright `locator.waitFor` / `click` can hang without rejecting on Browser Run. */
+const LOCATOR_WAIT_MS = 10_000
+
+async function boundedLocatorWait(
+  target: Locator,
+  state: 'attached' | 'visible',
+) {
+  await Promise.race([
+    target.waitFor({ state, timeout: LOCATOR_WAIT_MS }),
+    delay(LOCATOR_WAIT_MS + 500).then(() => {
+      throw new Error(
+        `Timed out after ${LOCATOR_WAIT_MS / 1000}s waiting for a ${state} click target.`,
+      )
+    }),
+  ])
+}
 
 function locatorForSelectorType(
   page: Page,
@@ -120,48 +134,32 @@ export async function performClick(
     throw new Error('No element matched the click selector.')
   }
 
-  await target.waitFor({
-    state: options.forceClick ? 'attached' : 'visible',
-    timeout: STEP_TIMEOUT_MS,
-  })
+  await boundedLocatorWait(
+    target,
+    options.forceClick ? 'attached' : 'visible',
+  )
 
   if (options.settleBeforeMs > 0) {
     await delay(options.settleBeforeMs)
   }
 
-  // Browser Run can hang inside scrollIntoViewIfNeeded without rejecting — use DOM scroll.
   await target
     .evaluate((el) => {
       el.scrollIntoView({ block: 'center', inline: 'nearest' })
     })
     .catch(() => {})
 
-  const clickedViaPlaywright = await target
-    .click({
-      timeout: PLAYWRIGHT_CLICK_MS,
-      force: options.forceClick,
-    })
-    .then(() => true)
-    .catch(() => false)
+  // Never call locator.click() here — Browser Run can hang without rejecting.
+  await target.evaluate((el) => {
+    if (!(el instanceof HTMLElement)) {
+      throw new Error('Click target is not an HTML element')
+    }
+    el.click()
+  })
 
-  if (!clickedViaPlaywright) {
-    await target.evaluate((el) => {
-      if (!(el instanceof HTMLElement)) {
-        throw new Error('Click target is not an HTML element')
-      }
-      el.click()
-    })
-  }
-
-  const navigates = await target
-    .evaluate((el) => el instanceof HTMLAnchorElement && Boolean(el.href))
-    .catch(() => false)
-
-  if (navigates) {
-    await page
-      .waitForLoadState('domcontentloaded', { timeout: STEP_TIMEOUT_MS })
-      .catch(() => {})
-  }
+  await page
+    .waitForLoadState('domcontentloaded', { timeout: STEP_TIMEOUT_MS })
+    .catch(() => {})
 }
 
 /** GoWork-style radios hide the native input (`opacity: 0`). */

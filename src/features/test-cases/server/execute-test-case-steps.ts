@@ -275,20 +275,28 @@ function applyRegexCapture(raw: string, pattern: string) {
   return match[1] ?? match[0]
 }
 
+/** SPAs often never fire `load` on Browser Run; `waitForLoadState('load')` can hang without rejecting. */
 async function waitForPageSettled(page: Page) {
   await withWallClock(
-    page.waitForLoadState('load', { timeout: PAGE_SETTLE_TIMEOUT_MS }),
+    page.waitForLoadState('domcontentloaded', {
+      timeout: PAGE_SETTLE_TIMEOUT_MS,
+    }),
     PAGE_SETTLE_TIMEOUT_MS + 500,
-    'page load settle timed out',
+    'page domcontentloaded settle timed out',
   ).catch(() => {})
+  await delay(750)
 }
 
 async function navigateToPage(page: Page, url: string) {
-  await page.goto(url, {
-    waitUntil: 'domcontentloaded',
-    timeout: NAVIGATION_TIMEOUT_MS,
-  })
-  await waitForPageSettled(page)
+  await withWallClock(
+    page.goto(url, {
+      waitUntil: 'domcontentloaded',
+      timeout: NAVIGATION_TIMEOUT_MS,
+    }),
+    NAVIGATION_TIMEOUT_MS + 1_000,
+    `Navigation timed out after ${NAVIGATION_TIMEOUT_MS / 1000}s.`,
+  )
+  await delay(750)
 }
 
 /** Jakarta default — GoWork booking pages call `getCurrentPosition` on load. */
